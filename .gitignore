@@ -6,8 +6,3 @@ data/myenv/
 venv/
 .env/
 *env/
-.DS_Store
-data/myenv/
-venv/
-.env/
-*env/
