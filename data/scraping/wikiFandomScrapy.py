@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 # Load the CSV file
-file_path = 'brooklyn-nine-nine.csv'  # Update with the correct path to your CSV file
+file_path = './brooklyn-nine-nine.csv'  # Update with the correct path to your CSV file
 df = pd.read_csv(file_path)
 
 # Function to scrape the episode description
@@ -54,7 +54,7 @@ detailed_descriptions = [scrape_episode_description(base_url + title) for title 
 df['Wiki Fandom Descriptions'] = pd.Series(detailed_descriptions)
 
 # Save the updated DataFrame to a new CSV file
-updated_file_path = 'brooklyn_99_episodes_updated.csv'  # Update with your desired output path
+updated_file_path = './brooklyn_99_episodes_updated.csv'  # Update with your desired output path
 df.to_csv(updated_file_path, index=False)
 
 print("Updated CSV file saved to:", updated_file_path)

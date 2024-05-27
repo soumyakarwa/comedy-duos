@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 # Load the CSV file
-file_path = 'brooklyn_99_episodes_updated.csv'
+file_path = './brooklyn_99_episodes_updated.csv'
 episodes_df = pd.read_csv(file_path)
 
 # Define base URL and number of episodes in each season
