@@ -12,37 +12,22 @@ nltk.download('words')
 
 characters = ["Jake", "Peralta", "Captain", "Raymond", "Holt", "Sergeant", "Terry", "Jeffords", "Amy", "Santiago", "Rosa", "Diaz", "Gina", "Linetti", "Charles", "Boyle", "Norm", "Scully", "Michael", "Hitchcock"]
 
-def split_into_sentences(paragraph):
-    # Split paragraph into sentences
+def splitIntoSentences(paragraph):
     sentences = sent_tokenize(paragraph)
     return sentences
 
-# def extract_proper_nouns(sentence):
-#     # Tokenize the sentence
-#     words = word_tokenize(sentence)
-#     # Tag the tokens with part of speech
-#     pos_tags = pos_tag(words)
-#     # Perform named entity recognition
-#     named_entities = ne_chunk(pos_tags, binary=True)
-    
-#     proper_nouns = []
-#     for chunk in named_entities:
-#         if hasattr(chunk, 'label') and chunk.label() == 'NE':
-#             proper_nouns.extend([c[0] for c in chunk])
-#     return proper_nouns
-
-def extract_character_names(sentence, characters):
+def extractCharacterNames(sentence, characters):
     # Tokenize the sentence
     words = word_tokenize(sentence)
     # Check for the presence of character names
     found_characters = [word for word in words if word in characters]
     return found_characters
 
-def analyze_paragraph(paragraph):
-    sentences = split_into_sentences(paragraph)
+def analyzeParagraph(paragraph):
+    sentences = splitIntoSentences(paragraph)
     analysis = []
     for sentence in sentences:
-        chars = extract_character_names(sentence, characters)
+        chars = extractCharacterNames(sentence, characters)
         analysis.append({
             'sentence': sentence,
             'characters': chars,
@@ -50,20 +35,19 @@ def analyze_paragraph(paragraph):
     return analysis
 
 # Read the CSV file
-file_path = '../brooklynNineNineEpisodeDescriptions.csv'  # Replace with the actual file path
+file_path = '../brooklynNineNineEpisodeDescriptions.csv' 
 df = pd.read_csv(file_path)
 
-def analyze_descriptions(descriptions, analysis_function):
+def analyzeDescriptions(descriptions, analysis_function):
     return [analysis_function(description) if pd.notnull(description) else None for description in descriptions]
 
 # Analyze each description type and add the results to the DataFrame
-df['Episode Description Analysis'] = analyze_descriptions(df['Episode Description'], analyze_paragraph)
-df['Wiki Fandom Description Analysis'] = analyze_descriptions(df['Wiki Fandom Descriptions'], analyze_paragraph)
-df['Wikipedia Description Analysis'] = analyze_descriptions(df['Wikipedia Episode Descriptions'], analyze_paragraph)
-
+df['Episode Description Analysis'] = analyzeDescriptions(df['Episode Description'], analyzeParagraph)
+df['Wiki Fandom Description Analysis'] = analyzeDescriptions(df['Wiki Fandom Descriptions'], analyzeParagraph)
+df['Wikipedia Description Analysis'] = analyzeDescriptions(df['Wikipedia Episode Descriptions'], analyzeParagraph)
 
 # Save the updated DataFrame to a new CSV file
-output_file_path = '../analysisByCharacters-withSentences.csv'
+output_file_path = '../analysisByCharacters.csv'
 df.to_csv(output_file_path, index=False)
 
-print("analysis complete")
+print("All descriptions are analysed into sentences and corresponding character. File is saved into analysisByCharacters.csv")
