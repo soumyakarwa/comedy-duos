@@ -9,7 +9,7 @@ df = pd.read_csv(file_path)
 def filter_sentences(data):
     if pd.notna(data) and data != '':
         entries = ast.literal_eval(data)
-        filtered_entries = [entry for entry in entries if (len(entry['characters']) == 3 or len(entry['characters']) == 2)]
+        filtered_entries = [entry for entry in entries if len(entry['characters']) > 1]
         return filtered_entries
     return np.nan
 
