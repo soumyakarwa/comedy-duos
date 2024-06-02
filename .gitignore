@@ -10,3 +10,4 @@ venv/
 .env
 
 data-analysis/analysisVenv/
+public/build/

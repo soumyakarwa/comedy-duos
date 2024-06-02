@@ -8,7 +8,8 @@ file_path = '../brooklynNineNineCharacters.csv'
 # Read the CSV file into a DataFrame
 df = pd.read_csv(file_path)
 
-characterRatingDict = defaultdict(lambda: [0, 0.0, 0, 0])  # [frequency, cumulative_weighted_rating, total_votes, rating]
+# [frequency, cumulativeWeightedRating, totalVotes, totalRating]
+characterRatingDict = defaultdict(lambda: [0, 0.0, 0, 0])  
 
 # Access the 'Streamlined Characters', 'Rating', and 'Total Votes' columns
 characterColumn = df['Streamlined Characters']
