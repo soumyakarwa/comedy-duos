@@ -6,8 +6,15 @@ body {
 }
 
 :root {
-  --title-font-size: 5rem;
+  /* FONT SIZE */
+  --title-font-size: 5.5rem;
+  --body-font-size: 1.25rem;
+
+  /* MISC */
+  --margin: 1.4rem;
   --golden-ratio: 1.618;
+
+  /* COLORS */
   --yellow: #f0ca00;
 }
 

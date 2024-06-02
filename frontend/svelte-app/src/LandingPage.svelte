@@ -13,36 +13,40 @@
     background-color: white;
   }
 
-  .fixed-image {
-    position: absolute;
+.fixed-image {
+    position: fixed;
     top: 0;
     left: 0;
     width: 60vw; /* Adjust this size as needed */
     height: auto;
+    z-index: 10;
   }
 
   .title {
-    font-size: 5.5rem;
+    /* font-size 5.5rem;  */
+    font-size: var(--title-font-size);
     font-family: "Impact"; 
-    margin-bottom: 1.4rem; 
+    margin-bottom: var(--margin); 
   }
 
   .subtitle {
-    font-size: 9.5rem;
+    /* font-size: 9.5rem; */
+    font-size: calc(var(--title-font-size) * 9.5/5.5); 
     color: var(--yellow); /* Gold color */
     font-family: "Impact";
     line-height: 0.6; 
   }
 
   .hel {
-    font-size: 7.32rem; 
+    /* font-size: 7.32rem;  */
+    font-size: calc(var(--title-font-size) * 7.32/5.5); 
     font-family: "Helvetica Neue";
     font-weight: bold;
   }
 
   .author {
-    font-size: 1.25rem;
-    margin-top: 2.8rem;
+    font-size: calc(var(--body-font-size));
+    margin-top: calc(var(--margin)*2); 
   }
 </style>
 
