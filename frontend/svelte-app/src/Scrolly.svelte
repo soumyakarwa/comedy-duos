@@ -13,11 +13,11 @@
     const backgroundImages = [
       '/assets/picture1.png',
       '/assets/picture2.png',
-      '/assets/picture3.png',
-      '/assets/picture4.png',
-      '/assets/picture5.png',
-      '/assets/picture6.png',
-      '/assets/picture7.png',
+      '/assets/b99-3.png',
+      '/assets/b99-4.png',
+      '/assets/b99-5.png',
+      '/assets/b99-6.png',
+      '/assets/b99-7.png',
     ];
   
     $: backgroundImage = backgroundImages[index] || 'defaultImage.jpg';
@@ -53,6 +53,7 @@
       width: 100%; 
       height: 90vh; 
       transition: background-image 0.5s ease-in-out;
+      /* bottom: 0px;  */
     }
 
     [slot="foreground"] {
