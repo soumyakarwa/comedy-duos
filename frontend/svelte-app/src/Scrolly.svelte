@@ -1,5 +1,7 @@
 <script>
     import Scroller from '@sveltejs/svelte-scroller';
+    import { tweened } from 'svelte/motion';
+    import { cubicOut } from 'svelte/easing';
     
     let count;
     let index = 0;
@@ -11,16 +13,28 @@
     
     // Array of background images
     const backgroundImages = [
-      '/assets/picture1.png',
-      '/assets/picture2.png',
-      '/assets/b99-3.png',
-      '/assets/b99-4.png',
-      '/assets/b99-5.png',
-      '/assets/b99-6.png',
-      '/assets/b99-7.png',
+      '/assets/holt.svg',
+      '/assets/jake.svg',
+      '/assets/amy.svg',
+      '/assets/terry.svg',
+      '/assets/gina.svg',
+      '/assets/charles.svg',
+      '/assets/rosa.svg',
     ];
   
     $: backgroundImage = backgroundImages[index] || 'defaultImage.jpg';
+
+  // Transition state
+    let imgOpacity = tweened(1, {
+          duration: 300,
+          easing: cubicOut
+      });
+
+      $: {
+          imgOpacity.set(0);
+          setTimeout(() => imgOpacity.set(1), 300);
+      }
+
   </script>
   
   <div>
@@ -37,7 +51,7 @@
       </div> -->
       <div slot="background" style="padding: 0 0 0 0;">
         <!-- svelte-ignore a11y-img-redundant-alt -->
-          <img src={backgroundImage} alt="show character image">        
+          <img src={backgroundImage} alt="show character image" style="opacity: {$imgOpacity}">        
       </div>
   
       <div slot="foreground" style="padding: 0 25% 0 25%;">
@@ -56,6 +70,8 @@
     [slot="background"] {
       width: 100%; 
       height: 100%; 
+      transition: opacity 0.5s ease-in-out;
+      /* transition: img 0.5s ease-in-out; */
       /* width: 100%;  */
       /* height: 90vh;  */
       /* bottom: 0px;  */
@@ -64,8 +80,7 @@
     [slot="background"] img {
       width: 100vw; 
       height: auto;
-      /* transition: background-image 0.5s ease-in-out; */
-      /* bottom: 0px;  */
+      transition: opacity 0.5s ease-in-out;
     }
 
     [slot="foreground"] {
