@@ -14,13 +14,14 @@
 
 <style>
     .standalone-section {
-        /* height: 80vh; */
+        height: 100vh;
         width: 35vw;
         color: black;
         margin-left: 32.5vw; 
         font-size: var(--body-font-size);
         display: flex; 
         justify-content: center;
+        align-items: center;
     }
 
     .desc {

@@ -6,6 +6,7 @@
 <main>
 	<LandingPage />
 	<Content />
+	<LandingPage />
 </main>
 
 
