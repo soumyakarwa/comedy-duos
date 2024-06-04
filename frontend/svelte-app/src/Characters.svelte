@@ -14,17 +14,17 @@
   
   // Array of background images
   const backgroundImages = [
-    '/assets/arrow/holt.svg',
-    '/assets/arrow/jake.svg',
-    '/assets/arrow/amy.svg',
-    '/assets/arrow/terry.svg',
-    '/assets/arrow/gina.svg',
-    '/assets/arrow/charles.svg',
-    '/assets/arrow/rosa.svg',
+    '/assets/non-arrow/holt.svg',
+    '/assets/non-arrow/jake.svg',
+    '/assets/non-arrow/amy.svg',
+    '/assets/non-arrow/terry.svg',
+    '/assets/non-arrow/gina.svg',
+    '/assets/non-arrow/charles.svg',
+    '/assets/non-arrow/rosa.svg',
   ];
 
   const sectionTexts = [
-    "If you don’t already know what Brooklyn Nine–Nine is (which is borderline ridiculous btw), let me bring you up to speed on one of the most iconic sitcoms of our time. A Golden Globe winner, Brooklyn Nine–Nine is a 2013–2021 workplace sitcom about Brooklyn’s 99th Precinct’s detective squad when a rule-following, outwardly-unemotional, highly decorated NYPD Captain Raymond Holt (played by Andre Braugher) takes over.",
+    `If you don’t already know what Brooklyn Nine–Nine is (which is borderline ridiculous btw), let me bring you up to speed on one of the most iconic sitcoms of our time. A Golden Globe winner, Brooklyn Nine–Nine is a 2013–2021 workplace sitcom about Brooklyn’s 99th Precinct’s detective squad when a rule-following, outwardly-unemotional, highly decorated NYPD <span class="yellow">Captain Raymond Holt</span>(played by Andre Braugher) takes over.`,
     "Being the first openly Black Gay Police officer in the NYPD, Captain Holt has fought many uphill battles; but bringing the carefree, talented, almost irresponsible Detective Jacob Peralta (played by Andy Samberg) in line, might just be the toughest battle yet (lol I kid ofcourse).",
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.",
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.",
@@ -41,7 +41,6 @@
   $: {
     imgOpacity.set(0);
     setTimeout(() => imgOpacity.set(1)); 
-    // imgOpacity.set(Math.min((offset||0),1));
   }
 
   $: backgroundImage = backgroundImages[index] || 'defaultImage.jpg';
@@ -62,9 +61,9 @@
       <img src={backgroundImage} alt="show character image" style="opacity: {$imgOpacity}">        
     </div>
 
-    <div slot="foreground" style="padding-left: 30vw; padding-top: 10%">
+    <div slot="foreground" style="padding-left: 32.5vw; padding-top: 10%; width:35vw;">
       {#each sectionTexts as text}
-        <section><div class="description">{text}</div></section>
+        <section class="characters-section"><div class="description">{text}</div></section>
       {/each}
     </div>
   </Scroller>
@@ -74,20 +73,12 @@
   [slot="background"] {
     width: 100%;
     height: 100%;
-    /* background-color: var(--yellow); */
-    /* transition: img 0.5s; */
   }
 
   [slot="background"] img {
     width: 100vw;
     height: auto;
   }
-/* 
-  .character {
-    width: 100vw;
-    height: 100%;
-    transition: background-image 0.5s ease-in-out;
-  }  */
 
   [slot="foreground"] {
     pointer-events: none;
@@ -97,19 +88,19 @@
     pointer-events: all;
   }
   
-  section {
+  .characters-section {
     height: 80vh;
-    width: 40vw;
     color: black;
     padding: var(--margin);
-    margin-bottom: var(--margin);
-    /* border: 1px solid black; */
+    margin-bottom: var(--margin); 
     font-size: var(--body-font-size);
+    display: flex; 
+    justify-content: center;
   }
 
-  .description{
-    background-color: rgba(255, 255, 255, 0.6);
-    max-width: 80%;
+  .description {
+    background-color: rgba(246, 244, 245, 0.9);
+    height: fit-content; 
     padding: var(--margin); 
   }
 

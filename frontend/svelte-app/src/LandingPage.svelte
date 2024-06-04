@@ -10,7 +10,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-color: white;
+    /* background-color: white; */
   }
 
 .fixed-image {
