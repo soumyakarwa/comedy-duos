@@ -42,13 +42,10 @@ body {
 }
 
 .highlight {
-  display: inline-block;
   position: relative;
-  padding: 0.15rem;
   background: linear-gradient(to right, var(--yellow) 50%, transparent 50%);
   background-size: 200% 100%;
   background-position: 100% 0;
-  /* animation: highlight-animation 0.5s linear forwards; */
 }
 
 @keyframes highlight-animation {

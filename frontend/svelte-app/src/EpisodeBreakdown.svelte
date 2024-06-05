@@ -10,54 +10,7 @@
     let svg; 
     let width; 
     let episodeDescriptions = []; 
-    let highlightElement;
-
-    onMount(async () => {
-    const chosenDataPoint =   
-        {Airdate: "4/4/19", 
-        Episode: "2", 
-        EpisodeDescription:"Jake and Charles investigate a case of Hitchcock and Scully's from the 1980s; meanwhile, Amy's uniformed officers and Terry's detectives fight over limited resources.", 
-        EpisodeDescriptionAnalysis: [{sentence: "Jake and Charles investigate a case of Hitchcock and Scully's from the 1980s; meanwhile, Amy's uniformed officers and Terry's detectives fight over limited resources.", characters: ['Jake', 'Charles', 'Amy', 'Terry']}], 
-        EpisodeDescriptionFiltered: [{sentence: "Jake and Charles investigate a case of Hitchcock and Scully's from the 1980s; meanwhile, Amy's uniformed officers and Terry's detectives fight over limited resources.", characters: ['Jake', 'Charles', 'Amy', 'Terry']}],
-        Rating: "8.8", 
-        Season: "6",
-        StreamlinedCharacters: [['Jake', 'Charles'], ['Amy', 'Terry'], ['Gina', 'Holt']],
-        Title: "Hitchcock & Scully",
-        TotalVotes: "2998",
-        WikiFandomDescriptionAnalysis: [{sentence: "Jake and Charles investigate a case of Hitchcock and Scully from the 1980s.", characters: ['Jake', 'Charles']}, {sentence: "Meanwhile, Amy's uniformed officers and Terry's detectives fight over limited resources.", characters: ['Amy', 'Terry']},{sentence: '[2]', 'characters': []}],
-        WikiFandomDescriptionFiltered: [{sentence: "Jake and Charles investigate a case of Hitchcock and Scully from the 1980s.", characters: ['Jake', 'Charles']}, {sentence: "Meanwhile, Amy's uniformed officers and Terry's detectives fight over limited resources.", characters: ['Amy', 'Terry']}],
-        WikiFandomDescriptions: "Jake and Charles investigate a case of Hitchcock and Scully from the 1980s. Meanwhile, Amy's uniformed officers and Terry's detectives fight over limited resources.[2]",
-        WikipediaClausesAnalysis: [{sentence: "Jake and Charles investigate a case from Hitchcock and Scully's younger days to determine if the two older detectives are withholding any stolen cash.", characters: ['Jake', 'Charles']}, {sentence: "Due to Holt's campaign against John Kelly", characters: ['Holt']}, {sentence: 'the Commissioner closes off the lower level', characters: []}, {sentence: 'forces most of the departments to work in a tight space', characters: []}, {sentence: 'leading to Amy and her officers coming into conflict with Terry and Rosa', characters: ['Amy', 'Terry', 'Rosa']}, {'sentence': 'Gina helps Holt prepare for a televised interview.', characters: ['Gina', 'Holt']}],
-        WikipediaClausesFiltered: [{sentence: "Jake and Charles investigate a case from Hitchcock and Scully's younger days to determine if the two older detectives are withholding any stolen cash.", characters: ['Jake', 'Charles']}, {sentence: 'leading to Amy and her officers coming into conflict with Terry and Rosa', characters: ['Amy', 'Terry', 'Rosa']}, {sentence: 'Gina helps Holt prepare for a televised interview.', characters: ['Gina', 'Holt']}],
-        WikipediaDescriptionAnalysis: [{sentence: "Jake and Charles investigate a case from Hitchcock and Scully's younger days to determine if the two older detectives are withholding any stolen cash.", characters: ['Jake', 'Charles']}, {sentence: "Due to Holt's campaign against John Kelly, the Commissioner closes off the lower level and forces most of the departments to work in a tight space, leading to Amy and her officers coming into conflict with Terry and Rosa.", characters: ['Holt', 'Amy', 'Terry', 'Rosa']}, {sentence: 'Gina helps Holt prepare for a televised interview.', 'characters': ['Gina', 'Holt']}],
-        WikipediaDescriptionClauses: ["Jake and Charles investigate a case from Hitchcock and Scully's younger days to determine if the two older detectives are withholding any stolen cash.", "Due to Holt's campaign against John Kelly", 'the Commissioner closes off the lower level', 'forces most of the departments to work in a tight space', 'leading to Amy and her officers coming into conflict with Terry and Rosa', 'Gina helps Holt prepare for a televised interview.'],
-        WikipediaEpisodeDescriptions: "Jake and Charles investigate a case from Hitchcock and Scully's younger days to determine if the two older detectives are withholding any stolen cash. Due to Holt's campaign against John Kelly, the Commissioner closes off the lower level and forces most of the departments to work in a tight space, leading to Amy and her officers coming into conflict with Terry and Rosa. Gina helps Holt prepare for a televised interview."
-    };
-        
-    try {
-            episodeData = await d3.csv("/data/brooklynNineNineCharacters.csv");
-            specificDataPoint = episodeData.find(d => d.Title === "Hitchcock & Scully");
-            console.log(specificDataPoint)
-        } catch (error) {
-            console.error("Error loading data:", error);
-        }
-
-        const svgRect = svg.getBoundingClientRect();
-        width = svgRect.width;
-        svg.setAttribute("height", width);
-
-        episodeDescriptions[0] = highlightDescription(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
-        episodeDescriptions[1] = highlightDescription(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
-        episodeDescriptions[2] = highlightDescription(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]); 
-    });
-
-    function startAnimation() {
-        highlightElement.style.animation = 'none';
-        requestAnimationFrame(() => {
-            highlightElement.style.animation = '';
-            highlightElement.style.animation = 'highlight-animation var(--transition-time) linear forwards';
-        });
-    }
+    let highlightElements = []; 
 
     function highlightDescription(description, analysis) {
         let highlighted = description; 
@@ -73,11 +26,22 @@
         const parsedAnalyis = JSON.parse(correctedAnalysis); 
         parsedAnalyis.forEach(item => {
             let sentence = item.sentence;
-            highlighted = highlighted.replace(sentence, `<span class="highlight">${sentence}</span>`);
+            let span = `<span class="highlight">${sentence}</span>`
+            highlighted = highlighted.replace(sentence, span);
         });
-        console.log(highlighted); 
         return highlighted;
     }
+
+    function startAnimation() {
+        const highlightElements = document.querySelectorAll('.highlight');
+        highlightElements.forEach(element => {
+            element.style.animation = 'none';
+            requestAnimationFrame(() => {
+                element.style.animation = '';
+                element.style.animation = 'highlight-animation calc(var(--transition-time)*2) linear forwards';
+            });
+        });
+    }    
 
     const showDescriptions = writable(false);
 
@@ -91,6 +55,25 @@
     $: if (currentStep == 2){
         startAnimation()
     }
+
+    onMount(async () => {
+        try {   
+            episodeData = await d3.csv("/data/brooklynNineNineCharacters.csv");
+            specificDataPoint = episodeData.find(d => d.Title === "Hitchcock & Scully");
+            console.log(specificDataPoint); 
+        } catch (error) {
+            console.error("Error loading data:", error);
+        }
+
+        const svgRect = svg.getBoundingClientRect();
+        width = svgRect.width;
+        svg.setAttribute("height", width);
+
+        episodeDescriptions[0] = highlightDescription(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
+        episodeDescriptions[1] = highlightDescription(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
+        episodeDescriptions[2] = highlightDescription(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
+    });
+
 </script>
 
 <section class="episode-section">
@@ -107,7 +90,7 @@
     <div class="chart">
         <div id="col1"> 
             <div id="officialDescription" class="episodeDescriptions" class:active={$showDescriptions}>
-                <span span bind:this={highlightElement} class="italic highlight">Official Description</span>
+                <span class="italic">Official Description</span>
                 <br>
                 {@html episodeDescriptions[0]}
             </div>
@@ -119,14 +102,14 @@
             <div id="wikifandomDescription" class="episodeDescriptions" class:active={$showDescriptions}> 
                 <span class="italic">Wiki Fandom Description</span>
                 <br>
-                {episodeDescriptions[1]}
+                {@html  episodeDescriptions[1]}
             </div>
         </div>
         <div id="col2">
             <div id="wikipediaDescription" class="episodeDescriptions" class:active={$showDescriptions}>  
                 <span class="italic">Wikipedia Description</span>
                 <br>
-                {episodeDescriptions[2]}
+                {@html episodeDescriptions[2]}
             </div>
         </div>
     </div>  
