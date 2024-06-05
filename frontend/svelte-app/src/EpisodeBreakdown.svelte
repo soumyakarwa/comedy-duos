@@ -10,7 +10,13 @@
     let svg; 
     let width; 
     let episodeDescriptions = []; 
-    let highlightElements = []; 
+    let newDescription3;
+    let currentStep;
+    let previousStep = -1; 
+    const showDescriptions = writable(false);
+    const colors = ["#f0ca00", "#00dae0", "#f000e8"]; 
+    const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`];
+
 
     function highlightDescription(description, analysis) {
         let highlighted = description; 
@@ -24,56 +30,134 @@
         });
 
         const parsedAnalyis = JSON.parse(correctedAnalysis); 
-        parsedAnalyis.forEach(item => {
+        parsedAnalyis.forEach((item, index) => {
             let sentence = item.sentence;
-            let span = `<span class="highlight">${sentence}</span>`
+            let span = `<span class="highlight" style="--highlight-color: ${colors[index % colors.length]};">${sentence}</span>`;
             highlighted = highlighted.replace(sentence, span);
         });
         return highlighted;
     }
 
-    function startAnimation() {
-        const highlightElements = document.querySelectorAll('.highlight');
-        highlightElements.forEach(element => {
+    function highlightSentences(elements) {
+        elements.forEach(element => {
             element.style.animation = 'none';
             requestAnimationFrame(() => {
                 element.style.animation = '';
-                element.style.animation = 'highlight-animation calc(var(--transition-time)*2) linear forwards';
+                element.classList.remove('unhighlight');
+                element.classList.add('highlight');
+                element.style.animation = 'highlight-animation var(--transition-time) linear forwards';
             });
         });
     }    
 
-    const showDescriptions = writable(false);
+    function unhighlightSentences(elements) {
+        elements.forEach(element => {
+            element.style.animation = 'none';
+            requestAnimationFrame(() => {
+                element.style.animation = '';
+                element.classList.remove('highlight');
+                element.classList.add('unhighlight');
+                element.style.animation = 'unhighlight-animation var(--transition-time) linear forwards';
+            });
+        });
+    }   
 
-    let currentStep;
-    const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`];
-
-    $: if (currentStep == 1) {
-        showDescriptions.set(true);
-    } 
-    
-    $: if (currentStep == 2){
-        startAnimation()
+    function highlightDescription1(){
+        const description1HighlightElements = document.querySelectorAll('#officialDescription .highlight');
+        highlightSentences(description1HighlightElements); 
     }
 
+    function highlightDescription2(){
+        const description2HighlightElements = document.querySelectorAll('#wikifandomDescription .highlight');
+        highlightSentences(description2HighlightElements); 
+    }
+
+    function highlightDescription3(){
+        const description3HighlightElements = document.querySelectorAll('#wikipediaDescription .highlight');
+        highlightSentences(description3HighlightElements); 
+    }
+
+    function unhighlightDescription1(){
+        const description1HighlightElements = document.querySelectorAll('#officialDescription .highlight');
+        unhighlightSentences(description1HighlightElements); 
+    }
+
+    function unhighlightDescription2(){
+        const description2HighlightElements = document.querySelectorAll('#wikifandomDescription .highlight');
+        unhighlightSentences(description2HighlightElements); 
+    }
+
+    function unhighlightDescription3(){
+        const description3HighlightElements = document.querySelectorAll('#wikipediaDescription .highlight');
+        unhighlightSentences(description3HighlightElements); 
+    }
+
+    function reset(){
+        const unhiglightedElements = document.querySelectorAll('.unhighlight');
+        unhiglightedElements.forEach(element => {
+            element.style.animation = 'none';
+            requestAnimationFrame(() => {
+                element.style.animation = '';
+                element.classList.remove('unhighlight');
+                element.classList.add('highlight');
+            });
+        });
+    }
+
+    $: (() => {
+        // scrolling down
+        if (currentStep > previousStep) {
+            if (currentStep == 0) {
+                showDescriptions.set(false);
+            } else if (currentStep == 1) {
+                showDescriptions.set(true);
+            } else if (currentStep == 2) {
+                highlightDescription1();
+                highlightDescription2(); 
+                highlightDescription3(); 
+            } else if (currentStep == 3) {
+                if (specificDataPoint) {
+                    newDescription3 = highlightDescription(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Clauses Analysis`]);
+                    setTimeout(() => {
+                        highlightDescription3(); 
+                    }, 0);
+                } else {
+                    console.log('Step 3: Data not loaded yet');
+                }
+            }
+            // scrolling up
+        } else if (currentStep < previousStep) {
+            // Scrolling up
+            if (currentStep == 0) {
+                showDescriptions.set(false);
+                reset(); 
+            } else if (currentStep == 1) {
+                unhighlightDescription1();
+                unhighlightDescription2(); 
+                unhighlightDescription3(); 
+            } 
+            else if(currentStep == 2) {
+                    setTimeout(() => {
+                        highlightDescription3();
+                    }, 0);
+                }
+            }
+        previousStep = currentStep;
+    })();
+    
     onMount(async () => {
         try {   
             episodeData = await d3.csv("/data/brooklynNineNineCharacters.csv");
             specificDataPoint = episodeData.find(d => d.Title === "Hitchcock & Scully");
-            console.log(specificDataPoint); 
+            console.log(specificDataPoint[`Wikipedia Description Clauses`]); 
         } catch (error) {
             console.error("Error loading data:", error);
         }
-
-        const svgRect = svg.getBoundingClientRect();
-        width = svgRect.width;
-        svg.setAttribute("height", width);
 
         episodeDescriptions[0] = highlightDescription(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
         episodeDescriptions[1] = highlightDescription(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
         episodeDescriptions[2] = highlightDescription(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
     });
-
 </script>
 
 <section class="episode-section">
@@ -90,107 +174,100 @@
     <div class="chart">
         <div id="col1"> 
             <div id="officialDescription" class="episodeDescriptions" class:active={$showDescriptions}>
-                <span class="italic">Official Description</span>
+                <span class="italic">Description 1</span>
                 <br>
                 {@html episodeDescriptions[0]}
             </div>
-            <svg bind:this={svg}>
-                {#if width > 0}
-                    <rect x={0} y={0} width={width} height={width} fill="#438A00"></rect>
-                {/if}
+            <svg width="300" height="300" viewbox="0 0 300 300" bind:this={svg}>
+                <rect x={0} y={0} width={300} height={300} fill="none" stroke="black" stroke-width="2"></rect>
             </svg>
             <div id="wikifandomDescription" class="episodeDescriptions" class:active={$showDescriptions}> 
-                <span class="italic">Wiki Fandom Description</span>
+                <span class="italic">Description 2</span>
                 <br>
                 {@html  episodeDescriptions[1]}
             </div>
         </div>
         <div id="col2">
             <div id="wikipediaDescription" class="episodeDescriptions" class:active={$showDescriptions}>  
-                <span class="italic">Wikipedia Description</span>
+                <span class="italic">Description 3</span>
                 <br>
-                {@html episodeDescriptions[2]}
+                {@html currentStep > 2 ? newDescription3: episodeDescriptions[2]}
             </div>
         </div>
     </div>  
 </section>
 
 <style>
-  .episode-section {
-      display: flex;
-      justify-content: space-evenly; 
-      gap: var(--margin)
-  }
-
-  .chart {
-      width: 45vw;
-      height: 80vh;
-      position: sticky;
-      top: 10vh;
-      display:flex; 
-      flex-direction: row;
-      align-items: center;
-      gap: var(--margin);
-      padding-left:calc(var(--margin)*2); 
-  }
-
-  #col1 {
-      display: flex; 
-      flex-direction: column;
-      gap: calc(var(--margin)/2); 
-      max-width: 50%; 
-  }
-
-  #col2 {
-      max-width: 50%; 
-  }
-
-  #wikifandomDescription {
-    margin-top: 0.3rem; 
-  }
-
-  #wikipediaDescription {
-    max-width: 80%; 
-}
-
-    .episodeDescriptions {
-      opacity: 0;
-      transition: opacity var(--transition-time) ease;
-      font-size: var(--label-font-size);
+    .episode-section {
+        display: flex;
+        justify-content: space-evenly; 
+        gap: var(--margin)
     }
 
-  .episodeDescriptions.active {
-      opacity: 1;
-  }
+    .chart {
+        width: 45vw;
+        height: 80vh;
+        position: sticky;
+        top: 10vh;
+        display:flex; 
+        flex-direction: row;
+        align-items: center;
+        gap: var(--margin);
+        padding-left:calc(var(--margin)*2); 
+    }
 
-  svg {
-      width: 100%;
-      /* height: 100%; */
-  }
+    #col1 {
+        display: flex; 
+        flex-direction: column;
+        gap: calc(var(--margin)/2); 
+        max-width: 50%; 
+    }
 
-  /* Scrollytelling CSS */
-  .step {
-      height: 60vh;
-      max-width: 35vw; 
-      display: flex;
-      place-items: center;
-      justify-content: center;
-  }
+    #col2 {
+        max-width: 50%; 
+    }
 
-  .step-content {
-      /* max-width: 35vw;  */
-      background: var(--white);
-      opacity: 0.2; 
-      color: var(--black);
-      padding: var(--margin);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      transition: background-color var(--transition-time) ease;
-      z-index: 10;
-  }
+    #wikifandomDescription {
+        margin-top: 0.3rem; 
+    }
 
-  .step.active .step-content {
-      opacity: 1;  
-  }
+    #wikipediaDescription {
+        max-width: 80%; 
+        }
+
+    .episodeDescriptions {
+        opacity: 0;
+        transition: opacity var(--transition-time) ease;
+        font-size: var(--label-font-size);
+    }
+
+    .episodeDescriptions.active {
+        opacity: 1;
+    }
+
+    /* Scrollytelling CSS */
+    .step {
+        height: 50vh;
+        max-width: 35vw; 
+        display: flex;
+        place-items: center;
+        justify-content: center;
+    }
+
+    .step-content {
+        /* max-width: 35vw;  */
+        background: var(--white);
+        opacity: 0.2; 
+        color: var(--black);
+        padding: var(--margin);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: background-color var(--transition-time) ease;
+        z-index: 10;
+    }
+
+    .step.active .step-content {
+        opacity: 1;  
+    }
 </style>

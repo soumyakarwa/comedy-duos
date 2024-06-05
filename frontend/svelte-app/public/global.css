@@ -19,6 +19,7 @@ body {
 
   /* COLORS */
   --yellow: #f0ca00;
+  --blue: #00dae0;
   --black: #0f0a0a;
   --white: rgb(246, 244, 245);
 }
@@ -43,7 +44,11 @@ body {
 
 .highlight {
   position: relative;
-  background: linear-gradient(to right, var(--yellow) 50%, transparent 50%);
+  background: linear-gradient(
+    to right,
+    var(--highlight-color) 50%,
+    transparent 50%
+  );
   background-size: 200% 100%;
   background-position: 100% 0;
 }
@@ -56,6 +61,26 @@ body {
     background-position: 0 0;
   }
 }
+
+.unhighlight {
+  background: linear-gradient(
+    to left,
+    transparent 50%,
+    var(--highlight-color) 50%
+  );
+  background-size: 200% 100%;
+  background-position: 0 0;
+}
+
+@keyframes unhighlight-animation {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
 @font-face {
   font-family: "Old-Standard-TT";
   src: url("./fonts/Old_Standard_TT/OldStandardTT-Regular.ttf");
