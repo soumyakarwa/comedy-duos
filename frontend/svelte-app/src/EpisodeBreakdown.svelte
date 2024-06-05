@@ -38,7 +38,6 @@
             episodeData = await d3.csv("/data/brooklynNineNineCharacters.csv");
             specificDataPoint = episodeData.find(d => d.Title === "Hitchcock & Scully");
             console.log(specificDataPoint)
-            episodeDescriptions = [specificDataPoint[`Episode Description`], specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wikipedia Episode Descriptions`]];
         } catch (error) {
             console.error("Error loading data:", error);
         }
@@ -47,7 +46,9 @@
         width = svgRect.width;
         svg.setAttribute("height", width);
 
-        highlightedDescription = highlightDescription(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
+        episodeDescriptions[0] = highlightDescription(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
+        episodeDescriptions[1] = highlightDescription(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
+        episodeDescriptions[2] = highlightDescription(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]); 
     });
 
     function startAnimation() {
@@ -58,30 +59,23 @@
         });
     }
 
-    let highlightedDescription = '';
-
     function highlightDescription(description, analysis) {
         let highlighted = description; 
-        
-        console.log(`Analysis is ${analysis}`)
         let correctedAnalysis = analysis
-        .replace(/'sentence'/g, '"sentence"')
-        .replace(/'characters'/g, '"characters"')
-        .replace(/:\s*\[(.*?)\]/g, (match, p1) => {
-            const replacedContent = p1.replace(/'([^']+)'/g, '"$1"');
-            return `: [${replacedContent}]`;
+            .replace(/'sentence'/g, '"sentence"')
+            .replace(/'characters'/g, '"characters"')
+            .replace(/:\s*'([^']+)'/g, ': "$1"') // Replace single-quoted string values
+            .replace(/:\s*\[(.*?)\]/g, (match, p1) => {
+                const replacedContent = p1.replace(/'([^']+)'/g, '"$1"');
+                return `: [${replacedContent}]`;
         });
 
-    
         const parsedAnalyis = JSON.parse(correctedAnalysis); 
-
-        console.log(parsedAnalyis);
-
         parsedAnalyis.forEach(item => {
             let sentence = item.sentence;
             highlighted = highlighted.replace(sentence, `<span class="highlight">${sentence}</span>`);
         });
-        console.log(highlighted)
+        console.log(highlighted); 
         return highlighted;
     }
 
@@ -115,7 +109,7 @@
             <div id="officialDescription" class="episodeDescriptions" class:active={$showDescriptions}>
                 <span span bind:this={highlightElement} class="italic highlight">Official Description</span>
                 <br>
-                {episodeDescriptions[0]}
+                {@html episodeDescriptions[0]}
             </div>
             <svg bind:this={svg}>
                 {#if width > 0}
