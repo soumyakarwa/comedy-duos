@@ -4,11 +4,10 @@
     import * as d3 from 'd3';
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
-
+    
     let episodeData = []; 
     let specificDataPoint;
     let svg; 
-    let width; 
     let episodeDescriptions = []; 
     let newDescription3;
     let characterHighlights = []; 
@@ -16,7 +15,7 @@
     let previousStep = -1; 
     const showDescriptions = writable(false);
     const colors = ["#f0ca00", "#00dae0", "#f000e8"]; 
-    const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`];
+    const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Removing duplicate pairings and refining to identify the distinct character pairings and groups in the episode.`];
 
     function setSentenceHighlight(description, analysis) {
         let highlighted = description; 
@@ -28,7 +27,9 @@
                 const replacedContent = p1.replace(/'([^']+)'/g, '"$1"');
                 return `: [${replacedContent}]`;
         });
-
+        console.log(correctedAnalysis);
+        console.log(correctedAnalysis[297]);
+        console.log(correctedAnalysis[298]);
         const parsedAnalyis = JSON.parse(correctedAnalysis); 
         parsedAnalyis.forEach((item, index) => {
             let sentence = item.sentence;
@@ -195,7 +196,7 @@
     onMount(async () => {
         try {   
             episodeData = await d3.csv("/data/brooklynNineNineCharacters.csv");
-            specificDataPoint = episodeData.find(d => d.Title === "Hitchcock & Scully");
+            specificDataPoint = episodeData.find(d => d.Title === "The Tattler");
             console.log(specificDataPoint); 
         } catch (error) {
             console.error("Error loading data:", error);
@@ -252,7 +253,7 @@
                     {@html episodeDescriptions[2]}
                 {:else if currentStep == 3}
                     {@html newDescription3}
-                {:else if currentStep == 4}
+                {:else if currentStep > 3}
                     {@html characterHighlights[2]}
                 {/if}
             </div>
