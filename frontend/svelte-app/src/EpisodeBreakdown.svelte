@@ -11,13 +11,14 @@
     let width; 
     let episodeDescriptions = []; 
     let newDescription3;
+    let characterHighlights = []; 
     let currentStep;
     let previousStep = -1; 
     const showDescriptions = writable(false);
     const colors = ["#f0ca00", "#00dae0", "#f000e8"]; 
-    const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`];
+    const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`];
 
-    function setHighlight(description, analysis) {
+    function setSentenceHighlight(description, analysis) {
         let highlighted = description; 
         let correctedAnalysis = analysis
             .replace(/'sentence'/g, '"sentence"')
@@ -33,6 +34,36 @@
             let sentence = item.sentence;
             let span = `<span class="highlight" style="--highlight-color: ${colors[index % colors.length]};">${sentence}</span>`;
             highlighted = highlighted.replace(sentence, span);
+        });
+        return highlighted;
+    }
+
+    function setCharacterHighlight(description, analysis) {
+        let highlighted = description; 
+        let correctedAnalysis = analysis
+            .replace(/'sentence'/g, '"sentence"')
+            .replace(/'characters'/g, '"characters"')
+            .replace(/:\s*'([^']+)'/g, ': "$1"') // Replace single-quoted string values
+            .replace(/:\s*\[(.*?)\]/g, (match, p1) => {
+                const replacedContent = p1.replace(/'([^']+)'/g, '"$1"');
+                return `: [${replacedContent}]`;
+        });
+        const parsedAnalysis = JSON.parse(correctedAnalysis);
+        console.log(`parsed analysis is ${parsedAnalysis}`)
+        parsedAnalysis.forEach((item, index) => {
+            let characters = item.characters;
+            let sentence = item.sentence; 
+            let trackSentence = sentence; 
+            console.log(`sentence to be highlighted is ${highlighted}`); 
+            console.log(`characters to be replaced is ${characters}`);
+            characters.forEach((c) => {
+                console.log(`current character is ${c}`)
+                let span = `<span class="highlight" style="--highlight-color: ${colors[index % colors.length]};">${c}</span>`;
+                sentence = sentence.replace(c, span);
+                // highlighted = highlighted.replace(sentence, newSentence); 
+                console.log(`new sentence description is ${sentence}`); 
+            })          
+            highlighted = highlighted.replace(trackSentence, sentence); 
         });
         return highlighted;
     }
@@ -118,8 +149,22 @@
                 highlightDescription3(); 
             } else if (currentStep == 3) {
                 if (specificDataPoint) {
-                    newDescription3 = setHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Clauses Analysis`]);
+                    newDescription3 = setSentenceHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Clauses Analysis`]);
                     setTimeout(() => {
+                        highlightDescription3(); 
+                    }, 0);
+                } else {
+                    console.log('Step 3: Data not loaded yet');
+                }
+            }
+            else if (currentStep == 4) {
+                if (specificDataPoint) {
+                    // characterHighlights[0] = setCharacterHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Filtered`]); 
+                    // characterHighlights[1] = setCharacterHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Filtered`]); 
+                    characterHighlights[2] = setCharacterHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Clauses Filtered`]);
+                    setTimeout(() => {
+                        // highlightDescription1();
+                        // highlightDescription2(); 
                         highlightDescription3(); 
                     }, 0);
                 } else {
@@ -150,14 +195,15 @@
         try {   
             episodeData = await d3.csv("/data/brooklynNineNineCharacters.csv");
             specificDataPoint = episodeData.find(d => d.Title === "Hitchcock & Scully");
-            console.log(specificDataPoint[`Wikipedia Description Clauses`]); 
+            console.log(specificDataPoint); 
         } catch (error) {
             console.error("Error loading data:", error);
         }
 
-        episodeDescriptions[0] = setHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
-        episodeDescriptions[1] = setHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
-        episodeDescriptions[2] = setHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
+        episodeDescriptions[0] = setSentenceHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
+        episodeDescriptions[1] = setSentenceHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
+        episodeDescriptions[2] = setSentenceHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
+        console.log(characterHighlights); 
     });
 </script>
 
@@ -192,7 +238,13 @@
             <div id="wikipediaDescription" class="episodeDescriptions" class:active={$showDescriptions}>  
                 <span class="italic">Description 3</span>
                 <br>
-                {@html currentStep > 2 ? newDescription3: episodeDescriptions[2]}
+                {#if currentStep < 3}
+                    {@html episodeDescriptions[2]}
+                {:else if currentStep == 3}
+                    {@html newDescription3}
+                {:else if currentStep == 4}
+                    {@html characterHighlights[2]}
+                {/if}
             </div>
         </div>
     </div>  
