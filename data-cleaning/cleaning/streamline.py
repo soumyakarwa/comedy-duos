@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Path to your CSV file
-file_path = '../../brooklynNineNineCharacters.csv'
+file_path = '../../frontend/svelte-app/public/data/brooklynNineNineCharacters.csv' 
 
 # Read the CSV file into a DataFrame
 df = pd.read_csv(file_path)

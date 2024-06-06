@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 # Load the CSV file
-file_path = './brooklyn_99_episodes_updated.csv'
+file_path = '../brooklynNineNineEpisodeDescriptions.csv'
 episodes_df = pd.read_csv(file_path)
 
 # Define base URL and number of episodes in each season
@@ -20,16 +20,28 @@ def get_episode_descriptions(soup, start_episode_id, num_episodes):
         if th_tag:
             tr_tag = th_tag.find_parent('tr')
             if tr_tag:
-                summary_div = tr_tag.find_next_sibling('tr').find('div', {'class': 'shortSummaryText'})
-                if summary_div:
-                    descriptions.append(summary_div.get_text(strip=True))
+                # summary_div = tr_tag.find_next_sibling('tr').find('div', {'class': 'shortSummaryText'})
+                # if summary_div:
+                #     if episode_id == "ep79" or episode_id == "ep80":
+                #         print(summary_div.get_text(strip=True))
+                #     descriptions.append(summary_div.get_text(strip=True))
+                summary_div = None
+                next_tr = tr_tag.find_next_sibling('tr')
+
+                while next_tr:
+                    summary_div = next_tr.find('div', {'class': 'shortSummaryText'})
+                    if summary_div:
+                        break
+                    next_tr = next_tr.find_next_sibling('tr')
+                descriptions.append(summary_div.get_text(strip=True))
     return descriptions
 
 # Loop through each season
 for season in seasons:
     # Build URL for the current season
     url = f"{base_url}{season}"
-    print(f"Processing season {season} from URL: {url}")
+    if season == 8:
+        print(f"Processing season {season} from URL: {url}")
     
     # Send a request to fetch the HTML content
     response = requests.get(url)
@@ -37,11 +49,13 @@ for season in seasons:
     
     # Get the starting episode ID for the current season
     start_episode_id = episode_counts.loc[season] + 1
-    print(f"Start episode ID for season {season}: {start_episode_id}")
+    if season == 8:
+        print(f"Start episode ID for season {season}: {start_episode_id}")
     
     # Get the number of episodes in the current season
     num_episodes = (episodes_df['Season'] == season).sum()
-    print(f"Number of episodes in season {season}: {num_episodes}")
+    if season == 8:
+        print(f"Number of episodes in season {season}: {num_episodes}")
     
     # Extract episode descriptions
     episode_descriptions = get_episode_descriptions(soup, start_episode_id, num_episodes)
@@ -54,4 +68,4 @@ for season in seasons:
 episodes_df.to_csv(file_path, index=False)
 
 # Display the updated DataFrame to verify
-print(episodes_df.head(20))
+print(episodes_df[episodes_df["Season"] == 8])

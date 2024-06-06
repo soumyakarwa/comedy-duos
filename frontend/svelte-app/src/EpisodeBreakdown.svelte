@@ -17,8 +17,7 @@
     const colors = ["#f0ca00", "#00dae0", "#f000e8"]; 
     const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`];
 
-
-    function highlightDescription(description, analysis) {
+    function setHighlight(description, analysis) {
         let highlighted = description; 
         let correctedAnalysis = analysis
             .replace(/'sentence'/g, '"sentence"')
@@ -63,17 +62,17 @@
     }   
 
     function highlightDescription1(){
-        const description1HighlightElements = document.querySelectorAll('#officialDescription .highlight');
+        const description1HighlightElements = document.querySelectorAll('#officialDescription .highlight,  #officialDescription .unhighlight');
         highlightSentences(description1HighlightElements); 
     }
 
     function highlightDescription2(){
-        const description2HighlightElements = document.querySelectorAll('#wikifandomDescription .highlight');
+        const description2HighlightElements = document.querySelectorAll('#wikifandomDescription .highlight, #wikifandomDescription .unhighlight');
         highlightSentences(description2HighlightElements); 
     }
 
     function highlightDescription3(){
-        const description3HighlightElements = document.querySelectorAll('#wikipediaDescription .highlight');
+        const description3HighlightElements = document.querySelectorAll('#wikipediaDescription .highlight, #wikipediaDescription .unhighlight');
         highlightSentences(description3HighlightElements); 
     }
 
@@ -94,6 +93,7 @@
 
     function reset(){
         const unhiglightedElements = document.querySelectorAll('.unhighlight');
+        console.log(unhiglightedElements); 
         unhiglightedElements.forEach(element => {
             element.style.animation = 'none';
             requestAnimationFrame(() => {
@@ -105,6 +105,7 @@
     }
 
     $: (() => {
+        console.log(`currentStep is ${currentStep}, previousStep is ${previousStep}`);
         // scrolling down
         if (currentStep > previousStep) {
             if (currentStep == 0) {
@@ -117,7 +118,7 @@
                 highlightDescription3(); 
             } else if (currentStep == 3) {
                 if (specificDataPoint) {
-                    newDescription3 = highlightDescription(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Clauses Analysis`]);
+                    newDescription3 = setHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Clauses Analysis`]);
                     setTimeout(() => {
                         highlightDescription3(); 
                     }, 0);
@@ -133,8 +134,8 @@
                 reset(); 
             } else if (currentStep == 1) {
                 unhighlightDescription1();
-                unhighlightDescription2(); 
-                unhighlightDescription3(); 
+                unhighlightDescription2();
+                unhighlightDescription3();
             } 
             else if(currentStep == 2) {
                     setTimeout(() => {
@@ -154,9 +155,9 @@
             console.error("Error loading data:", error);
         }
 
-        episodeDescriptions[0] = highlightDescription(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
-        episodeDescriptions[1] = highlightDescription(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
-        episodeDescriptions[2] = highlightDescription(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
+        episodeDescriptions[0] = setHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
+        episodeDescriptions[1] = setHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
+        episodeDescriptions[2] = setHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
     });
 </script>
 

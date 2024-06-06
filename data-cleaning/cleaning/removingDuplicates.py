@@ -13,9 +13,10 @@ characterDictionary = {
     "Rosa": ["Rosa", "Diaz"],
     "Gina": ["Gina", "Linetti"],
     "Charles": ["Charles", "Boyle"],
-    "Scully": ["Norm", "Scully"],
-    "Hitchcock": ["Michael", "Hitchcock"]
 }
+
+    # "Scully": ["Norm", "Scully"],
+    # "Hitchcock": ["Michael", "Hitchcock"]
 
 # Create a reverse dictionary to map aliases to main character names
 reverseCharacterDictionary = {}
@@ -61,5 +62,5 @@ for column in columns_to_process:
 # df.to_csv("../cleanedData.csv", index=False)
 df.to_csv("../cleanedData-withAnalysis.csv", index=False)
 
-print("All Analyses are cleaned to remove any duplicate character mentions. File is saved into cleanedData.csv")
+print("All Analyses are cleaned to remove any duplicate character mentions. File is saved into the same file that was processed.")
 
