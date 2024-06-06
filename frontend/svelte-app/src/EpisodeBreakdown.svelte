@@ -17,39 +17,36 @@
     const colors = ["#f0ca00", "#00dae0", "#f000e8"]; 
     const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Removing duplicate pairings and refining to identify the distinct character pairings and groups in the episode.`];
 
+
     function setSentenceHighlight(description, analysis) {
+        description = description.replace(/\n\s*\"/g, '').replace(/\"\s*\n/g, '').replace(/\\n/g, ' ').replace(/\"/g, '');
         let highlighted = description; 
-        let correctedAnalysis = analysis
-            .replace(/'sentence'/g, '"sentence"')
-            .replace(/'characters'/g, '"characters"')
-            .replace(/:\s*'([^']+)'/g, ': "$1"') // Replace single-quoted string values
-            .replace(/:\s*\[(.*?)\]/g, (match, p1) => {
-                const replacedContent = p1.replace(/'([^']+)'/g, '"$1"');
-                return `: [${replacedContent}]`;
-        });
-        console.log(correctedAnalysis);
-        console.log(correctedAnalysis[297]);
-        console.log(correctedAnalysis[298]);
-        const parsedAnalyis = JSON.parse(correctedAnalysis); 
-        parsedAnalyis.forEach((item, index) => {
+
+        let parsedAnalysis;
+        if (typeof analysis === 'string') {
+            parsedAnalysis = JSON.parse(analysis);
+        } else {
+            parsedAnalysis = analysis;
+        }
+
+        parsedAnalysis.forEach((item, index) => {
             let sentence = item.sentence;
             let span = `<span class="highlight" style="--highlight-color: ${colors[index % colors.length]};">${sentence}</span>`;
             highlighted = highlighted.replace(sentence, span);
         });
+
         return highlighted;
     }
 
     function setCharacterHighlight(description, analysis) {
         let highlighted = description; 
-        let correctedAnalysis = analysis
-            .replace(/'sentence'/g, '"sentence"')
-            .replace(/'characters'/g, '"characters"')
-            .replace(/:\s*'([^']+)'/g, ': "$1"') // Replace single-quoted string values
-            .replace(/:\s*\[(.*?)\]/g, (match, p1) => {
-                const replacedContent = p1.replace(/'([^']+)'/g, '"$1"');
-                return `: [${replacedContent}]`;
-        });
-        const parsedAnalysis = JSON.parse(correctedAnalysis);
+        let parsedAnalysis;
+        if (typeof analysis === 'string') {
+            parsedAnalysis = JSON.parse(analysis);
+        } else {
+            parsedAnalysis = analysis;
+        }
+
         parsedAnalysis.forEach((item, index) => {
             let characters = item.characters;
             let sentence = item.sentence; 
@@ -117,9 +114,47 @@
         unhighlightSentences(description3HighlightElements); 
     }
 
+    function divideSquare(){
+        const highlightedElements =  document.querySelectorAll('.highlight');
+        highlightedElements.forEach(element => {
+            element.style.animation = 'none';
+            requestAnimationFrame(() => {
+                element.style.animation = '';
+                // element.classList.remove('highlight');
+                element.style.animation = 'fade-out-highlight var(--transition-time) ease-out';
+            });
+        });
+
+        // dividing the svg into 3
+        const dataPoint = specificDataPoint[`Streamlined Characters`]
+        const numRows = dataPoint.length;
+        const rowHeight = 300 / numRows;
+
+        const svgElement = d3.select(svg);
+        svgElement.selectAll('*').remove(); // Clear previous rectangles
+
+        svgElement
+            .selectAll('rect')
+            .data(dataPoint)
+            .enter()
+            .append('rect')
+            .attr('x', 0)
+            .attr('y', (d, i) => i * rowHeight)
+            .attr('width', 300)
+            .attr('height', rowHeight)
+            .attr('fill', (d, i) => colors[i])
+            .attr('fill-opacity', 0) // Initial opacity
+            .transition() // Start transition
+            .duration(500) // Duration of the transition in milliseconds
+            .ease(d3.easeCubicIn) // Ease-in effect
+            .attr('fill-opacity', 1);  
+
+        // Trigger reflow to restart the animation
+        // document.body.offsetHeight;
+    }
+
     function reset(){
         const unhiglightedElements = document.querySelectorAll('.unhighlight');
-        console.log(unhiglightedElements); 
         unhiglightedElements.forEach(element => {
             element.style.animation = 'none';
             requestAnimationFrame(() => {
@@ -131,7 +166,6 @@
     }
 
     $: (() => {
-        console.log(`currentStep is ${currentStep}, previousStep is ${previousStep}`);
         // scrolling down
         if (currentStep > previousStep) {
             if (currentStep == 0) {
@@ -151,8 +185,7 @@
                 } else {
                     console.log('Step 3: Data not loaded yet');
                 }
-            }
-            else if (currentStep == 4) {
+            } else if (currentStep == 4) {
                 if (specificDataPoint) {
                     characterHighlights[0] = setCharacterHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Filtered`]); 
                     characterHighlights[1] = setCharacterHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Filtered`]); 
@@ -165,10 +198,11 @@
                 } else {
                     console.log('Step 3: Data not loaded yet');
                 }
+            } else if (currentStep == 5){
+                divideSquare(); 
             }
-            // scrolling up
+        // scrolling up
         } else if (currentStep < previousStep) {
-            // Scrolling up
             if (currentStep == 0) {
                 showDescriptions.set(false);
                 reset(); 
@@ -189,15 +223,24 @@
                     highlightDescription3();
                 }, 0);
             }
+            else if(currentStep == 4){
+                setTimeout(() => {
+                    highlightDescription1();
+                    highlightDescription2();
+                    highlightDescription3();
+                }, 0);
+            }
         }
         previousStep = currentStep;
     })();
     
     onMount(async () => {
         try {   
-            episodeData = await d3.csv("/data/brooklynNineNineCharacters.csv");
-            specificDataPoint = episodeData.find(d => d.Title === "The Tattler");
-            console.log(specificDataPoint); 
+            const response = await fetch("/data/brooklynNineNineCharactersStreamlined.json");
+            const text = await response.text();
+            episodeData = JSON.parse(text);
+            specificDataPoint = episodeData.find(d => d.Title === "Into the Woods"); 
+            console.log(specificDataPoint[`Streamlined Characters`]); 
         } catch (error) {
             console.error("Error loading data:", error);
         }
@@ -205,7 +248,6 @@
         episodeDescriptions[0] = setSentenceHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
         episodeDescriptions[1] = setSentenceHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
         episodeDescriptions[2] = setSentenceHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
-        console.log(characterHighlights); 
     });
 </script>
 
