@@ -1,11 +1,19 @@
 import pandas as pd
-import subprocess
 import json
-import ast
+import subprocess
 
-# Load the CSV file
-file_path = '../cleanedData.csv' 
-df = pd.read_csv(file_path)
+# Load the JSON file
+input_file_path = '../cleanedData.json'
+
+# Read the JSON file into a dictionary
+with open(input_file_path, 'r') as file:
+    data = json.load(file)
+
+# Normalize the JSON structure
+df = pd.json_normalize(data)
+
+# Create the 'Wikipedia Clauses Analysis' column
+df['Wikipedia Description Clauses'] = [[] for _ in range(len(df))]
 
 # Function to break a sentence into its independent clauses using a subprocess
 def break_sentence_into_clauses(sentence):
@@ -26,36 +34,38 @@ def break_sentence_into_clauses(sentence):
             continue
     return json_output
 
-# Create a new column to store the independent clauses
-df['Wikipedia Description Clauses'] = None
-
+# Process each row in the DataFrame
 for i in range(len(df)):
     cell = df['Wikipedia Description Analysis'].iloc[i]
     try:
-        entries = ast.literal_eval(cell)
+        entries = cell
     except (ValueError, SyntaxError) as e:
         print(f"Error evaluating literal in row {i}: {e}")
         print(f"Cell content: {cell}")
         continue
     
-    clauses_list = []
+    wikipedia_clauses_analysis = []
     for entry in entries:
-        # if the characters aren't paired
         if len(entry['characters']) > 2:
             sentence = entry['sentence']
             clauses = break_sentence_into_clauses(sentence)
             if clauses:
-                clauses_list.extend(clauses)
+                for clause in clauses:
+                    wikipedia_clauses_analysis.append(clause)
             else:
-                clauses_list.append(sentence)
+                wikipedia_clauses_analysis.append(sentence)
         else:
-            clauses_list.append(entry['sentence'])
+            wikipedia_clauses_analysis.append(entry['sentence'])
     
     # Store the clauses in the new column
-    df.at[i, 'Wikipedia Description Clauses'] = clauses_list
+    df.at[i, 'Wikipedia Description Clauses'] = wikipedia_clauses_analysis
 
-# Save the updated DataFrame to a new CSV file
-output_file_path = '../cleanedData-withClauses.csv' 
-df.to_csv(output_file_path, index=False)
+# Convert the DataFrame back to a list of dictionaries
+output_data = df.to_dict(orient='records')
 
-print("Wikipedia Description Analysis is checked for any list of charactersts that exceed three. If yes, OPEN AI API is called to separate the sentence into independent clauses. File is saved into cleanedData-withClauses.csv")
+# Save the updated data to a new JSON file
+output_file_path = '../cleanedData-withClauses.json'
+with open(output_file_path, 'w') as file:
+    json.dump(output_data, file, indent=4)
+
+print("Wikipedia Description Analysis is checked for any list of characters that exceed three. If yes, the Deno subprocess is called to separate the sentence into independent clauses. The clauses are saved in 'Wikipedia Clauses Analysis'. File is saved into cleanedData-withClauses.json")

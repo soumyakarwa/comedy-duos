@@ -1,8 +1,8 @@
 import pandas as pd
 import nltk
-from nltk.tokenize import sent_tokenize, word_tokenize
-import ast
+from nltk.tokenize import word_tokenize
 import numpy as np
+import json
 
 # Download necessary NLTK data files
 nltk.download('punkt')
@@ -11,15 +11,16 @@ nltk.download('maxent_ne_chunker')
 nltk.download('words')
 
 characters = ["Jake", "Peralta", "Captain", "Raymond", "Holt", "Sergeant", "Terry", "Jeffords", "Amy", "Santiago", "Rosa", "Diaz", "Gina", "Linetti", "Charles", "Boyle"]
-              
-# "Norm", "Scully", "Michael", "Hitchcock"]
 
 def extractCharacterNames(sentence, characters):
     # Tokenize the sentence
-    words = word_tokenize(sentence)
-    # Check for the presence of character names
-    found_characters = [word for word in words if word in characters]
-    return found_characters
+    if isinstance(sentence, str):
+        words = word_tokenize(sentence)
+        # Check for the presence of character names
+        found_characters = [word for word in words if word in characters]
+        return found_characters
+    else:
+        return []
 
 def analyzeParagraph(sentences):
     analysis = []
@@ -31,17 +32,25 @@ def analyzeParagraph(sentences):
         })
     return analysis
 
-# Load the CSV file
-file_path = '../cleanedData-withClauses.csv'  # Replace with the actual file path
-df = pd.read_csv(file_path)
+# Load the JSON file
+input_file_path = '../cleanedData-withClauses.json'  # Replace with the actual file path
+with open(input_file_path, 'r') as file:
+    data = json.load(file)
 
-# Conduct analysis on the "Wikipedia Description Clauses" column
+# Convert the JSON data to a DataFrame
+df = pd.json_normalize(data)
+
+# Conduct analysis on the "Wikipedia Clauses Analysis" column
 df['Wikipedia Clauses Analysis'] = df['Wikipedia Description Clauses'].apply(
-    lambda x: analyzeParagraph(ast.literal_eval(x)) if pd.notna(x) else np.nan
+    lambda x: analyzeParagraph(x) if isinstance(x, list) and x else np.nan
 )
 
-# Save the updated DataFrame to a new CSV file
-output_file_path = '../cleanedData-withAnalysis.csv'
-df.to_csv(output_file_path, index=False)
+# Convert the DataFrame back to a list of dictionaries
+output_data = df.to_dict(orient='records')
 
-print("Analysis complete. The results are saved in the new column 'Wikipedia Clauses Analysis' and written to the file cleanedData-withAnalysis.csv.")
+# Save the updated data to a new JSON file
+output_file_path = '../cleanedData-withAnalysis.json'
+with open(output_file_path, 'w') as file:
+    json.dump(output_data, file, indent=4)
+
+print("Analysis complete. The results are saved in the new column 'Wikipedia Clauses Analysis' and written to the file cleanedData-withAnalysis.json.")

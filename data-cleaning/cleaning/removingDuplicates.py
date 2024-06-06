@@ -1,9 +1,29 @@
 import pandas as pd
 import ast
+import json
 
-# Load the CSV file into a DataFrame
-# df = pd.read_csv("../analysisByCharacters.csv")
-df = pd.read_csv("../cleanedData-withAnalysis.csv")
+# input_file_path = "../analysisByCharacters.json"
+input_file_path = "../cleanedData-withAnalysis.json"
+
+# Validate and read the JSON file manually
+with open(input_file_path, 'r') as file:
+    data = file.read()
+    print("Raw JSON Data:")
+    print(data[:1000])  # Print the first 1000 characters to check if it looks correct
+
+# Try to parse the JSON content
+try:
+    json_data = json.loads(data)
+    print("Parsed JSON Data:")
+    print(json_data[:5])  # Print the first 5 records of parsed JSON data
+except json.JSONDecodeError as e:
+    print(f"Error decoding JSON: {e}")
+    exit(1)
+
+# Load the JSON data into a DataFrame
+df = pd.DataFrame(json_data)
+print("DataFrame Head:")
+print(df.head())  # Print the head of the DataFrame
 
 characterDictionary = {
     "Jake": ["Jake", "Peralta"],
@@ -15,14 +35,8 @@ characterDictionary = {
     "Charles": ["Charles", "Boyle"],
 }
 
-    # "Scully": ["Norm", "Scully"],
-    # "Hitchcock": ["Michael", "Hitchcock"]
-
 # Create a reverse dictionary to map aliases to main character names
-reverseCharacterDictionary = {}
-for key, aliases in characterDictionary.items():
-    for alias in aliases:
-        reverseCharacterDictionary[alias] = key
+reverseCharacterDictionary = {alias: key for key, aliases in characterDictionary.items() for alias in aliases}
 
 def unifyCharacters(character_list, reverse_dict):
     unified_list = []
@@ -33,9 +47,10 @@ def unifyCharacters(character_list, reverse_dict):
     return unified_list
 
 def processEntry(entry, reverse_dict):
-    for item in entry:
-        if 'characters' in item:
-            item['characters'] = unifyCharacters(item['characters'], reverse_dict)
+    if isinstance(entry, list):
+        for item in entry:
+            if 'characters' in item:
+                item['characters'] = unifyCharacters(item['characters'], reverse_dict)
     return entry
 
 def safeEval(item):
@@ -47,20 +62,22 @@ def safeEval(item):
 columns_to_process = [
     # 'Episode Description Analysis', 
     # 'Wiki Fandom Description Analysis', 
-    # 'Wikipedia Description Analysis'
+    # 'Wikipedia Description Analysis',
     'Wikipedia Clauses Analysis'
 ]
 
 # Apply the unification process to the specified columns
 for column in columns_to_process:
     if column in df.columns:
-        df[column] = df[column].apply(
-            lambda x: processEntry(safeEval(x), reverseCharacterDictionary) if pd.notnull(x) else x
-        )
+        df[column] = df[column].apply(lambda x: processEntry(safeEval(x), reverseCharacterDictionary) if isinstance(safeEval(x), list) else x)
 
-# Save the updated DataFrame back to a CSV file
-# df.to_csv("../cleanedData.csv", index=False)
-df.to_csv("../cleanedData-withAnalysis.csv", index=False)
+print("Processed DataFrame Head:")
+print(df.head())  # Print the head of the processed DataFrame
 
-print("All Analyses are cleaned to remove any duplicate character mentions. File is saved into the same file that was processed.")
+# Save the updated DataFrame back to a JSON file
+# output_file_path = "../cleanedData.json"
+output_file_path = "../cleanedData-withAnalysis.json"
+with open(output_file_path, 'w') as file:
+    json.dump(json.loads(df.to_json(orient='records')), file, indent=4)
 
+print(f"DataFrame saved to {output_file_path}")

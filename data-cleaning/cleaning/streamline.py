@@ -1,18 +1,18 @@
 import pandas as pd
+import json
 
-# Path to your CSV file
-file_path = '../../frontend/svelte-app/public/data/brooklynNineNineCharacters.csv' 
+# Path to your JSON file
+input_file_path = '../../frontend/svelte-app/public/data/brooklynNineNineCharacters.json'
+with open(input_file_path, 'r') as file:
+    data = json.load(file)
 
-# Read the CSV file into a DataFrame
-df = pd.read_csv(file_path)
+# Convert the JSON data to a DataFrame
+df = pd.json_normalize(data)
 
 # Function to extract characters from column data
 def extract_characters(column_data):
-    if pd.notnull(column_data):
-        try:
-            return eval(column_data) if column_data else []
-        except:
-            return []
+    if column_data is not None and isinstance(column_data, list):
+        return column_data
     return []
 
 # Function to filter the smallest units
@@ -37,9 +37,12 @@ def streamline_row(row):
 # Apply the streamline_row function to each row in the DataFrame
 df['Streamlined Characters'] = df.apply(streamline_row, axis=1)
 
-# Save the updated DataFrame to a new CSV file
-# output_file_path = '../../test.csv'
-df.to_csv(file_path, index=False)
+# Convert the DataFrame back to a list of dictionaries
+output_data = df.to_dict(orient='records')
 
-print("Streamlining. The results are saved in a new column and written to the file brooklynNineNineCharacters.csv")
+# Save the updated data to a new JSON file
+output_file_path = '../../frontend/svelte-app/public/data/brooklynNineNineCharactersStreamlined.json'
+with open(output_file_path, 'w') as file:
+    json.dump(output_data, file, indent=4)
 
+print("Streamlining complete. The results are saved in a new column and written to the file brooklynNineNineCharactersStreamlined.json.")

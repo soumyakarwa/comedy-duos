@@ -1,15 +1,18 @@
 import pandas as pd
-import ast
 import numpy as np
+import json
 
-# Load the CSV file
-file_path = '../cleanedData-withAnalysis.csv'  
-df = pd.read_csv(file_path)
+# Load the JSON file
+input_file_path = '../cleanedData-withAnalysis.json'
+with open(input_file_path, 'r') as file:
+    data = json.load(file)
+
+# Convert the JSON data to a DataFrame
+df = pd.json_normalize(data)
 
 def filter_sentences(data):
-    if pd.notna(data) and data != '':
-        entries = ast.literal_eval(data)
-        filtered_entries = [entry for entry in entries if len(entry['characters']) > 1]
+    if data and isinstance(data, list):
+        filtered_entries = [entry for entry in data if len(entry['characters']) > 1]
         return filtered_entries
     return np.nan
 
@@ -18,8 +21,12 @@ df['Episode Description Filtered'] = df['Episode Description Analysis'].apply(fi
 df['Wiki Fandom Description Filtered'] = df['Wiki Fandom Description Analysis'].apply(filter_sentences)
 df['Wikipedia Clauses Filtered'] = df['Wikipedia Clauses Analysis'].apply(filter_sentences)
 
-# Save the updated DataFrame to a new CSV file
-output_file_path = '../../frontend/svelte-app/public/data/brooklynNineNineCharacters.csv'  # Replace with the desired output file path
-df.to_csv(output_file_path, index=False)
+# Convert the DataFrame back to a list of dictionaries
+output_data = df.to_dict(orient='records')
 
-print("Filtering complete. The results are saved in the new columns and written to the file brooklynNineNineCharacters.csv")
+# Save the updated data to a new JSON file
+output_file_path = '../../frontend/svelte-app/public/data/brooklynNineNineCharacters.json'  # Replace with the desired output file path
+with open(output_file_path, 'w') as file:
+    json.dump(output_data, file, indent=4)
+
+print("Filtering complete. The results are saved in the new columns and written to the file brooklynNineNineCharacters.json")

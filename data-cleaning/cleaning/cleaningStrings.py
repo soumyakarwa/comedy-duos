@@ -18,7 +18,6 @@ for column in ['Episode Description', 'Wiki Fandom Descriptions', 'Wikipedia Epi
     data[column] = data[column].apply(clean_text)
 
 # Save the cleaned data back to a CSV file
-cleaned_file_path = 'test.csv'  # This will save the cleaned file with 'cleaned_' prefix
-data.to_csv(cleaned_file_path, index=False)
+data.to_csv(file_path, index=False)
 
-print(f"Cleaned data saved to {cleaned_file_path}")
+print(f"Cleaned data saved to {file_path}")

@@ -1,8 +1,7 @@
 import pandas as pd
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.tag import pos_tag
-from nltk.chunk import ne_chunk
+import json
 
 # Download necessary NLTK data files
 nltk.download('punkt')
@@ -12,8 +11,6 @@ nltk.download('words')
 
 characters = ["Jake", "Peralta", "Captain", "Raymond", "Holt", "Sergeant", "Terry", "Jeffords", "Amy", "Santiago", "Rosa", "Diaz", "Gina", "Linetti", "Charles", "Boyle"]
 
-# "Norm", "Scully", "Michael", "Hitchcock"]
- 
 def splitIntoSentences(paragraph):
     sentences = sent_tokenize(paragraph)
     return sentences
@@ -48,8 +45,12 @@ df['Episode Description Analysis'] = analyzeDescriptions(df['Episode Description
 df['Wiki Fandom Description Analysis'] = analyzeDescriptions(df['Wiki Fandom Descriptions'], analyzeParagraph)
 df['Wikipedia Description Analysis'] = analyzeDescriptions(df['Wikipedia Episode Descriptions'], analyzeParagraph)
 
-# Save the updated DataFrame to a new CSV file
-output_file_path = '../analysisByCharacters.csv'
-df.to_csv(output_file_path, index=False)
+# Convert the DataFrame to a dictionary for JSON serialization
+data_dict = df.to_dict(orient='records')
 
-print("All descriptions are analysed into sentences and corresponding character. File is saved into analysisByCharacters.csv")
+# Save the data to a JSON file
+output_file_path = '../analysisByCharacters.json'
+with open(output_file_path, 'w', encoding='utf-8') as json_file:
+    json.dump(data_dict, json_file, ensure_ascii=False, indent=4)
+
+print("All descriptions are analysed into sentences and corresponding character. File is saved into analysisByCharacters.json")
