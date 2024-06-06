@@ -49,19 +49,13 @@
                 return `: [${replacedContent}]`;
         });
         const parsedAnalysis = JSON.parse(correctedAnalysis);
-        console.log(`parsed analysis is ${parsedAnalysis}`)
         parsedAnalysis.forEach((item, index) => {
             let characters = item.characters;
             let sentence = item.sentence; 
-            let trackSentence = sentence; 
-            console.log(`sentence to be highlighted is ${highlighted}`); 
-            console.log(`characters to be replaced is ${characters}`);
+            let trackSentence = sentence;
             characters.forEach((c) => {
-                console.log(`current character is ${c}`)
                 let span = `<span class="highlight" style="--highlight-color: ${colors[index % colors.length]};">${c}</span>`;
                 sentence = sentence.replace(c, span);
-                // highlighted = highlighted.replace(sentence, newSentence); 
-                console.log(`new sentence description is ${sentence}`); 
             })          
             highlighted = highlighted.replace(trackSentence, sentence); 
         });
@@ -159,12 +153,12 @@
             }
             else if (currentStep == 4) {
                 if (specificDataPoint) {
-                    // characterHighlights[0] = setCharacterHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Filtered`]); 
-                    // characterHighlights[1] = setCharacterHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Filtered`]); 
+                    characterHighlights[0] = setCharacterHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Filtered`]); 
+                    characterHighlights[1] = setCharacterHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Filtered`]); 
                     characterHighlights[2] = setCharacterHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Clauses Filtered`]);
                     setTimeout(() => {
-                        // highlightDescription1();
-                        // highlightDescription2(); 
+                        highlightDescription1();
+                        highlightDescription2(); 
                         highlightDescription3(); 
                     }, 0);
                 } else {
@@ -183,11 +177,18 @@
                 unhighlightDescription3();
             } 
             else if(currentStep == 2) {
-                    setTimeout(() => {
-                        highlightDescription3();
-                    }, 0);
+                setTimeout(() => {
+                    highlightDescription3();
+                }, 0);
                 }
+            else if(currentStep == 3) {
+                setTimeout(() => {
+                    highlightDescription1();
+                    highlightDescription2();
+                    highlightDescription3();
+                }, 0);
             }
+        }
         previousStep = currentStep;
     })();
     
@@ -223,7 +224,11 @@
             <div id="officialDescription" class="episodeDescriptions" class:active={$showDescriptions}>
                 <span class="italic">Description 1</span>
                 <br>
+                {#if currentStep < 4}
                 {@html episodeDescriptions[0]}
+                {:else}
+                    {@html characterHighlights[0]}
+                {/if}
             </div>
             <svg width="300" height="300" viewbox="0 0 300 300" bind:this={svg}>
                 <rect x={0} y={0} width={300} height={300} fill="none" stroke="black" stroke-width="2"></rect>
@@ -231,7 +236,12 @@
             <div id="wikifandomDescription" class="episodeDescriptions" class:active={$showDescriptions}> 
                 <span class="italic">Description 2</span>
                 <br>
-                {@html  episodeDescriptions[1]}
+                <!-- {@html  episodeDescriptions[1]} -->
+                {#if currentStep < 4}
+                {@html episodeDescriptions[1]}
+                {:else}
+                    {@html characterHighlights[1]}
+                {/if}
             </div>
         </div>
         <div id="col2">
