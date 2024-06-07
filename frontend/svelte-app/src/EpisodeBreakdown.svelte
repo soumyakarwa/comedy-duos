@@ -6,6 +6,7 @@
     import { writable } from 'svelte/store';
     
     let episodeData = []; 
+    let rectYPos = 0; 
     let specificDataPoint;
     let svg; 
     let episodeDescriptions = []; 
@@ -13,9 +14,10 @@
     let characterHighlights = []; 
     let currentStep;
     let previousStep = -1; 
+    let episodeRectText = [{rect: null, text: null},{rect: null, text: null}, {rect: null, text: null}]
     const showDescriptions = writable(false);
     const colors = ["#f0ca00", "#00dae0", "#f000e8"]; 
-    const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Removing duplicate pairings and refining to identify the distinct character pairings and groups in the episode.`];
+    const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Comparing the descriptions to identify distinct groups. For instance, all three descriptions contain a distinct group of Jake, Charles and Terry.`, `Now it gets interesting. Description 1 is just one long sentence, but Description 3 is comprehensible and divided. I used Description 3 to correspond and break-up larger groups in Descriptions 1 & 2. So we know the second pair is, Captain Holt & Rosa.`, `And lastly, we have the unlikely duo of Amy & Gina! And so we know the groupings in __ episode. The next step, is to carry this out for all episodes of all seasons!`];
 
 
     function setSentenceHighlight(description, analysis) {
@@ -114,45 +116,98 @@
         unhighlightSentences(description3HighlightElements); 
     }
 
-    function divideSquare(){
-        const highlightedElements =  document.querySelectorAll('.highlight');
-        highlightedElements.forEach(element => {
-            element.style.animation = 'none';
-            requestAnimationFrame(() => {
-                element.style.animation = '';
-                // element.classList.remove('highlight');
-                element.style.animation = 'fade-out-highlight var(--transition-time) ease-out';
-            });
-        });
-
-        // dividing the svg into 3
-        const dataPoint = specificDataPoint[`Streamlined Characters`]
-        const numRows = dataPoint.length;
-        const rowHeight = 300 / numRows;
-
+    function drawRect(xPos, yPos, characterNames, color, width=300){
+        const rowHeight = 100; 
         const svgElement = d3.select(svg);
-        svgElement.selectAll('*').remove(); // Clear previous rectangles
 
-        svgElement
-            .selectAll('rect')
-            .data(dataPoint)
-            .enter()
-            .append('rect')
-            .attr('x', 0)
-            .attr('y', (d, i) => i * rowHeight)
-            .attr('width', 300)
-            .attr('height', rowHeight)
-            .attr('fill', (d, i) => colors[i])
-            .attr('fill-opacity', 0) // Initial opacity
-            .transition() // Start transition
-            .duration(500) // Duration of the transition in milliseconds
-            .ease(d3.easeCubicIn) // Ease-in effect
-            .attr('fill-opacity', 1);  
+        const characterNamesText = characterNames.join(', ');
 
-        // Trigger reflow to restart the animation
-        // document.body.offsetHeight;
+        const rect = svgElement
+        .append('rect')
+        .attr('x', xPos)
+        .attr('y', yPos)
+        .attr('width', 0) 
+        .attr('height', rowHeight)
+        .attr('fill', color); 
+        
+        rect
+        .transition() 
+        .duration(500) 
+        .ease(d3.easeCubicIn)
+        .attr('width', width);
+
+        // Append the text
+        const text = svgElement
+            .append('text')
+            .attr('x', xPos + width / 2) 
+            .attr('y', yPos + rowHeight / 2) 
+            .attr('dy', '.35em') 
+            .attr('text-anchor', 'middle')
+            .text(characterNamesText)
+            .style('fill', 'black')
+            .style('opacity', 0);
+        text
+        .transition()
+        .delay(500) 
+        .duration(500)
+        .style('opacity', 1);
+
+        return {rect, text}; 
     }
 
+    function undrawRect(elements) {
+        elements.rect
+            .transition()
+            .duration(500)
+            .ease(d3.easeCubicOut)
+            .attr('width', 0)
+            .remove();
+
+        elements.text
+            .transition()
+            .duration(500)
+            .ease(d3.easeCubicOut)
+            .style('opacity', 0)
+            .remove();
+    }
+
+    function characterPairingUnhighlight(characterList, y, index) {
+        const elements = document.querySelectorAll('.highlight, .unhighlight');
+        const elementsToUnhighlight = [];
+
+        elements.forEach(element => {
+            const textContent = element.textContent;
+            if (characterList.includes(textContent)) {
+                elementsToUnhighlight.push(element);
+            }
+        });
+
+        if (elementsToUnhighlight.length > 0) {
+            unhighlightSentences(elementsToUnhighlight);
+        }
+
+        const arr = drawRect(0, y, characterList, colors[index]); 
+        return arr;
+    }
+
+    function characterPairingHighlight(characterList, epRectText) {
+        const elements = document.querySelectorAll('.unhighlight');
+        const elementsToHighlight = [];
+
+        elements.forEach(element => {
+            const textContent = element.textContent;
+            if (characterList.includes(textContent)) {
+                elementsToHighlight.push(element);
+            }
+        });
+
+        if (elementsToHighlight.length > 0) {
+            highlightSentences(elementsToHighlight);
+        }
+
+        undrawRect(epRectText); 
+    }
+    
     function reset(){
         const unhiglightedElements = document.querySelectorAll('.unhighlight');
         unhiglightedElements.forEach(element => {
@@ -199,7 +254,14 @@
                     console.log('Step 3: Data not loaded yet');
                 }
             } else if (currentStep == 5){
-                divideSquare(); 
+                episodeRectText[0] = characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][2], rectYPos, 0);
+                rectYPos+=100; 
+            } else if (currentStep == 6){
+                episodeRectText[1] = characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][1], rectYPos, 2);
+                rectYPos+=100; 
+            } else if (currentStep == 7){
+                episodeRectText[2]= characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][0], rectYPos, 1);
+                rectYPos+=100; 
             }
         // scrolling up
         } else if (currentStep < previousStep) {
@@ -210,25 +272,25 @@
                 unhighlightDescription1();
                 unhighlightDescription2();
                 unhighlightDescription3();
-            } 
-            else if(currentStep == 2) {
+            } else if (currentStep == 2) {
                 setTimeout(() => {
                     highlightDescription3();
                 }, 0);
-                }
-            else if(currentStep == 3) {
+            } else if (currentStep == 3) {
                 setTimeout(() => {
                     highlightDescription1();
                     highlightDescription2();
                     highlightDescription3();
                 }, 0);
-            }
-            else if(currentStep == 4){
-                setTimeout(() => {
-                    highlightDescription1();
-                    highlightDescription2();
-                    highlightDescription3();
-                }, 0);
+            } else if (currentStep == 4){
+                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][2], episodeRectText[0])
+                rectYPos -= 100;
+            } else if (currentStep == 5) {
+                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][1], episodeRectText[1])
+                rectYPos -= 100;
+            } else if (currentStep == 6) {
+                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][0], episodeRectText[2])
+                rectYPos -= 100;
             }
         }
         previousStep = currentStep;

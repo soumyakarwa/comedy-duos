@@ -81,15 +81,6 @@ body {
   }
 }
 
-@keyframes fade-out-highlight {
-  0% {
-    background-color: var(--highlight-color);
-  }
-  100% {
-    background-color: transparent;
-  }
-}
-
 @font-face {
   font-family: "Old-Standard-TT";
   src: url("./fonts/Old_Standard_TT/OldStandardTT-Regular.ttf");
