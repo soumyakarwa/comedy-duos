@@ -19,7 +19,7 @@
     left: 0;
     width: 60vw; /* Adjust this size as needed */
     height: auto;
-    z-index: 10;
+    z-index: 20;
   }
 
   .title {

@@ -53,6 +53,12 @@ body {
   background-position: 100% 0;
 }
 
+.svg-container {
+  width: 45vw;
+  /* height: 90vh; */
+  z-index: 15;
+}
+
 @keyframes highlight-animation {
   0% {
     background-position: 100% 0;
