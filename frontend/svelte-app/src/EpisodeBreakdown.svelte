@@ -20,6 +20,11 @@
     const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Comparing the descriptions to identify distinct groups. For instance, all three descriptions contain a distinct group of Jake, Charles and Terry.`, `Now it gets interesting. Description 1 is just one long sentence, but Description 3 is comprehensible and divided. I used Description 3 to correspond and break-up larger groups in Descriptions 1 & 2. So we know the second pair is, Captain Holt & Rosa.`, `And lastly, we have the unlikely duo of Amy & Gina! And so we know the groupings in __ episode. The next step, is to carry this out for all episodes of all seasons!`];
 
 
+    /**
+     * Setting initial sentence highlight spans in current step = 2
+     * @param description
+     * @param analysis
+     */
     function setSentenceHighlight(description, analysis) {
         description = description.replace(/\n\s*\"/g, '').replace(/\"\s*\n/g, '').replace(/\\n/g, ' ').replace(/\"/g, '');
         let highlighted = description; 
@@ -40,6 +45,11 @@
         return highlighted;
     }
 
+    /**
+     * Setting character highlights spans in current step = 4
+     * @param description
+     * @param analysis
+     */
     function setCharacterHighlight(description, analysis) {
         let highlighted = description; 
         let parsedAnalysis;
@@ -62,6 +72,10 @@
         return highlighted;
     }
 
+    /**
+     * Adds highlight animation to elements (removes unhighlight animation)
+     * @param elements
+     */
     function highlightSentences(elements) {
         elements.forEach(element => {
             element.style.animation = 'none';
@@ -74,6 +88,10 @@
         });
     }    
 
+    /**
+     * Adds unhighlight animation to elements (removes highlight animation)
+     * @param elements
+     */
     function unhighlightSentences(elements) {
         elements.forEach(element => {
             element.style.animation = 'none';
@@ -86,36 +104,63 @@
         });
     }   
 
+    /**
+     * Calling highlightSentenceS() for elements in Description 1
+     */
     function highlightDescription1(){
         const description1HighlightElements = document.querySelectorAll('#officialDescription .highlight,  #officialDescription .unhighlight');
         highlightSentences(description1HighlightElements); 
-    }
+    }  
 
+    /**
+     * Calling highlightSentenceS() for elements in Description 2
+     */
     function highlightDescription2(){
         const description2HighlightElements = document.querySelectorAll('#wikifandomDescription .highlight, #wikifandomDescription .unhighlight');
         highlightSentences(description2HighlightElements); 
     }
 
+    /**
+     * Calling highlightSentenceS() for elements in Description 3
+     */
     function highlightDescription3(){
         const description3HighlightElements = document.querySelectorAll('#wikipediaDescription .highlight, #wikipediaDescription .unhighlight');
         highlightSentences(description3HighlightElements); 
     }
 
+    /**
+     * Calling unhighlightSentences() for elements in Description 1
+     */
     function unhighlightDescription1(){
         const description1HighlightElements = document.querySelectorAll('#officialDescription .highlight');
         unhighlightSentences(description1HighlightElements); 
     }
 
+    /**
+     * Calling unhighlightSentences() for elements in Description 2
+     */
     function unhighlightDescription2(){
         const description2HighlightElements = document.querySelectorAll('#wikifandomDescription .highlight');
         unhighlightSentences(description2HighlightElements); 
     }
 
+    /**
+     * Calling unhighlightSentences() for elements in Description 3
+     */
     function unhighlightDescription3(){
         const description3HighlightElements = document.querySelectorAll('#wikipediaDescription .highlight');
         unhighlightSentences(description3HighlightElements); 
     }
 
+    /**
+     * Adds character pairing rect at specific xPos, yPos. Writes the characterNames to 
+     * the center of the rect
+     * @param xPos
+     * @param yPos
+     * @param characterNames
+     * @param color
+     * @param width
+     */
     function drawRect(xPos, yPos, characterNames, color, width=300){
         const rowHeight = 100; 
         const svgElement = d3.select(svg);
@@ -155,6 +200,11 @@
         return {rect, text}; 
     }
 
+    /**
+     * Undraws character pairing rect at specific xPos, yPos. Writes the characterNames to 
+     * the center of the rect 
+     * @param elements
+     */
     function undrawRect(elements) {
         elements.rect
             .transition()
@@ -171,6 +221,13 @@
             .remove();
     }
 
+    /**
+     * Character specific unhiglight when drawing rect and scrolling down 
+     * for currentStep = 6, currentStep = 7
+     * @param characterList
+     * @param y
+     * @param index
+     */
     function characterPairingUnhighlight(characterList, y, index) {
         const elements = document.querySelectorAll('.highlight, .unhighlight');
         const elementsToUnhighlight = [];
@@ -190,6 +247,12 @@
         return arr;
     }
 
+    /**
+     * Character specific unhiglight when undrawing rect and scrolling up
+     * for currentStep = 6, currentStep = 7
+     * @param characterList
+     * @param epRectText
+     */
     function characterPairingHighlight(characterList, epRectText) {
         const elements = document.querySelectorAll('.unhighlight');
         const elementsToHighlight = [];
@@ -206,8 +269,11 @@
         }
 
         undrawRect(epRectText); 
-    }
-    
+    }  
+
+    /**
+     * Resets all highlight/unhighlight spans when scrolled up to currentStep =0
+     */
     function reset(){
         const unhiglightedElements = document.querySelectorAll('.unhighlight');
         unhiglightedElements.forEach(element => {
