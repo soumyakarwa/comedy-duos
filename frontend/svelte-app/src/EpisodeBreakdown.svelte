@@ -4,6 +4,7 @@
     import * as d3 from 'd3';
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
+    import * as Constants from "./Constants.js"; 
     
     // SVG ELEMENTS
     let episodeSvg; 
@@ -26,7 +27,6 @@
     let currentStep;
     let previousStep = -1; 
     
-    const colors = ["#f0ca00", "#00dae0", "#f000e8"]; 
     const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Comparing the descriptions to identify distinct groups. For instance, all three descriptions contain a distinct group of Jake, Charles and Terry.`, `Now it gets interesting. Description 1 is just one long sentence, but Description 3 is comprehensible and divided. I used Description 3 to correspond and break-up larger groups in Descriptions 1 & 2. So we know the second pair is, Captain Holt & Rosa.`, `And lastly, we have the unlikely duo of Amy & Gina! And so we know the groupings in __ episode. The next step, is to carry this out for all episodes of all seasons!`]
     
     // `Step 8`];
@@ -50,7 +50,7 @@
 
         parsedAnalysis.forEach((item, index) => {
             let sentence = item.sentence;
-            let span = `<span class="highlight" style="--highlight-color: ${colors[index % colors.length]};">${sentence}</span>`;
+            let span = `<span class="highlight" style="--highlight-color: ${Constants.colors[index % Constants.colors.length]};">${sentence}</span>`;
             highlighted = highlighted.replace(sentence, span);
         });
 
@@ -76,7 +76,7 @@
             let sentence = item.sentence; 
             let trackSentence = sentence;
             characters.forEach((c) => {
-                let span = `<span class="highlight" style="--highlight-color: ${colors[index % colors.length]};">${c}</span>`;
+                let span = `<span class="highlight" style="--highlight-color: ${Constants.colors[index % Constants.colors.length]};">${c}</span>`;
                 sentence = sentence.replace(c, span);
             })          
             highlighted = highlighted.replace(trackSentence, sentence); 
@@ -175,8 +175,6 @@
      */
     function drawRect(xPos, yPos, characterNames, color){
         const rowHeight = rectWidth/3; 
-        const svgElement = d3.select(episodeSvg);
-
         const characterNamesText = characterNames.join(', ');
 
         const rect = specificEpisodeGroup
@@ -189,7 +187,7 @@
         
         rect
         .transition() 
-        .duration(500) 
+        .duration(Constants.transitionTime) 
         .ease(d3.easeCubicIn)
         .attr('width', rectWidth);
 
@@ -205,8 +203,8 @@
             .style('opacity', 0);
         text
         .transition()
-        .delay(500) 
-        .duration(500)
+        .delay(Constants.transitionTime) 
+        .duration(Constants.transitionTime)
         .style('opacity', 1);
 
         return {rect, text}; 
@@ -218,7 +216,8 @@
      * @param elements
      */
     function undrawRect(elements) {
-        elements.rect
+        if(elements){
+            elements.rect
             .transition()
             .duration(500)
             .ease(d3.easeCubicOut)
@@ -231,6 +230,7 @@
             .ease(d3.easeCubicOut)
             .style('opacity', 0)
             .remove();
+        }
     }
 
     /**
@@ -255,7 +255,7 @@
             unhighlightSentences(elementsToUnhighlight);
         }
 
-        const arr = drawRect(0, y, characterList, colors[index]); 
+        const arr = showDescriptions ? drawRect(0, y, characterList, Constants.colors[index]) : null;
         return arr;
     }
 
@@ -489,7 +489,7 @@
                     {@html characterHighlights[1]}
                 {/if}
             </div>
-            <div id="wikipediaDescription" class="episodeDescriptions" class:active={$showDescriptions} class:hidden={currentStep === 8}>  
+            <div id="wikipediaDescription" class="episodeDescriptions" class:active={$showDescriptions}>  
                 <span class="italic">Description 3</span>
                 <br>
                 {#if currentStep < 3}
@@ -512,14 +512,15 @@
     .episode-section {
         display: flex;
         justify-content: space-evenly; 
+        margin-bottom: calc(var(--margin)*2);
         /* gap: calc(var(--margin)*4);  */
     }
 
     .chart {
         width: fit-content;
-        height: 80vh;
+        height: fit-content;
         position: sticky;
-        top: 10vh;
+        top: 5vh;
         display:flex; 
         flex-direction: row;
         align-items: center;
@@ -535,10 +536,10 @@
         justify-content: center;
         /* max-width: 75%;  */
     }
-
+    /* 
     #col2 {
         max-width: 50%; 
-    }
+    } */
 
     /* #wikifandomDescription {
         margin-top: 0.3rem; 

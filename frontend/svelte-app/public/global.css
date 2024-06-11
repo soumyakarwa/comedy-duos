@@ -20,8 +20,10 @@ body {
   /* COLORS */
   --yellow: #f0ca00;
   --blue: #00dae0;
+  --pink: #f000e8;
   --black: #0f0a0a;
   --white: rgb(246, 244, 245);
+  --faded-white: rgba(246, 244, 245, 0.9);
 }
 
 body {

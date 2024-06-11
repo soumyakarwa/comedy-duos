@@ -22,7 +22,7 @@
 <Characters/>
 <Standalone text={standaloneText}/>
 <EpisodeBreakdown />
-<!-- <HeatMap {episodeSvg}/> -->
+<HeatMap/>
 
 <style>
 </style>

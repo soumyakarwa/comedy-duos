@@ -11,24 +11,12 @@
     let top = 0;
     let threshold = 0.5;
     let bottom = 0.9;
-    
-    export let episodeSvg; // Receive the episodeSvg reference as a prop
 
-    $: if (episodeSvg && index === 0 && progress > 0.1) {
-        console.log("episodeSvg received in HeatMap and scrolled into view:", episodeSvg);
-        // Use d3 to manipulate the SVG elements referenced by episodeSvg
-        const svgElement = d3.select(episodeSvg);
-        console.log(svgElement);
-        // Example: Change the fill color of all rects
-        svgElement.selectAll('rect').attr('fill', 'blue');
-        // Change the SVG size
-        // svgElement
-        // .attr('width', '90%')
-        // .attr('height', '90%');
-        // Additional manipulations can be performed here
-    } else {
-        console.log("episodeSvg not available in HeatMap or not in view");
-    }
+    let heatMapSvg; 
+    let svgWidth = 0.9*window.innerWidth; 
+    let svgHeight = 0.9*window.innerHeight; 
+
+    
 </script>   
 
 <section class="map-section">
@@ -42,9 +30,9 @@
       bind:progress
     >
       <div slot="background" style="padding: 0;">         
-        {#if index > 0 && progress > 0.1}
-            <svg bind:this={episodeSvg} width="300" height="300" viewBox="0 0 300 300"></svg>
-        {/if}
+        <div class="svg-container">
+            <svg bind:this={heatMapSvg} width={svgWidth} height={svgHeight} viewBox="0 0 {svgWidth} {svgHeight}" class="heatmap-svg"></svg>
+        </div>
       </div>
   
       <div slot="foreground" style="padding-left: 32.5vw; padding-top: 10%; width:35vw;">
@@ -59,7 +47,7 @@
     [slot="background"] {
       width: 100%;
       height: 100vh;
-      background-color: red;
+      /* background-color: red; */
       /* transform: translate(0px,0px);  */
     }
   
@@ -69,7 +57,7 @@
     
     .text-section {
         height: 80vh;
-        color: black;
+        color: var(--black);
         padding: var(--margin);
         margin-bottom: var(--margin); 
         font-size: var(--body-font-size);
@@ -78,9 +66,24 @@
   }
 
     .description {
-        background-color: rgba(246, 244, 245, 0.9);
+        background-color: var(--faded-white);
         height: fit-content; 
         padding: var(--margin); 
     }
+
+    .heatmap-svg {
+      background-color: var(--black); 
+      stroke: black;
+      stroke-width: 2px;
+    }
+
+    .svg-container {
+      width: 100vw; 
+      height: 100vh; 
+      display: flex; 
+      align-items: center;
+      justify-content: center;
+    }
+
 </style>
     
