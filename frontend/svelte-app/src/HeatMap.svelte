@@ -5,7 +5,7 @@
   import * as Constants from "./Constants.js"; 
   import { group_outros } from 'svelte/internal';
 
-  let sectionTexts = [`Continuing from previous analysis.`, `Conducting the same analysis for all episodes.`, `step 3`];
+  let sectionTexts = [`Continuing from previous analysis.`, `Conducting the same analysis for all episodes.`, `To streamline, let’s consider pairs with top 10% pairings together.`, `step 4`];
   let count;
   let index = 0;
   let previousIndex = -1; 
@@ -88,124 +88,270 @@
             averageRating,
             ratingDifference: averageCumulativeRating - averageRating
         };
-    }).sort((a, b) => b.frequency - a.frequency);  // Sort by frequency in descending order
+    }).sort((a, b) => b.frequency - a.frequency); 
+    
+    console.log(g); 
   };
 
-  $: {
-    if (index == 0 && previousIndex == -1 && progress > 0) {
-      const specificRect = g.append('rect')
-        .attr('class', 'specific-square')
-        .attr('x', x(specificDataPoint.Episode))
-        .attr('y', y(specificDataPoint.Season) + y.bandwidth() / 2 - x.bandwidth() / 2)
-        .attr('width', x.bandwidth())
-        .attr('height', x.bandwidth())
-        .style('fill', 'none'); 
+  // $: {
+  //   if (index == 0 && previousIndex == -1 && progress > 0) {
+  //     const specificRect = g.append('rect')
+  //       .attr('class', 'specific-square')
+  //       .attr('x', x(specificDataPoint.Episode))
+  //       .attr('y', y(specificDataPoint.Season) + y.bandwidth() / 2 - x.bandwidth() / 2)
+  //       .attr('width', x.bandwidth())
+  //       .attr('height', x.bandwidth())
+  //       .style('fill', 'none'); 
 
-      const numRows = specificDataPoint["Streamlined Characters"].length;
-      const rowHeight = x.bandwidth() / numRows;
+  //     const numRows = specificDataPoint["Streamlined Characters"].length;
+  //     const rowHeight = x.bandwidth() / numRows;
 
-      for (let i = 0; i < numRows; i++) {
-        g.append('rect')
-          .attr('x', +specificRect.attr('x'))
-          .attr('y', +specificRect.attr('y') + i * rowHeight)
-          .attr('width', 0)
-          .attr('height', rowHeight)
-          .style('fill', Constants.colors[i % Constants.colors.length])
-          .transition()
-          .duration(Constants.transitionTime)
-          .delay(i * Constants.transitionTime / 2)
-          .attrTween("width", function () {
-            return d3.interpolate(0, x.bandwidth());
-          });
-      }
-      previousIndex = 0;
-    } else if (index == 1 && previousIndex == 0) {
-      const squares = g.append('g')
-        .selectAll('.square')
-        .data(episodeData)
-        .enter().append('rect')
-        .attr('class', 'square')
-        .attr('x', d => x(d.Episode))
-        .attr('y', d => y(d.Season) + y.bandwidth() / 2 - x.bandwidth() / 2)
-        .attr('width', x.bandwidth())
-        .attr('height', x.bandwidth())
-        .style('fill', 'none')
-        .style('opacity', 0);
+  //     for (let i = 0; i < numRows; i++) {
+  //       g.append('rect')
+  //         .attr('x', +specificRect.attr('x'))
+  //         .attr('y', +specificRect.attr('y') + i * rowHeight)
+  //         .attr('width', 0)
+  //         .attr('height', rowHeight)
+  //         .style('fill', Constants.colors[i % Constants.colors.length])
+  //         .transition()
+  //         .duration(Constants.transitionTime)
+  //         .delay(i * Constants.transitionTime / 2)
+  //         .attrTween("width", function () {
+  //           return d3.interpolate(0, x.bandwidth());
+  //         });
+  //     }
+  //     previousIndex = 0;
+  //   } 
+  //   else if (index == 1 && previousIndex == 0) {
+  //     const squares = g.append('g')
+  //       .selectAll('.square')
+  //       .data(episodeData)
+  //       .enter().append('rect')
+  //       .attr('class', 'square')
+  //       .attr('x', d => x(d.Episode))
+  //       .attr('y', d => y(d.Season) + y.bandwidth() / 2 - x.bandwidth() / 2)
+  //       .attr('width', x.bandwidth())
+  //       .attr('height', x.bandwidth())
+  //       .style('fill', 'none')
+  //       .style('opacity', 0);
 
-      squares
+  //     squares
+  //       .transition()
+  //       .duration(Constants.transitionTime)
+  //       .style('opacity', 1);
+
+  //     squares.each(function(d, i) {
+  //       const rect = d3.select(this);
+  //       const numRows = d["Streamlined Characters"].length;
+  //       const rowHeight = x.bandwidth() / numRows;
+
+  //       const group = g.append('g')
+  //         .attr('class', 'row-group')
+  //         .attr('transform', `translate(${rect.attr('x')}, ${rect.attr('y')})`)
+        
+  //         group
+  //           .selectAll('rect')
+  //           .data(d["Streamlined Characters"].map((char, j) => ({ char, index: j })))
+  //           .enter().append('rect')
+  //           .attr('x', 0)
+  //           .attr('y', d => d.index * rowHeight)
+  //           .attr('width', 0)
+  //           .attr('height', rowHeight)
+  //           .style('fill', d => Constants.colors[d.index % Constants.colors.length])
+  //           .transition()
+  //           .duration(Constants.transitionTime / 5)
+  //           .delay(i * Constants.transitionTime / 15)
+  //           .attrTween("width", function () {
+  //             return d3.interpolate(0, x.bandwidth());
+  //           });
+  //     });    
+
+  //     previousIndex = 1; 
+
+  //   } 
+  //   else if (index == 2 && previousIndex == 1) {
+  //     const topPairs = sortedCharacterRatingArray.slice(0, 10).map(d => d.pair);
+
+  //     g.selectAll('.row-group')
+  //       .each(function(d, i) {
+  //         const group = d3.select(this);
+  //         const rects = group.selectAll('rect');
+
+  //         // Transition rectangles to be removed
+  //         rects.each(function(d, j) {
+  //           const rect = d3.select(this);
+  //           const pair = d.char;
+  //           console.log(pair);
+
+  //           if (!topPairs.some(topPair => topPair[0] === pair[0] && topPair[1] === pair[1])) {
+  //             rect.transition()
+  //               .duration(Constants.transitionTime)
+  //               .style('opacity', 0)
+  //               .attr('width', 0)
+  //               .remove();
+  //           }
+  //         });
+
+  //         // Transition remaining rectangles after removal
+  //         rects
+  //         .filter(function(d) {
+  //           const pair = d.char;
+  //           return topPairs.some(topPair => topPair[0] === pair[0] && topPair[1] === pair[1]);
+  //         })
+  //         .transition()
+  //         .delay(Constants.transitionTime)
+  //         .duration(Constants.transitionTime)
+  //         .attr('y', (d, i, nodes) => (i * x.bandwidth()) / nodes.length)
+  //         .attr('height', (d, i, nodes) => x.bandwidth() / nodes.length);
+  //       });
+
+  //     previousIndex = 2;
+  //   }
+
+  //   console.log(`index: ${index}, offset: ${offset},  progress: ${progress}`);
+  // };
+
+  // function updateHeatMap(index) {
+  //   if (!g) {
+  //     console.error('The SVG group element `g` is not defined.');
+  //     return;
+  
+  // }
+
+  function showSpecificSquare() {
+    g.selectAll('rect')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 0)
+      .attr('width', 0)
+      .remove(); // Clear existing elements
+
+    const specificRect = g.append('rect')
+      .attr('class', 'specific-square')
+      .attr('x', x(specificDataPoint.Episode))
+      .attr('y', y(specificDataPoint.Season) + y.bandwidth() / 2 - x.bandwidth() / 2)
+      .attr('width', x.bandwidth())
+      .attr('height', x.bandwidth())
+      .style('fill', 'none'); 
+
+    const numRows = specificDataPoint["Streamlined Characters"].length;
+    const rowHeight = x.bandwidth() / numRows;
+
+    for (let i = 0; i < numRows; i++) {
+      g.append('rect')
+        .attr('x', +specificRect.attr('x'))
+        .attr('y', +specificRect.attr('y') + i * rowHeight)
+        .attr('width', 0)
+        .attr('height', rowHeight)
+        .style('fill', Constants.colors[i % Constants.colors.length])
         .transition()
         .duration(Constants.transitionTime)
-        .style('opacity', 1);
+        .delay(i * Constants.transitionTime / 2)
+        .attrTween("width", function () {
+          return d3.interpolate(0, x.bandwidth());
+        });
+    }
+  }
 
-      squares.each(function(d, i) {
-        const rect = d3.select(this);
-        const numRows = d["Streamlined Characters"].length;
-        const rowHeight = x.bandwidth() / numRows;
-
-        const group = g.append('g')
-          .attr('class', 'row-group')
-          .attr('transform', `translate(${rect.attr('x')}, ${rect.attr('y')})`)
-        
-          group
-            .selectAll('rect')
-            .data(d["Streamlined Characters"].map((char, j) => ({ char, index: j })))
-            .enter().append('rect')
-            .attr('x', 0)
-            .attr('y', d => d.index * rowHeight)
-            .attr('width', 0)
-            .attr('height', rowHeight)
-            .style('fill', d => Constants.colors[d.index % Constants.colors.length])
-            .transition()
-            .duration(Constants.transitionTime / 5)
-            .delay(i * Constants.transitionTime / 15)
-            .attrTween("width", function () {
-              return d3.interpolate(0, x.bandwidth());
-            });
-      });    
-
-      previousIndex = 1; 
-
-    } 
-    else if (index == 2 && previousIndex == 1) {
-  const topPairs = sortedCharacterRatingArray.slice(0, 10).map(d => d.pair);
-
-  g.selectAll('.row-group')
-    .each(function(d, i) {
-      const group = d3.select(this);
-      const rects = group.selectAll('rect');
-
-      // Transition rectangles to be removed
-      rects.each(function(d, j) {
-        const rect = d3.select(this);
-        const pair = d.char;
-        console.log(pair);
-
-        if (!topPairs.some(topPair => topPair[0] === pair[0] && topPair[1] === pair[1])) {
-          rect.transition()
-            .duration(Constants.transitionTime)
-            .style('opacity', 0)
-            .attr('width', 0)
-            .remove();
-        }
-      });
-
-      // Transition remaining rectangles after removal
-      rects.filter(function(d) {
-        const pair = d.char;
-        return topPairs.some(topPair => topPair[0] === pair[0] && topPair[1] === pair[1]);
-      })
+  function showAllSquares() {
+    g.selectAll('rect')
       .transition()
-      .delay(Constants.transitionTime)
       .duration(Constants.transitionTime)
-      .attr('y', (d, i, nodes) => (i * x.bandwidth()) / nodes.length)
-      .attr('height', (d, i, nodes) => x.bandwidth() / nodes.length);
+      .style('opacity', 0)
+      .attr('width', 0)
+      .remove(); // Clear existing elements
+
+    const squares = g.append('g')
+      .selectAll('.square')
+      .data(episodeData)
+      .enter().append('rect')
+      .attr('class', 'square')
+      .attr('x', d => x(d.Episode))
+      .attr('y', d => y(d.Season) + y.bandwidth() / 2 - x.bandwidth() / 2)
+      .attr('width', x.bandwidth())
+      .attr('height', x.bandwidth())
+      .style('fill', 'none')
+      .style('opacity', 0);
+
+    squares
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 1);
+
+    squares.each(function(d, i) {
+      const rect = d3.select(this);
+      const numRows = d["Streamlined Characters"].length;
+      const rowHeight = x.bandwidth() / numRows;
+
+      const group = g.append('g')
+        .attr('class', 'row-group')
+        .attr('transform', `translate(${rect.attr('x')}, ${rect.attr('y')})`);
+
+      group
+        .selectAll('rect')
+        .data(d["Streamlined Characters"].map((char, j) => ({ char, index: j })))
+        .enter().append('rect')
+        .attr('x', 0)
+        .attr('y', d => d.index * rowHeight)
+        .attr('width', 0)
+        .attr('height', rowHeight)
+        .style('fill', d => Constants.colors[d.index % Constants.colors.length])
+        .transition()
+        .duration(Constants.transitionTime / 5)
+        .delay(i * Constants.transitionTime / 15)
+        .attrTween("width", function () {
+          return d3.interpolate(0, x.bandwidth());
+        });
     });
+  }
 
-  previousIndex = 2;
-}
+  function updateSquaresForTopPairs() {
+    const topPairs = sortedCharacterRatingArray.slice(0, 10).map(d => d.pair);
 
-    console.log(`index: ${index}, previousIndex: ${previousIndex}`);
-  };
+    g.selectAll('.row-group')
+      .each(function(d, i) {
+        const group = d3.select(this);
+        const rects = group.selectAll('rect');
+
+        // Transition rectangles to be removed
+        rects.each(function(d, j) {
+          const rect = d3.select(this);
+          const pair = d.char;
+
+          if (!topPairs.some(topPair => topPair[0] === pair[0] && topPair[1] === pair[1])) {
+            rect.transition()
+              .duration(Constants.transitionTime)
+              .style('opacity', 0)
+              .attr('width', 0)
+              .remove();
+          }
+        });
+
+        // Transition remaining rectangles after removal
+        rects
+          .filter(function(d) {
+            const pair = d.char;
+            return topPairs.some(topPair => topPair[0] === pair[0] && topPair[1] === pair[1]);
+          })
+          .transition()
+          .delay(Constants.transitionTime)
+          .duration(Constants.transitionTime)
+          .attr('y', (d, i, nodes) => (i * x.bandwidth()) / nodes.length)
+          .attr('height', (d, i, nodes) => x.bandwidth() / nodes.length);
+      });
+  }
+
+  // Call the updateHeatMap function based on the index value
+  $: if(g) {
+    if (index == 0) {
+      showSpecificSquare();
+    } else if (index == 1) {
+      showAllSquares();
+    } else if (index == 2) {
+      updateSquaresForTopPairs();
+    }
+  }
+
 
 </script>
 
@@ -218,7 +364,6 @@
       bind:index
       bind:offset
       bind:progress
-      style="pointer-events: all;"
     >
       <div slot="background" style="padding: 0; pointer-events: all;">         
         <div class="svg-container">
