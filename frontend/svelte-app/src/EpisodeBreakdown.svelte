@@ -537,11 +537,12 @@
 
     /* Scrollytelling CSS */
     .step {
-        height: 45vh;
+        height: 55vh;
         max-width: 25vw; 
         display: flex;
         place-items: center;
         justify-content: center;
+        align-items: flex-start;
     }
 
     .step-content {
