@@ -6,9 +6,9 @@
 	let episodeData = []; // Initialize with appropriate default values
   	let specificDataPoint = null;
 
-	onMount(() => {
-            window.scrollTo(0, 0);
-    });
+	// onMount(() => {
+    //         window.scrollTo(0, 0);
+    // });
 
 </script>
 

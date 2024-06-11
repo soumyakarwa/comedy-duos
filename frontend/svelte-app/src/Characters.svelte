@@ -61,9 +61,9 @@
       <img src={backgroundImage} alt="show character image" style="opacity: {$imgOpacity}">        
     </div>
 
-    <div slot="foreground" style="padding-left: 32.5vw; padding-top: 10%; width:35vw;">
+    <div slot="foreground">
       {#each sectionTexts as text}
-        <section class="characters-section"><div class="description">{@html text}</div></section>
+        <section class="text-section"><div class="description">{@html text}</div></section>
       {/each}
     </div>
   </Scroller>
@@ -86,22 +86,6 @@
   
   [slot="foreground"] section {
     pointer-events: all;
-  }
-  
-  .characters-section {
-    height: 80vh;
-    color: black;
-    padding: var(--margin);
-    margin-bottom: var(--margin); 
-    font-size: var(--body-font-size);
-    display: flex; 
-    justify-content: center;
-  }
-
-  .description {
-    background-color: rgba(246, 244, 245, 0.9);
-    height: fit-content; 
-    padding: var(--margin); 
   }
 
 </style>

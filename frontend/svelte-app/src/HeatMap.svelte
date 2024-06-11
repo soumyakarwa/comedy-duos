@@ -20,34 +20,50 @@
   const svgWidth = 0.9 * window.innerWidth;
   const svgHeight = 0.9 * window.innerHeight;
 
-  $: if(episodeData || specificDataPoint) {
-    const svg = d3.select(heatMapSvg);
+  let svg, g, x, y;
+
+  $: if(episodeData.length) {
+    svg = d3.select(heatMapSvg);
     const margin = { top: 100, right: 20, bottom: 50, left: 50 };
     const width = svgWidth - margin.left - margin.right;
     const height = svgHeight - margin.top - margin.bottom;
 
-    const g = svg.append('g')
+    g = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const x = d3.scaleBand()
+    x = d3.scaleBand()
       .domain(episodeData.map(d => d.Episode))
       .range([0, width])
       .padding(0.1);
 
-    const y = d3.scaleBand()
+    y = d3.scaleBand()
       .domain(episodeData.map(d => d.Season))
       .range([height, 0])
       .padding(0.1);
-    
-    // At index = 0 and Scrolling Down
+
+    g.append('g')
+      .attr('class', 'axis axis-x')
+      .call(d3.axisTop(x))
+      .call(g => g.select(".domain").remove())  // Remove the axis line
+      .call(g => g.selectAll(".tick line").remove()); // Remove the tick lines
+
+    g.append('g')
+      .attr('class', 'axis axis-y')
+      .call(d3.axisLeft(y))
+      .call(g => g.select(".domain").remove())  // Remove the axis line
+      .call(g => g.selectAll(".tick line").remove());
+  };
+
+  $: {
     if (index == 0 && previousIndex == -1 && progress > 0) {
+      console.log('Rendering specific data point visualization');
       const specificRect = g.append('rect')
-      .attr('class', 'specific-square')
-      .attr('x', x(specificDataPoint.Episode))
-      .attr('y', y(specificDataPoint.Season) + y.bandwidth() / 2 - x.bandwidth()/2)
-      .attr('width', x.bandwidth())
-      .attr('height', x.bandwidth())
-      .style('fill', 'none'); 
+        .attr('class', 'specific-square')
+        .attr('x', x(specificDataPoint.Episode))
+        .attr('y', y(specificDataPoint.Season) + y.bandwidth() / 2 - x.bandwidth() / 2)
+        .attr('width', x.bandwidth())
+        .attr('height', x.bandwidth())
+        .style('fill', 'none'); 
 
       const numRows = specificDataPoint["Streamlined Characters"].length;
       const rowHeight = x.bandwidth() / numRows;
@@ -66,38 +82,25 @@
             return d3.interpolate(0, x.bandwidth());
           });
       }
-    
-      g.append('g')
-        .attr('class', 'axis axis-x')
-        .call(d3.axisTop(x))
-        .style('stroke', 'none'); 
-
-      g.append('g')
-        .attr('class', 'axis axis-y')
-        .call(d3.axisLeft(y));
-      previousIndex = 0
-    } 
-    // At index = 1 and Scrolling Down
-    else if (index == 1 && previousIndex == 0) {
+      previousIndex = 0;
+    } else if (index == 1 && previousIndex == 0) {
+      console.log('Rendering all episode data visualization');
       const squares = g.append('g')
-      .selectAll('.square')
-      .data(episodeData)
-      .enter().append('rect')
-      .attr('class', 'square')
-      .attr('x', d => x(d.Episode))
-      .attr('y', d => y(d.Season) + y.bandwidth() / 2 - x.bandwidth() / 2)
-      .attr('width', x.bandwidth())
-      .attr('height', x.bandwidth())
-      // .style('stroke', 'black')
-      // .style('stroke-width', '0.5px')
-      .style('fill', 'none')
-      .style('opacity', 0); 
+        .selectAll('.square')
+        .data(episodeData)
+        .enter().append('rect')
+        .attr('class', 'square')
+        .attr('x', d => x(d.Episode))
+        .attr('y', d => y(d.Season) + y.bandwidth() / 2 - x.bandwidth() / 2)
+        .attr('width', x.bandwidth())
+        .attr('height', x.bandwidth())
+        .style('fill', 'none')
+        .style('opacity', 0); 
 
       squares
-      .style('opacity', 0)
-      .transition()
-      .duration(Constants.transitionTime)
-      .style('opacity', 1); // Fade in effect
+        .transition()
+        .duration(Constants.transitionTime)
+        .style('opacity', 1);
 
       squares.each(function(d, i) {
         const rect = d3.select(this);
@@ -117,17 +120,16 @@
           .attr('height', rowHeight)
           .style('fill', j => Constants.colors[j % Constants.colors.length])
           .transition()
-          .duration(Constants.transitionTime/5)
-          .delay(i * Constants.transitionTime/15)
+          .duration(Constants.transitionTime / 5)
+          .delay(i * Constants.transitionTime / 15)
           .attrTween("width", function () {
             return d3.interpolate(0, x.bandwidth());
-          }); // Fade in effect
+          });
       });
     }
   };
 
-
-</script> 
+</script>
 
 <section class="map-section">
     <Scroller
@@ -145,10 +147,10 @@
         </div>
       </div>
   
-      <div slot="foreground" style="padding-left: 32.5vw; padding-top: 10%; width:35vw;">
-        {#each sectionTexts as text}
-            <section class="text-section"><div class="description">{@html text}</div></section>
-        {/each}
+      <div slot="foreground">
+          {#each sectionTexts as text}
+              <section class="text-section"><div class="description">{@html text}</div></section>
+          {/each}
       </div>
     </Scroller>
 </section>
@@ -163,22 +165,6 @@
   
     [slot="foreground"] {
       pointer-events: none;
-    }
-    
-    .text-section {
-        height: 50vh;
-        color: var(--black);
-        padding: var(--margin);
-        margin-bottom: var(--margin); 
-        font-size: var(--body-font-size);
-        display: flex; 
-        justify-content: center;
-  }
-
-    .description {
-        background-color: var(--faded-white);
-        height: fit-content; 
-        padding: var(--margin); 
     }
 
     .heatmap-svg {

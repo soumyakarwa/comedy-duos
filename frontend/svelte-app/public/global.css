@@ -61,6 +61,25 @@ body {
   z-index: 15;
 }
 
+.text-section {
+  height: 90vh;
+  /* max-width: 25vw;  */
+  color: var(--black);
+  padding: var(--margin);
+  /* margin-bottom: var(--margin);  */
+  font-size: var(--body-font-size);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.description {
+  background-color: var(--faded-white);
+  height: fit-content;
+  max-width: 25vw;
+  padding: var(--margin);
+}
+
 @keyframes highlight-animation {
   0% {
     background-position: 100% 0;
