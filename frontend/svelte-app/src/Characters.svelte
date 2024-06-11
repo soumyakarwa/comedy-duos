@@ -46,7 +46,7 @@
   $: backgroundImage = backgroundImages[index] || 'defaultImage.jpg';
 </script>
 
-<div>
+<section class="webpage-section">
   <Scroller
     {top}
     {threshold}
@@ -67,7 +67,7 @@
       {/each}
     </div>
   </Scroller>
-</div>
+</section>
 
 <style>
   [slot="background"] {

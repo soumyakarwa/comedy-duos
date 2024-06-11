@@ -2,7 +2,7 @@
     export let text; 
 </script>
 
-<section class="standalone-section">
+<section class="standalone-section webpage-section">
     <div class="desc">
         {#each text as t}
             <br>
@@ -15,9 +15,8 @@
 <style>
     .standalone-section {
         height: 100vh;
-        width: 35vw;
+        width: 100vw; 
         color: black;
-        margin-left: 32.5vw; 
         font-size: var(--body-font-size);
         display: flex; 
         justify-content: center;
@@ -25,6 +24,7 @@
     }
 
     .desc {
+        width: 25vw;
         height: fit-content; 
         margin: var(--margin); 
         padding: var(--margin); 

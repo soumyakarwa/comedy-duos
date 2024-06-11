@@ -429,7 +429,7 @@
 
 </script>
 
-<section class="episode-section">
+<section class="episode-section webpage-section">
     <Scroll bind:value={currentStep}>
         {#each steps as text, i}
             <div class="step" class:active={currentStep === i}>
@@ -487,8 +487,7 @@
 <style>
     .episode-section {
         display: flex;
-        justify-content: center; 
-        margin-bottom: calc(var(--margin)*2);
+        justify-content: center;
         gap: calc(var(--margin)*2); 
     }
 

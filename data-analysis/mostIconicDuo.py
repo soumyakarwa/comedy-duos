@@ -1,15 +1,17 @@
 import pandas as pd
 from collections import defaultdict
-import ast
+import json
 
-# Path to your CSV file
-file_path = '../brooklynNineNineCharacters.csv'
+# Path to your JSON file
+file_path = '../frontend/svelte-app/public/data/brooklynNineNineCharactersStreamlined.json'
 
-# Read the CSV file into a DataFrame
-df = pd.read_csv(file_path)
+# Read the JSON file into a DataFrame
+with open(file_path, 'r') as f:
+    data = json.load(f)
+df = pd.DataFrame(data)
 
 # [frequency, cumulativeWeightedRating, totalVotes, totalRating]
-characterRatingDict = defaultdict(lambda: [0, 0.0, 0, 0])  
+characterRatingDict = defaultdict(lambda: [0, 0.0, 0, 0])
 
 # Access the 'Streamlined Characters', 'Rating', and 'Total Votes' columns
 characterColumn = df['Streamlined Characters']
@@ -19,9 +21,8 @@ votesColumn = df['Total Votes']
 for characters, rating, votes in zip(characterColumn, ratingColumn, votesColumn):
     if characters: 
         try:
-            # Convert the string representation of list to actual list
-            pairs = ast.literal_eval(characters)  
-            for pair in pairs:
+            # Iterate over the pairs directly since they are lists
+            for pair in characters:
                 if isinstance(pair, list):
                     # Sort the pair alphabetically and convert to tuple
                     sorted_pair = tuple(sorted(pair))  
@@ -29,7 +30,7 @@ for characters, rating, votes in zip(characterColumn, ratingColumn, votesColumn)
                     characterRatingDict[sorted_pair][1] += rating * votes 
                     characterRatingDict[sorted_pair][2] += votes
                     characterRatingDict[sorted_pair][3] += rating
-        except (SyntaxError, ValueError):
+        except (TypeError, ValueError):
             continue
 
 # Convert defaultdict to a regular dictionary
@@ -42,4 +43,4 @@ sortedCharacterRatingDict = dict(sorted(characterRatingDict.items(), key=lambda 
 for entry, (frequency, cumulativeWeightedRating, totalVotes, totalRating) in sortedCharacterRatingDict.items():
     averageCumulativeRating = cumulativeWeightedRating / totalVotes if totalVotes > 0 else 0
     averageRating = totalRating / frequency if frequency > 0 else 0
-    print(f"Pair: {entry}, Frequency: {frequency},   Average Cumulative Rating: {averageCumulativeRating:.2f}, Average Rating: {averageRating:.2f} Rating Difference: {averageCumulativeRating - averageRating:.2f}")
+    print(f"Pair: {entry}, Frequency: {frequency}, Average Cumulative Rating: {averageCumulativeRating:.2f}, Average Rating: {averageRating:.2f}, Rating Difference: {averageCumulativeRating - averageRating:.2f}")

@@ -108,6 +108,10 @@ body {
   }
 }
 
+.webpage-section {
+  margin-bottom: calc(var(--margin) * 2);
+}
+
 @font-face {
   font-family: "Old-Standard-TT";
   src: url("./fonts/Old_Standard_TT/OldStandardTT-Regular.ttf");
