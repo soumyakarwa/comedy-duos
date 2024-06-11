@@ -3,6 +3,9 @@
 	import Content from './Content.svelte';
 	import { onMount } from 'svelte';
 
+	let episodeData = []; // Initialize with appropriate default values
+  	let specificDataPoint = null;
+
 	onMount(() => {
             window.scrollTo(0, 0);
     });
@@ -11,7 +14,7 @@
 
 <main>
 	<LandingPage />
-	<Content />
+	<Content {episodeData} {specificDataPoint}/>
 	<LandingPage />
 </main>
 

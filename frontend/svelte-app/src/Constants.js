@@ -31,6 +31,8 @@ const convertToMilliseconds = (timeString) => {
 export const yellowColor = getCSSVariable("--yellow");
 export const blueColor = getCSSVariable("--blue");
 export const pinkColor = getCSSVariable("--pink");
+export const blackColor = getCSSVariable("--black");
+export const whiteColor = getCSSVariable("--white");
 export const colors = [yellowColor, blueColor, pinkColor];
 
 // MISC

@@ -18,9 +18,10 @@
     let rectWidth;
     let rectYPosIncrement;
 
-    let episodeData = []; 
+    export let episodeData;
+    export let specificDataPoint;
+    
     let rectYPos = 0; 
-    let specificDataPoint;
     let episodeDescriptions = []; 
     let newDescription3;
     let characterHighlights = []; 
@@ -29,15 +30,40 @@
     
     const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Comparing the descriptions to identify distinct groups. For instance, all three descriptions contain a distinct group of Jake, Charles and Terry.`, `Now it gets interesting. Description 1 is just one long sentence, but Description 3 is comprehensible and divided. I used Description 3 to correspond and break-up larger groups in Descriptions 1 & 2. So we know the second pair is, Captain Holt & Rosa.`, `And lastly, we have the unlikely duo of Amy & Gina! And so we know the groupings in __ episode. The next step, is to carry this out for all episodes of all seasons!`]
     
-    // `Step 8`];
-    let mapTexts = [`step 1`, `step 2`, `step 3`];
+    $: if (specificDataPoint){
+        episodeDescriptions[0] = setSentenceHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
+        episodeDescriptions[1] = setSentenceHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
+        episodeDescriptions[2] = setSentenceHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
 
-    /**
+        const svgSelection = d3.select(episodeSvg);
+        const baseRectSelection = d3.select(baseRect);
+
+        specificEpisodeGroup = svgSelection.append('g'); 
+        specificEpisodeGroup.node().appendChild(baseRectSelection.node());
+
+        const seasons = Array.from(new Set(episodeData.map(d => d.Season)));
+        const episodes = Array.from(new Set(episodeData.map(d => d.Episode)));
+
+        xScale = d3.scaleBand()
+            .domain(seasons)
+            .range([0, 0.45*window.innerWidth])
+            .padding(0.1);
+
+        yScale = d3.scaleBand()
+            .domain(episodes)
+            .range([0, 0.6*window.innerHeight])
+            .padding(0.1);
+
+        rectWidth = 0.3*window.innerWidth; 
+        rectYPosIncrement = rectWidth/3; 
+    };
+
+        /**
      * Setting initial sentence highlight spans in current step = 2
      * @param description
      * @param analysis
      */
-    function setSentenceHighlight(description, analysis) {
+     function setSentenceHighlight(description, analysis) {
         description = description.replace(/\n\s*\"/g, '').replace(/\"\s*\n/g, '').replace(/\\n/g, ' ').replace(/\"/g, '');
         let highlighted = description; 
 
@@ -298,19 +324,6 @@
         });
     }
 
-    $: (() => {
-    // Recalculate rectWidth and rectYPosIncrement whenever windowWidth changes
-        rectWidth = 0.3 * window.innerWidth;
-        rectYPosIncrement = rectWidth / 3;
-
-        const newWidth = rectWidth;
-        const newHeight = rectWidth;
-
-        d3.select(episodeSvg)
-            .attr("width", newWidth)
-            .attr("height", newHeight)
-            .attr("viewBox", `0 0 ${newWidth} ${newHeight}`);
-    })();
 
     $: (() => {
         // scrolling down
@@ -410,47 +423,10 @@
         }
         previousStep = currentStep;
 
-        rectWidth = 0.3*window.innerWidth; 
+        rectWidth = 0.25*window.innerWidth; 
         rectYPosIncrement = rectWidth/3; 
     })();
-    
-    onMount(async () => {
-        try {   
-            const response = await fetch("/data/brooklynNineNineCharactersStreamlined.json");
-            const text = await response.text();
-            episodeData = JSON.parse(text);
-            specificDataPoint = episodeData.find(d => d.Title === "Into the Woods"); 
-            console.log(episodeData); 
-        } catch (error) {
-            console.error("Error loading data:", error);
-        }
 
-        episodeDescriptions[0] = setSentenceHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
-        episodeDescriptions[1] = setSentenceHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
-        episodeDescriptions[2] = setSentenceHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
-
-        const svgSelection = d3.select(episodeSvg);
-        const baseRectSelection = d3.select(baseRect);
-
-        specificEpisodeGroup = svgSelection.append('g'); 
-        specificEpisodeGroup.node().appendChild(baseRectSelection.node());
-
-        const seasons = Array.from(new Set(episodeData.map(d => d.Season)));
-        const episodes = Array.from(new Set(episodeData.map(d => d.Episode)));
-
-        xScale = d3.scaleBand()
-            .domain(seasons)
-            .range([0, 0.45*window.innerWidth])
-            .padding(0.1);
-
-        yScale = d3.scaleBand()
-            .domain(episodes)
-            .range([0, 0.6*window.innerHeight])
-            .padding(0.1);
-
-        rectWidth = 0.3*window.innerWidth; 
-        rectYPosIncrement = rectWidth/3; 
-    });
 </script>
 
 <section class="episode-section">
@@ -511,20 +487,20 @@
 <style>
     .episode-section {
         display: flex;
-        justify-content: space-evenly; 
+        justify-content: center; 
         margin-bottom: calc(var(--margin)*2);
-        /* gap: calc(var(--margin)*4);  */
+        gap: calc(var(--margin)*2); 
     }
 
     .chart {
         width: fit-content;
         height: fit-content;
         position: sticky;
-        top: 5vh;
-        display:flex; 
+        top: 10vh;
+        display: flex; 
         flex-direction: row;
         align-items: center;
-        gap: var(--margin);
+        /* gap: var(--margin); */
         /* padding-left:calc(var(--margin)*2);  */
     }
 
@@ -532,7 +508,7 @@
         display: flex; 
         flex-direction: column;
         gap: calc(var(--margin)/2); 
-        width: 30vw;
+        width: 25vw;
         justify-content: center;
         /* max-width: 75%;  */
     }
@@ -563,7 +539,7 @@
     /* Scrollytelling CSS */
     .step {
         height: 45vh;
-        max-width: 35vw; 
+        max-width: 25vw; 
         display: flex;
         place-items: center;
         justify-content: center;
