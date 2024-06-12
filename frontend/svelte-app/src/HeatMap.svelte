@@ -23,7 +23,6 @@
   const svgWidth = 0.9 * window.innerWidth;
   const svgHeight = 0.9 * window.innerHeight;
   
-
   let svg, g, originalXScale, originalYScale, legend, chartWidth, chartHeight, frequencyXScale, frequencyYScale, topPairs, frequencies;
   const margin = { top: 100, right: 20, bottom: 50, left: 50 };
 
@@ -157,7 +156,6 @@
         .text("Season");
   }
 
-
   /**
    * helper function to stringify pair
    * @param pair
@@ -240,14 +238,21 @@
 
       const group = g.append('g')
         .attr('class', 'row-group')
-        .attr('transform', `translate(${rect.attr('x')}, ${rect.attr('y')})`);
+        .datum(d);
+        // .attr('transform', `translate(${rect.attr('x')}, ${rect.attr('y')})`);
 
       group
         .selectAll('rect')
-        .data(d["Streamlined Characters"].map((char, j) => ({ char, index: j })))
+        // .data(d["Streamlined Characters"].map((char, j) => ({ char, index: j})))
+        .data(d["Streamlined Characters"].map((char, j) => ({
+            char,
+            index: j,
+            Episode: d.Episode, // Include Episode
+            Season: d.Season    // Include Season
+        })))
         .enter().append('rect')
-        .attr('x', 0)
-        .attr('y', d => d.index * rowHeight)
+        .attr('x', d => originalXScale(d.Episode))
+        .attr('y', d => originalYScale(d.Season) + originalYScale.bandwidth() / 2 - originalXScale.bandwidth() / 2 + (d.index * rowHeight))
         .attr('width', 0)
         .attr('height', rowHeight)
         .style('fill', d => Constants.colors[d.index % Constants.colors.length])
@@ -414,8 +419,26 @@
         .duration(Constants.transitionTime)
         .attr("transform", `translate(${-margin.left/2-5},${chartHeight/2}) rotate(-90)`)
         .text("Frequency"); 
-  }
 
+    // Move the remaining rects to the appropriate position in the new scale
+    g.selectAll('.row-group')
+        .selectAll('rect')
+        .filter(function(d) {
+            const pair = d.char;
+            return topPairs.some(topPair => topPair === pairToString(pair));
+        })
+        .transition()
+        .duration(Constants.transitionTime * 5)
+        // .attr("transform", d => `translate(${-rect.attr('x') + frequencyXScale(pairToString(d.char))},${chartHeight})`); 
+        .attr('x', d => {
+            console.log(d.char); 
+            console.log(frequencyXScale(pairToString(d.char))); 
+            return frequencyXScale(pairToString(d.char)); 
+        })
+        // .attr('y', chartHeight); 
+        // .attr('width', frequencyXScale.bandwidth());
+
+  }
 
   // Call the updateHeatMap function based on the index value
   $: if(g) {
