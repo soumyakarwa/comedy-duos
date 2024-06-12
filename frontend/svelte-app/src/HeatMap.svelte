@@ -23,7 +23,7 @@
   const svgWidth = 0.9 * window.innerWidth;
   const svgHeight = 0.9 * window.innerHeight;
   
-  let svg, g, originalXScale, originalYScale, legend, chartWidth, chartHeight, frequencyXScale, frequencyYScale, topPairs, frequencies;
+  let svg, g, originalXScale, originalYScale, legend, chartWidth, chartHeight, frequencyXScale, frequencyYScale, topPairs, frequencies, pairToColor;
   const margin = { top: 100, right: 20, bottom: 50, left: 50 };
 
   $: if(episodeData.length) {
@@ -117,6 +117,13 @@
         .domain([0, d3.max(frequencies)])
         .range([chartHeight, margin.top/2]);
 
+    pairToColor = new Map();
+    topPairs.forEach((pair, index) => {
+        pairToColor.set(pair, Constants.colors[index % 5]);
+    });
+    console.log(pairToColor); 
+
+
   };
 
   /**
@@ -162,6 +169,14 @@
    */
   function pairToString(pair){
     return pair.join(' & '); 
+  }
+
+  function calculateHeatMapX(data){
+    return originalXScale(data.Episode);
+  }
+
+  function calculateHeatMapY(data){
+    return originalYScale(data.Season) + originalYScale.bandwidth() / 2 - originalXScale.bandwidth() / 2
   }
 
   /**
@@ -217,15 +232,15 @@
       .duration(Constants.transitionTime)
       .style('opacity', 0)
       .attr('width', 0)
-      .remove(); // Clear existing elements
+      .remove(); 
 
     const squares = g.append('g')
       .selectAll('.square')
       .data(episodeData)
       .enter().append('rect')
       .attr('class', 'square')
-      .attr('x', d => originalXScale(d.Episode))
-      .attr('y', d => originalYScale(d.Season) + originalYScale.bandwidth() / 2 - originalXScale.bandwidth() / 2)
+      .attr('x', d => calculateHeatMapX(d))
+      .attr('y', d => calculateHeatMapY(d))
       .attr('width', originalXScale.bandwidth())
       .attr('height', originalXScale.bandwidth())
       .style('fill', 'none')
@@ -239,20 +254,18 @@
       const group = g.append('g')
         .attr('class', 'row-group')
         .datum(d);
-        // .attr('transform', `translate(${rect.attr('x')}, ${rect.attr('y')})`);
 
       group
         .selectAll('rect')
-        // .data(d["Streamlined Characters"].map((char, j) => ({ char, index: j})))
         .data(d["Streamlined Characters"].map((char, j) => ({
             char,
             index: j,
-            Episode: d.Episode, // Include Episode
-            Season: d.Season    // Include Season
+            Episode: d.Episode, 
+            Season: d.Season   
         })))
         .enter().append('rect')
-        .attr('x', d => originalXScale(d.Episode))
-        .attr('y', d => originalYScale(d.Season) + originalYScale.bandwidth() / 2 - originalXScale.bandwidth() / 2 + (d.index * rowHeight))
+        .attr('x', d => calculateHeatMapX(d))
+        .attr('y', d => calculateHeatMapY(d) + (d.index * rowHeight))
         .attr('width', 0)
         .attr('height', rowHeight)
         .style('fill', d => Constants.colors[d.index % Constants.colors.length])
@@ -269,6 +282,12 @@
    *
    */
   function updateSquaresForTopPairs() {
+    g.selectAll('.frequency-bar rect')
+        .transition()
+        .duration(Constants.transitionTime)
+        .style('opacity', 0)
+        .attr('width', 0)
+        .remove();
 
     const currentDomain = g.select('.axis-x').selectAll('.tick').data();
 
@@ -277,12 +296,7 @@
         // Revert axes if the current domain matches the new xScale domain
         heatMapAxes();
     } 
-   
-    const pairToColor = new Map();
-    topPairs.forEach((pair, index) => {
-        pairToColor.set(pair, Constants.colors[index % 5]);
-    });
-
+  
     g.selectAll('.row-group')
       .each(function(d, i) {
         const group = d3.select(this);
@@ -311,7 +325,9 @@
           .transition()
           .delay(Constants.transitionTime)
           .duration(Constants.transitionTime)
-          .attr('y', (d, i, nodes) => (i * originalXScale.bandwidth()) / nodes.length)
+          .attr('x', (d) => calculateHeatMapX(d))
+          .attr('y', (d, i, nodes) => calculateHeatMapY(d) + (i * originalXScale.bandwidth()) / nodes.length)
+          .attr('width', originalXScale.bandwidth())
           .attr('height', (d, i, nodes) => originalXScale.bandwidth() / nodes.length)
           .style('fill', d => {
               const pair = d.char;
@@ -375,7 +391,7 @@
   function createStackedBarChart(){
     g.selectAll('.legend')
       .transition()
-      .duration(Constants.transitionTime)
+      .duration(Constants.transitionTime*2)
       .style('opacity', 0)
       .remove();
 
@@ -396,27 +412,27 @@
     // Update x-axis
     g.select('.axis-x')
         .transition()
-        .duration(Constants.transitionTime)
+        .duration(Constants.transitionTime*2)
         .call(d3.axisBottom(frequencyXScale))
         .attr('transform', `translate(0,${chartHeight})`);
 
     // Update y-axis with transition
     g.select('.axis-y')
         .transition()
-        .duration(Constants.transitionTime)
+        .duration(Constants.transitionTime*2)
         .call(d3.axisLeft(frequencyYScale));
 
      // Update x-axis label
      g.select(".x-axis-label")
         .transition()
-        .duration(Constants.transitionTime)
+        .duration(Constants.transitionTime*2)
         .attr("y", chartHeight + margin.top/4+15)
         .text("Top Character Pairs");
 
     // Update y-axis label
     g.select(".y-axis-label")
         .transition()
-        .duration(Constants.transitionTime)
+        .duration(Constants.transitionTime*2)
         .attr("transform", `translate(${-margin.left/2-5},${chartHeight/2}) rotate(-90)`)
         .text("Frequency"); 
 
@@ -428,17 +444,35 @@
             return topPairs.some(topPair => topPair === pairToString(pair));
         })
         .transition()
-        .duration(Constants.transitionTime * 5)
-        // .attr("transform", d => `translate(${-rect.attr('x') + frequencyXScale(pairToString(d.char))},${chartHeight})`); 
-        .attr('x', d => {
-            console.log(d.char); 
-            console.log(frequencyXScale(pairToString(d.char))); 
-            return frequencyXScale(pairToString(d.char)); 
-        })
-        // .attr('y', chartHeight); 
-        // .attr('width', frequencyXScale.bandwidth());
+        .duration(Constants.transitionTime*2)
+        .attr('x', d => frequencyXScale(pairToString(d.char)) + frequencyXScale.bandwidth()/4)
+        .attr('y', chartHeight - 11)
+        .attr('width', frequencyXScale.bandwidth()/2 - 2)
+        .attr('height', 10)
+        .on('end', function(d, i) {
+          addFrequencyBars();  // Only call once after the last transitio
+        });
 
-  }
+    function addFrequencyBars() {
+        g.selectAll('.frequency-bar')
+            .data(sortedCharacterRatingArray.slice(0, 10))
+            .enter().append('rect')
+            .attr('class', 'frequency-bar')
+            .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth()/4)
+            .attr('y', chartHeight) // Start from the bottom
+            .attr('width', frequencyXScale.bandwidth()/2)
+            .attr('height', 0) // Initially set to 0
+            .style('fill', d => {
+              console.log(d.pair); 
+              console.log(pairToColor.get(pairToString(d.pair))); 
+              return pairToColor.get(pairToString(d.pair));
+            })
+            .transition()
+            .duration(Constants.transitionTime)
+            .attr('y', d => frequencyYScale(d.frequency))
+            .attr('height', d => chartHeight - frequencyYScale(d.frequency)); // Adjust height based on frequency
+    }
+}
 
   // Call the updateHeatMap function based on the index value
   $: if(g) {
