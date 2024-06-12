@@ -58,6 +58,20 @@
       .call(g => g.select(".domain").remove()) 
       .call(g => g.selectAll(".tick line").remove());
 
+    g.append("text")
+      .attr("class", "x-axis-label")
+      .attr("text-anchor", "middle")
+      .attr("x", width / 2)
+      .attr("y", height + margin.top/4)
+      .text("Episode");
+
+    // Add Y axis label
+    g.append("text")
+      .attr("class", "y-axis-label")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${-margin.left/2},${height/2}) rotate(-90)`)
+      .text("Season");
+
 
     episodeData.forEach(item => {
       const characters = item['Streamlined Characters'];
