@@ -18,9 +18,12 @@ body {
   --transition-time: 0.5s;
 
   /* COLORS */
-  --yellow: #f0ca00;
-  --blue: #00dae0;
-  --pink: #f000e8;
+  --yellow: #ffd900;
+  --orange: #ef9900;
+  --purple: #a366ff;
+  --blue: #52b4ff;
+  --green: #8ed000;
+
   --black: #0f0a0a;
   --white: rgb(246, 244, 245);
   --faded-white: rgba(246, 244, 245, 0.9);
@@ -44,15 +47,8 @@ body {
   font-family: "Old-Standard-TT-Bold";
 }
 
-.highlight {
-  position: relative;
-  background: linear-gradient(
-    to right,
-    var(--highlight-color) 50%,
-    transparent 50%
-  );
-  background-size: 200% 100%;
-  background-position: 100% 0;
+.webpage-section {
+  margin-bottom: calc(var(--margin) * 2);
 }
 
 .svg-container {
@@ -80,6 +76,18 @@ body {
   padding: var(--margin);
 }
 
+.highlight {
+  position: relative;
+  background: linear-gradient(
+    to right,
+    var(--highlight-color) 50%,
+    transparent 50%
+  );
+  /* color: var(--white); */
+  background-size: 200% 100%;
+  background-position: 100% 0;
+}
+
 @keyframes highlight-animation {
   0% {
     background-position: 100% 0;
@@ -95,6 +103,7 @@ body {
     transparent 50%,
     var(--highlight-color) 50%
   );
+  /* color: var(--black); */
   background-size: 200% 100%;
   background-position: 0 0;
 }
@@ -106,10 +115,6 @@ body {
   100% {
     background-position: 100% 0;
   }
-}
-
-.webpage-section {
-  margin-bottom: calc(var(--margin) * 2);
 }
 
 @font-face {

@@ -28,14 +28,25 @@ const convertToMilliseconds = (timeString) => {
 };
 
 // COLORS
-export const yellowColor = getCSSVariable("--yellow");
-export const blueColor = getCSSVariable("--blue");
-export const pinkColor = getCSSVariable("--pink");
 export const blackColor = getCSSVariable("--black");
 export const whiteColor = getCSSVariable("--white");
-export const colors = [yellowColor, blueColor, pinkColor];
+
+export const blueColor = getCSSVariable("--blue");
+export const yellowColor = getCSSVariable("--yellow");
+export const purpleColor = getCSSVariable("--purple");
+export const greenColor = getCSSVariable("--green");
+export const orangeColor = getCSSVariable("--orange");
+
+export const colors = [
+  blueColor,
+  yellowColor,
+  purpleColor,
+  greenColor,
+  orangeColor,
+];
 
 // MISC
 export const transitionTime = convertToMilliseconds(
   getCSSVariable("--transition-time")
 );
+export const labelFontSize = getCSSVariable("--label-font-size");

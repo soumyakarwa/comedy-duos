@@ -52,7 +52,7 @@
 
 
 <div class="landing-page-container">
-  <img src="/assets/cautionTape.svg" alt="Crime Scene Tape" class="fixed-image" />
+  <img src="/assets/cautionTape-lighterYellow.svg" alt="Crime Scene Tape" class="fixed-image" />
   <div>
     <div class="title">THE MOST ICONIC DUO IN</div>
     <div class="subtitle">BROOKLYN<br><span class="hel">NINE-NINE</span><br>
