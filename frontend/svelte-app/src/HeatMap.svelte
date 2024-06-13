@@ -5,7 +5,7 @@
   import * as Constants from "./Constants.js"; 
 
   let sectionTexts = [`Continuing from previous analysis.`, `In the previous section we analysed Season 3, Episode 6, "Into the woods". Let's put the anlaysis onto a grid.`, `Conducting the same analysis for all episodes.`, `To streamline, let’s consider pairs with top 10% pairings together.`, `Now, there are two ways of finding the most iconic duo. The easiest, is to see which pair got the most screentime.`,
-  `To no one's surprise, we can see that the pair with the most appearences together iss DUN DUN DUN Jake & Amy.`, `In another approach, (perhaps more accurate) let's account for the number of votes and average rating of each episode to calculate the average cummilative rating.`];
+  `To no one's surprise, we can see that the pair with the most appearences together iss DUN DUN DUN Jake & Amy.`, `In another approach, (perhaps more accurate) let's account for the number of votes and average rating of each episode to calculate the average cummilative rating.`, `And evidently, despite having lesser screentime, the most iconic duo of Brooklyn Nine-Nine is CAPTAIN HOLT & JAKE! They've appeared together 36 times, with over ____ votes and an average episode rating of 8.26. The viewers have spoken!`];
   let count;
   let index = 0;
   let offset;
@@ -115,7 +115,7 @@
 
     // Create yScale for frequencies
     frequencyYScale = d3.scaleLinear()
-        .domain([0, d3.max(frequencies)])
+        .domain([0, 45])
         .range([chartHeight, margin.top/2]);
 
     pairToColor = new Map();
@@ -127,7 +127,7 @@
 
     // Create yScale for frequencies
     ratingYScale = d3.scaleLinear()
-        .domain([0, d3.max(ratings)])
+        .domain([7, 9])
         .range([chartHeight, margin.top/2]);
 
   };
@@ -335,6 +335,12 @@
       .attr('height', 0)
       .remove();
 
+    g.selectAll('.frequency-label')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 0)
+      .remove();
+
     const currentDomain = g.select('.axis-x').selectAll('.tick').data();
 
     // Compare current domain with new domain
@@ -401,7 +407,8 @@
     // Create legend
     legend = g.append('g')
       .attr('class', 'legend')
-      .attr('transform', `translate(${chartWidth - 250}, 0)`); // Adjust position as needed
+      .attr('transform', `translate(${chartWidth - 250}, 0)`)
+      .style('opacity', 0);// Adjust position as needed
 
     let legendIndex = 0;
     colorToPairs.forEach((pairs, color) => {
@@ -430,6 +437,12 @@
         legendIndex++;
     });
 
+    legend
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 1);
+
+
   }
 
   /**
@@ -442,6 +455,12 @@
       .style('opacity', 0)
       .attr('y', chartHeight) 
       .attr('height', 0)
+      .remove();
+
+    g.selectAll('.frequency-label')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 0)
       .remove();
 
     g.selectAll('.legend')
@@ -485,7 +504,7 @@
             return topPairs.some(topPair => topPair === pairToString(pair));
         })
         .transition()
-        .duration(Constants.transitionTime)
+        .duration(Constants.transitionTime*2)
         .attr('x', d => frequencyXScale(pairToString(d.char)) + frequencyXScale.bandwidth()/4)
         .attr('y', chartHeight - 11)
         .attr('width', frequencyXScale.bandwidth()/2 - 2)
@@ -508,14 +527,40 @@
         .transition()
         .duration(Constants.transitionTime)
         .attr('y', d => frequencyYScale(d.frequency))
-        .attr('height', d => chartHeight - frequencyYScale(d.frequency));
+        .attr('height', d => chartHeight - frequencyYScale(d.frequency))
+        .on('end', function(d, i) {
+          g.selectAll('.frequency-label')
+            .data(sortedCharacterRatingArray.slice(0, 10))
+            .enter().append('text')
+            .attr('class', 'frequency-label')
+            .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth() / 2)
+            .attr('y', d => frequencyYScale(d.frequency) - 5)  // Position the label just above the bar
+            .attr('text-anchor', 'middle')
+            .style('font-size', Constants.labelFontSize)
+            .style('opacity', 0)  // Start with opacity 0 for transition
+            .text(d => d.frequency)
+            .transition()
+            .duration(Constants.transitionTime)
+            .style('opacity', 1); 
+        });
     }
+
   }
 
   /**
    * Helper function when index == 6
    */
   function createRatingBarChart(){
+    g.selectAll('.frequency-label')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 0); 
+    
+    g.selectAll('.row-group')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 1); 
+
     // Update y-axis with transition
     g.select('.axis-y')
         .transition()
@@ -527,13 +572,45 @@
         .transition()
         .duration(Constants.transitionTime)
         // .attr("transform", `translate(${-margin.left/2-5},${chartHeight/2}) rotate(-90)`)
-        .text("Rating"); 
+        .text("Average Rating"); 
 
     g.selectAll('.frequency-bar')
         .transition()
         .duration(Constants.transitionTime)
         .attr('y', d => ratingYScale(d.averageCumulativeRating))
-        .attr('height', d => chartHeight - ratingYScale(d.averageCumulativeRating)); 
+        .attr('height', d => chartHeight - ratingYScale(d.averageCumulativeRating))
+        .style('opacity', 1); 
+        // .on('end', function(d, i) { 
+    g.selectAll('.frequency-label')
+      .transition()
+      .duration(Constants.transitionTime*2)
+      // .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth() / 2)
+      .attr('y', d => ratingYScale(d.averageCumulativeRating) - 5)
+      .text(d => d.averageCumulativeRating.toFixed(2))
+      .style('opacity', 1); 
+        // }); 
+  }
+
+  function highlightWinningBar() {
+    const winningPair = 'Holt & Jake'; // Adjust this to match the exact format used in your data
+
+    g.selectAll('.row-group')
+      .style('opacity', 0); 
+
+    g.selectAll('.frequency-bar')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', function(d) {
+        return pairToString(d.pair) === winningPair ? 1 : 0.1;
+      });
+
+    g.selectAll('.frequency-label')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', function(d) {
+        return pairToString(d.pair) === winningPair ? 1 : 0.1;
+      });
+
   }
 
   // Call the updateHeatMap function based on the index value
@@ -548,7 +625,10 @@
       createStackedBarChart();
     } else if (index == 6) {
       createRatingBarChart();
+    } else if (index == 7) {
+      highlightWinningBar();
     }
+     
   }
 
 
