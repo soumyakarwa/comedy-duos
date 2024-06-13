@@ -23,7 +23,26 @@
   const svgWidth = 0.9 * window.innerWidth;
   const svgHeight = 0.9 * window.innerHeight;
   
+  /**
+   * svg: heatmap svg
+   * g: group for the heatmap
+   * originalXScale: heatMap X-scale for episodes
+   * originalYScale: heatMap Y-scale for seasonS
+   * legend: group for legend (top 10 character pairings)
+   * chartWidth: chartWidth is the width of g in heatmap
+   * chartHeight: chartHeight is the height of the g in heatmap
+   * frequencyXScale: frequency vs pairing x-scale for frequency bar chart 
+   * frequencyYScale: frequency vs pairing y-scale for frequency bar chart
+   * ratingXScale: average cummulative rating vs pairing x-scale (same as frequencyXScale) 
+   * ratingYScale: average cummulative rating vs pairing y-scale for rating bar chart
+   * topPairs: 10 pairs with the highest frequency (most appearences together)
+   * frequencies: sortedCharacterArray for just pair and frequency
+   * pairToColor: a map for pair-color from Constants.colors
+   * ratings: sortedCharacterArray for just pair and average cummulative frequency
+   */
   let svg, g, originalXScale, originalYScale, legend, chartWidth, chartHeight, frequencyXScale, frequencyYScale, topPairs, frequencies, pairToColor, ratingXScale, ratingYScale, ratings;
+  
+  // margin from svgHeight, svgWidth to create chartSize
   const margin = { top: 100, right: 20, bottom: 50, left: 50 };
 
   $: if(episodeData.length) {
@@ -34,11 +53,13 @@
     g = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
+    // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
     originalXScale = d3.scaleBand()
       .domain(episodeData.map(d => d.Episode))
       .range([0, chartWidth])
       .padding(0.1);
 
+    // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
     originalYScale = d3.scaleBand()
       .domain(episodeData.map(d => d.Season))
       .range([chartHeight, 0])
@@ -64,7 +85,6 @@
       .attr("y", chartHeight + margin.top/4)
       .text("Episode");
 
-    // Add Y axis label
     g.append("text")
       .attr("class", "y-axis-label")
       .attr("text-anchor", "middle")
@@ -103,7 +123,7 @@
             ratingDifference: averageCumulativeRating - averageRating
         };
     }).sort((a, b) => b.frequency - a.frequency); 
-
+    console.log(sortedCharacterRatingArray); 
     topPairs = sortedCharacterRatingArray.slice(0, 10).map(d => pairToString(d.pair));
     frequencies = sortedCharacterRatingArray.slice(0, 10).map(d => d.frequency);
     ratings = sortedCharacterRatingArray.slice(0, 10).map(d => d.averageCumulativeRating);
@@ -177,10 +197,18 @@
     return pair.join(' & '); 
   }
 
+  /**
+   * helper function to calculate x-position of a rect (with particular data)
+   * @param data
+   */
   function calculateHeatMapX(data){
     return originalXScale(data.Episode);
   }
 
+  /**
+   * helper function to calculate y-position of a rect (with particular data)
+   * @param data
+   */
   function calculateHeatMapY(data){
     return originalYScale(data.Season) + originalYScale.bandwidth() / 2 - originalXScale.bandwidth() / 2
   }
@@ -571,7 +599,6 @@
     g.select(".y-axis-label")
         .transition()
         .duration(Constants.transitionTime)
-        // .attr("transform", `translate(${-margin.left/2-5},${chartHeight/2}) rotate(-90)`)
         .text("Average Rating"); 
 
     g.selectAll('.frequency-bar')
@@ -591,8 +618,12 @@
         // }); 
   }
 
+  /**
+   * helper function when index == 7
+   */
   function highlightWinningBar() {
-    const winningPair = 'Holt & Jake'; // Adjust this to match the exact format used in your data
+    const winningPair = pairToString(sortedCharacterRatingArray.slice(0, 10).reduce((max, obj) => (obj.averageCumulativeRating > max.averageCumulativeRating ? obj : max)).pair); 
+    // Adjust this to match the exact format used in your data
 
     g.selectAll('.row-group')
       .style('opacity', 0); 

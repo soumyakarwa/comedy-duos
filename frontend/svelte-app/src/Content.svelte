@@ -21,7 +21,6 @@
             const text = await response.text();
             episodeData = JSON.parse(text);
             specificDataPoint = episodeData.find(d => d.Title === "Into the Woods"); 
-            console.log(episodeData); 
         } catch (error) {
             console.error("Error loading data:", error);
         }
