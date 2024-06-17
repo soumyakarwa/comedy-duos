@@ -13,7 +13,8 @@ body {
   --label-font-size: 0.9rem;
 
   /* MISC */
-  --margin: 1.4rem;
+  /* --margin: 1.4rem; */
+  --margin: 1.1rem;
   --golden-ratio: 1.618;
   --transition-time: 0.75s;
 
@@ -23,7 +24,6 @@ body {
   --purple: #a366ff;
   --blue: #52b4ff;
   --green: #8ed000;
-
   --black: #0f0a0a;
   --white: rgb(246, 244, 245);
   --faded-white: rgba(246, 244, 245, 0.9);
@@ -115,6 +115,13 @@ body {
   100% {
     background-position: 100% 0;
   }
+}
+
+.thumb-pin {
+  position: absolute;
+  width: var(--label-font-size);
+  height: var(--label-font-size);
+  transform: translateX(-50%);
 }
 
 @font-face {
