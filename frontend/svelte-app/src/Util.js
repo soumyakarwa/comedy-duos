@@ -12,7 +12,7 @@ export function createThumbPin(svg, pos) {
     .attr("fill", Constants.yellowColor);
 }
 
-export function createLine(svg, pos1, pos2) {
+export function createLine(svg, pos1, pos2, delay) {
   svg
     .append("line")
     .style("stroke", Constants.yellowColor)
@@ -20,8 +20,12 @@ export function createLine(svg, pos1, pos2) {
     .style("opacity", 0.5)
     .attr("x1", pos1[0])
     .attr("y1", pos1[1])
+    .attr("x2", pos1[0])
+    .attr("y2", pos1[1])
     .transition()
-    .duration(Constants.transitionTime)
+    .delay(delay)
+    .duration(Constants.transitionTime * 2)
+    .ease(d3.easeSinInOut)
     .attr("x2", pos2[0])
     .attr("y2", pos2[1]);
 }
