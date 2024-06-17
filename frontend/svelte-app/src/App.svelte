@@ -9,8 +9,8 @@
 <main>
 	<img src="/assets/dot-grid.svg" alt="case board dot grid" class="background-svg" />
 	<LandingPage />
-	<Content {episodeData} {specificDataPoint}/>
-	<LandingPage />
+	<!-- <Content {episodeData} {specificDataPoint}/>
+	<LandingPage /> -->
 </main>
 
 <style>

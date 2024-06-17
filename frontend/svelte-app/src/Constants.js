@@ -27,6 +27,37 @@ const convertToMilliseconds = (timeString) => {
   }
 };
 
+/**
+ *
+ * @param {*} marginVariable
+ * @param {*} multiplier
+ * @returns
+ */
+export function calculateMargin(marginVariable, multiplier) {
+  // Extract the numerical part from the value (assuming the value is in "rem")
+  const numericalValue = parseFloat(marginVariable);
+  const result = numericalValue * multiplier;
+  return `${result}rem`;
+}
+
+/**
+ * Helper function to add two rem values
+ * @param {string} rem1 - The first rem value (e.g., "1.5rem")
+ * @param {string} rem2 - The second rem value (e.g., "2rem")
+ * @returns {string} - The sum of the two rem values (e.g., "3.5rem")
+ */
+export function addRemValues(rem1, rem2) {
+  const value1 = parseFloat(rem1);
+  const value2 = parseFloat(rem2);
+  const result = value1 + value2;
+  return `${result}rem`;
+}
+
+export function remToPixels(rem) {
+  const numericalValue = parseFloat(rem);
+  return numericalValue * 16;
+}
+
 // COLORS
 export const blackColor = getCSSVariable("--black");
 export const whiteColor = getCSSVariable("--white");
@@ -49,4 +80,7 @@ export const colors = [
 export const transitionTime = convertToMilliseconds(
   getCSSVariable("--transition-time")
 );
+export const titleFontSize = getCSSVariable("--title-font-size");
 export const labelFontSize = getCSSVariable("--label-font-size");
+export const margin = getCSSVariable("--margin");
+export const ellipseSize = 7;

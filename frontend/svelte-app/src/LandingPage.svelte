@@ -1,39 +1,88 @@
 <script>
-window.addEventListener('DOMContentLoaded', () => {
-  const line = document.getElementById('line1');
-  const pinBottom1 = document.querySelector('.case-container #case-pin-bottom-1');
-  const pinTop1 = document.querySelector('.title-container #case-pin-top-1');
+  import { onMount } from 'svelte';
+  import * as d3 from 'd3';
+  import * as Constants from "./Constants.js";
+  import {createLine, createThumbPin} from "./Util.js"
+  
+  let landingPageSvg;
 
-  function updateLinePosition() {
-    const pinBottom1Rect = pinBottom1.getBoundingClientRect();
-    const pinTop1Rect = pinTop1.getBoundingClientRect();
+  onMount(async () => {
+    const svg = d3.select(landingPageSvg);
 
-    const startX = pinBottom1Rect.left + (pinBottom1Rect.width / 2) + window.scrollX;
-    const startY = pinBottom1Rect.top + (pinBottom1Rect.height / 2) + window.scrollY;
-    const endX = pinTop1Rect.left + (pinTop1Rect.width / 2) + window.scrollX;
-    const endY = pinTop1Rect.top + (pinTop1Rect.height / 2) + window.scrollY;
+    // Set width and height based on the container
+    function setSvgDimensions() {
+      const container = document.querySelector('.landing-page-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
 
-    line.setAttribute('x1', startX);
-    line.setAttribute('y1', startY);
-    line.setAttribute('x2', endX);
-    line.setAttribute('y2', endY);
-  }
+      svg.attr('width', width)
+         .attr('height', height);
 
-  // Initial call to set the line position
-  updateLinePosition();
+      return [width, height]
+    }
 
-  // Recalculate the line position if the window is resized
-  window.addEventListener('resize', updateLinePosition);
+    let [svgWidth, svgHeight] = setSvgDimensions();
 
-  // Recalculate the line position if the window is scrolled
-  window.addEventListener('scroll', updateLinePosition);
-});
+    const caseImgHeight =  svgHeight * 0.1;
+    const caseImgX =  svgWidth * 0.03; 
+    const caseImgY =  svgHeight * 0.047; 
+    const caseBottomPin1 = [caseImgX*7.25, caseImgY + caseImgHeight]; 
 
+    const titleImgWidth = svgWidth * 0.7; 
+    const titleImgX = svgWidth*0.215; 
+    const titleImgY = svgHeight * 0.29; 
+    const titleTopPin1 = [titleImgX + svgWidth*0.206, titleImgY]; 
+
+    const detectiveImgHeight = svgHeight * 0.04;
+    const detectiveImgX = svgWidth*0.935; 
+    const detectiveImgY = svgHeight * 0.935; 
+
+    svg.append("image")
+        .attr("xlink:href", "/assets/caseText.svg") 
+        .attr("x", caseImgX) 
+        .attr("y", caseImgY)
+        .attr("height", caseImgHeight);
+
+    svg.append("image")
+       .attr("xlink:href", "/assets/title.svg") 
+       .attr("x", titleImgX) 
+       .attr("y", titleImgY)
+       .attr("width", titleImgWidth);  
+
+    svg.append("image")
+       .attr("xlink:href", "/assets/detective.svg") 
+       .attr("x", detectiveImgX) 
+       .attr("y", detectiveImgY)
+       .attr("Height", detectiveImgHeight); 
+
+    createThumbPin(svg, caseBottomPin1); 
+    createThumbPin(svg, titleTopPin1);    
+    createLine(svg,caseBottomPin1, titleTopPin1); 
+
+    // Update positioning on window resize
+    window.addEventListener('resize', () => {
+      [svgWidth, svgHeight] = setSvgDimensions();      
+    });
+  });
 </script>
 
-
 <div class="landing-page-container">
-  <div class="case-container">
+  <svg bind:this={landingPageSvg} viewBox="0 0 1600 900" preserveAspectRatio="xMinYMin meet"></svg>
+</div>
+
+<style>
+  .landing-page-container {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  svg {
+    display: block;
+  }
+</style>
+
+
+<!-- <div class="case-container">
     <img src="/assets/pin.svg" alt="thumb pin" class="thumb-pin" id="case-pin-top-1"/>
     <div id="case">CASE: 725ZA-52ZN</div>
     <img src="/assets/pin.svg" alt="thumb pin" class="thumb-pin" id="case-pin-bottom-1"/>
@@ -49,10 +98,9 @@ window.addEventListener('DOMContentLoaded', () => {
   <div class="name-container">
     <img src="/assets/pin.svg" alt="thumb pin" class="thumb-pin" id="case-pin-top-1"/>
     <div id="case-detective">CASE DETECTIVE<br>Soumya Karwa</div>
-  </div>
-</div>
+  </div> -->
 
-<style>
+<!-- <style>
   .landing-page-container {
     position: relative;
     width: 100%;
@@ -162,4 +210,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 </style>
-
+ -->
