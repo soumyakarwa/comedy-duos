@@ -5,8 +5,9 @@
   import * as Constants from "./Constants.js"
 
   let textBox, charactersSvg, characterSection;
-  let svgWidth, svgHeight, svg, pinTop, pinRight, pinLeft, raymondPin; 
-  let raymond; 
+  let svgWidth, svgHeight, svg; 
+  let pinTop, pinRight, pinLeft, pinBottom; 
+  let raymond, jake, amy, terry, rosa, gina, charles; 
   let currentTextIndex = 0;
   let connectingLine = false; 
   const sectionTexts = [
@@ -19,62 +20,115 @@
     `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`
   ];
 
-  let characterElements = {}; 
-
-  const characterGifs = [{name: "Captain Raymond Holt", id:"raymond", var: raymond}]; 
-  let characterVisibility = characterGifs.map(() => false);
+  let characterGifs; 
+  let characters = [];
 
   onMount(() => {
     svg = d3.select(charactersSvg);
     [svgWidth, svgHeight] = setSvgDimensions("characters", svg);
-    pinTop = [svgWidth*0.5, svgHeight*0.1]; 
-    pinRight = [svgWidth*0.675, svgHeight*0.2]; 
-    pinLeft = [svgWidth*0.325, svgHeight*0.25]; 
-    raymondPin = [svgWidth * 0.84, svgHeight*0.27]; 
+    let lastScrollTop = document.documentElement.scrollTop;
+    
+    const textBoxBottom = Constants.characterTextBoxY + Constants.characterTextBoxHeight; 
+    const textBoxLeft = 0.5 - Constants.characterTextBoxWidth/2; 
+    const textBoxRight = 0.5 + Constants.characterTextBoxWidth/2; 
+
+    pinTop = [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]; 
+    pinRight = [svgWidth*textBoxRight, svgHeight*0.2]; 
+    pinLeft = [svgWidth*textBoxLeft, svgHeight*0.22];
+    pinBottom = [svgWidth*0.5, svgHeight*textBoxBottom]; 
+    characterGifs = {
+    raymond: {
+      name: "Captain Raymond Holt", 
+      id:"raymond", 
+      var: raymond, 
+      pin: [0, 0], 
+      originPin: pinRight
+    },
+    jake: {
+      name: "Detective Jake Peralta", 
+      id:"jake", 
+      var: jake,
+      pin: [0, 0],
+      originPin: pinLeft
+    },
+    amy: {
+      name: "Detective Amy Santiago",
+      id:"amy",
+      var: amy, 
+      pin: [0, 0], 
+      originPin: pinLeft
+    },
+    terry: {
+      name: "Sergeant Terry Jeffords", 
+      id:"terry", 
+      var: terry, 
+      pin: [0, 0],
+      originPin: pinBottom
+    }, 
+    gina: {
+      name: "Gina Linetti", 
+      id:"gina", 
+      var: gina, 
+      pin: [0, 0], 
+      originPin: pinBottom
+    }, 
+    charles: {
+      name: "Detective Charles Boyle", 
+      id:"charles", 
+      var: charles, 
+      pin: [0, 0],
+      originPin: pinRight
+    }, 
+    rosa: {
+      name: "Detective Rosa Diaz", 
+      id:"rosa", 
+      var: rosa, 
+      pin: [0, 0], 
+      originPin: pinBottom
+    }
+    }; 
+
+    characterGifs.raymond.pin = [svgWidth * (textBoxRight+0.2), svgHeight*0.24]; 
+    characterGifs.jake.pin = [svgWidth * (textBoxLeft-0.2), svgHeight*0.24]; 
+    characterGifs.amy.pin = [svgWidth * (textBoxLeft-0.2), svgHeight*0.65]; 
+    characterGifs.terry.pin = [svgWidth * (textBoxLeft), svgHeight*0.5]; 
+    characterGifs.gina.pin = [svgWidth * 0.52, svgHeight*0.68];
+    characterGifs.charles.pin = [svgWidth * (textBoxRight+0.2), svgHeight*0.65];
+    characterGifs.rosa.pin = [svgWidth * (textBoxRight), svgHeight*0.48];
+    characters = Object.values(characterGifs); 
+
     createThumbPin(svg, pinTop); 
 
     const sectionObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        console.log('Observer entry:', entry); 
-        if (entry.isIntersecting) {
-          console.log("intersecting"); 
-          document.body.style.overflow = 'hidden'; 
-        } else {
-          document.body.style.overflow = 'auto'; // Unlock scrolling when section is out of view
-        }
-      });
+        const currentScrollTop = document.documentElement.scrollTop;
+          if (entry.isIntersecting && currentScrollTop > lastScrollTop) {
+            document.body.style.overflow = 'hidden';
+          } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
+            document.body.style.overflow = 'auto';
+          }
+
+          lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // For Mobile or negative scrolling
+        });
     }, {
       threshold: 0.99 // Trigger only when the entire section is in view
     });
-
     sectionObserver.observe(characterSection);
 
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           if (!connectingLine) {
-            let raymondElement = document.getElementById('raymond');
-            createLine(svg, [svgWidth*0.45, 0], pinTop, 0); 
+            createLine(svg, [svgWidth*0.47, 0], pinTop, 0); 
             createThumbPin(svg, pinLeft); 
             createThumbPin(svg, pinRight); 
+            createThumbPin(svg, pinBottom); 
+            let raymondElement = document.getElementById('raymond');
             connectingLine = true;
             setTimeout(() => {
-              setTimeout(() => {
-              if (raymondElement) {
-                raymondElement.style.visibility = 'visible'; 
-                // raymondElement.style.opacity = 1;// Set visibility to visible
-              }
-              }, Constants.maxLineDelay);
-              setTimeout(() => {createThumbPin(svg, raymondPin)}, Constants.maxLineDelay*1.5);
-              setTimeout(() => {createLine(svg, pinRight, raymondPin, Math.random() * Constants.maxLineDelay)}, Constants.maxLineDelay*2);
+              addCharacterDiv(raymondElement, svg, characterGifs.raymond.pin, pinRight); 
             }, Constants.maxLineDelay);
           }
-          // if (currentTextIndex < sectionTexts.length - 1) {
-          //   currentTextIndex++;
-          // } else {
-          //   allVisible = true;
-          //   document.body.style.overflow = 'auto'; // Allow scrolling
-          // }
         }
       });
     }, {
@@ -83,6 +137,10 @@
 
     observer.observe(textBox);
 
+    if (characterSection) {
+      characterSection.addEventListener('click', handleClick);
+    }
+    
     return () => {
       observer.disconnect();
       sectionObserver.disconnect(); 
@@ -90,22 +148,40 @@
     };
   });
 
-  $: if (currentTextIndex < characterGifs.length) {
-    characterVisibility[currentTextIndex] = true;
+  function addCharacterDiv(element, svg, characterPin, originPin){
+      setTimeout(() => { 
+        if (element) {element.style.visibility = 'visible';}}, 
+        Constants.maxLineDelay);
+      setTimeout(() => {createThumbPin(svg, characterPin)}, Constants.maxLineDelay);
+      setTimeout(() => {createLine(svg, originPin, characterPin, Math.random() * Constants.maxLineDelay)}, Constants.maxLineDelay);
   }
 
+  function handleClick() {
+    if(currentTextIndex == sectionTexts.length-1){
+      document.body.style.overflow = 'auto';
+      characterSection.removeEventListener('click', handleClick);
+    } else {
+      currentTextIndex++; 
+      let char = characters[currentTextIndex]
+      let charElement = document.getElementById(char.id);
+      charElement.style.visibility = 'visible'; 
+      addCharacterDiv(charElement, svg, char.pin, char.originPin); 
+    }
+  }
 </script>
 
 <section bind:this={characterSection} class="webpage-section characters-section" id="characters">
   <div bind:this={textBox} id="textBox">
     <div id="charText">{@html sectionTexts[currentTextIndex]}</div>
   </div>
-  {#each characterGifs as c}
-    <div bind:this={c.var} id={c.id} class="character-containers">
-      <img src="assets/{c.id}.gif" alt="{c.name} intro gif"/>
-      <div>{c.name}</div>
-    </div>
-  {/each}
+  {#if characters}
+    {#each characters as c}
+      <div bind:this={c.var} id={c.id} class="character-containers">
+        <img src="assets/{c.id}.gif" alt="{c.name} intro gif"/>
+        <div>{c.name}</div>
+      </div>
+    {/each}
+  {/if}
   <svg bind:this={charactersSvg}></svg>
 </section>
 
@@ -121,26 +197,72 @@
     justify-content: center;
     align-items: center;
     gap: calc(var(--margin)/2); 
-  }
-
-  #textBox {
-    width: 35vw;
-    background-color: var(--white);
-    position: absolute; 
-    top: 10%; 
-    left: 32.5vw; 
-    z-index: 0; 
-  }
-
-  #raymond {
     background-color: var(--white); 
     width: fit-content;
     padding: calc(var(--margin)/2); 
     position: absolute; 
-    top: 27%; 
-    left: 75vw;
+  }
+
+  #textBox {
+    width: var(--text-box-width);
+    height: var(--text-box-height); 
+    background-color: var(--white);
+    position: absolute; 
+    top: var(--text-box-y); 
+    left: var(--text-box-x); 
+    z-index: 0; 
+  }
+
+  .character-containers img{
+    max-width: 15vw; 
+  }
+
+  #raymond {
+    top: 24vh; 
+    left: 80vw;
     visibility: hidden; 
-    /* opacity: 0;  */
+    transition: visibility var(--transition-time) ease-in-out; 
+  }
+
+  #charles {
+    top: 65vh; 
+    left: 80vw;
+    visibility: hidden; 
+    transition: visibility var(--transition-time) ease-in-out; 
+  }
+
+  #jake {
+    top: 24vh; 
+    left: 4vw;
+    visibility: hidden; 
+    transition: visibility var(--transition-time) ease-in-out; 
+  }
+
+  #amy {
+    top: 65vh; 
+    left: 4vw;
+    visibility: hidden; 
+    transition: visibility var(--transition-time) ease-in-out; 
+  }
+
+  #terry {
+    top: 50vh; 
+    left: 24vw;
+    visibility: hidden; 
+    transition: visibility var(--transition-time) ease-in-out; 
+  }
+
+  #gina {
+    top: 68vh; 
+    left: 42vw;
+    visibility: hidden; 
+    transition: visibility var(--transition-time) ease-in-out; 
+  }
+
+  #rosa {
+    top: 48vh; 
+    left: 60vw;
+    visibility: hidden; 
     transition: visibility var(--transition-time) ease-in-out; 
   }
 
@@ -155,100 +277,3 @@
     z-index: 1; 
   }
 </style>
-
-
-<!-- <script>
-  import Scroller from '@sveltejs/svelte-scroller';
-  import { tweened } from 'svelte/motion';
-  import { cubicOut } from 'svelte/easing';
-  import { easeQuadInOut } from 'd3';
-  
-  let count;
-  let index = 0;
-  let offset;
-  let progress;
-  let top = 0.1;
-  let threshold = 0.5;
-  let bottom = 0.9;
-  
-  // Array of background images
-  const backgroundImages = [
-    '/assets/non-arrow/holt.svg',
-    '/assets/non-arrow/jake.svg',
-    '/assets/non-arrow/amy.svg',
-    '/assets/non-arrow/terry.svg',
-    '/assets/non-arrow/gina.svg',
-    '/assets/non-arrow/charles.svg',
-    '/assets/non-arrow/rosa.svg',
-  ];
-
-  const sectionTexts = [
-    `If you don’t already know what Brooklyn Nine–Nine is (which is borderline ridiculous btw), let me bring you up to speed on one of the most iconic sitcoms of our time. A Golden Globe winner, Brooklyn Nine–Nine is a 2013–2021 workplace sitcom about Brooklyn’s 99th Precinct’s detective squad when a rule-following, outwardly-unemotional, highly decorated NYPD <span class="yellow">Captain Raymond Holt</span> (played by Andre Braugher) takes over.`,
-    `Being the first openly Black Gay Police officer in the NYPD, Captain Holt has fought many uphill battles; but bringing the carefree, talented, almost irresponsible Detective Jacob Peralta (played by Andy Samberg) in line, might just be the toughest battle yet (lol I kid ofcourse).`,
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`
-  ];
-  
-  let imgOpacity = tweened(1, {
-    duration: 500,
-    easing: easeQuadInOut
-  });
-
-  $: {
-    imgOpacity.set(0);
-    setTimeout(() => imgOpacity.set(1)); 
-  }
-
-  $: backgroundImage = backgroundImages[index] || 'defaultImage.jpg';
-  // $: sectionText = sectionText[index]
-</script> -->
-
-<!-- <section class="webpage-section">
-  <Scroller
-    {top}
-    {threshold}
-    {bottom}
-    bind:count
-    bind:index
-    bind:offset
-    bind:progress
-  >
-    <div slot="background" style="padding: 0;"> 
-      <img src={backgroundImage} alt="brooklyn nine nine character image" style="opacity: {$imgOpacity}">        
-    </div>
-
-    <div slot="foreground">
-      {#each sectionTexts as text}
-        <section class="text-section"><div class="description">{@html text}</div></section>
-      {/each}
-    </div>
-  </Scroller>
-</section> -->
-<!-- 
-<style>
-  [slot="background"] fixed{
-    background-color: var(--white); 
-  }
-
-  [slot="background"] {
-    width: 100%;
-    height: 100%;
-  }
-
-  [slot="background"] img {
-    width: 100vw;
-    height: auto;
-  }
-
-  [slot="foreground"] {
-    pointer-events: none;
-  }
-  
-  [slot="foreground"] section {
-    pointer-events: all;
-  }
-
-</style> -->

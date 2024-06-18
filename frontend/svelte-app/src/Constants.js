@@ -84,4 +84,13 @@ export const titleFontSize = getCSSVariable("--title-font-size");
 export const labelFontSize = getCSSVariable("--label-font-size");
 export const margin = getCSSVariable("--margin");
 export const ellipseSize = 7;
-export const maxLineDelay = 1000;
+export const maxLineDelay = 750;
+
+export const characterTextBoxX =
+  parseFloat(getCSSVariable("--text-box-x")) / 100;
+export const characterTextBoxY =
+  parseFloat(getCSSVariable("--text-box-y")) / 100;
+export const characterTextBoxHeight =
+  parseFloat(getCSSVariable("--text-box-height")) / 100;
+export const characterTextBoxWidth =
+  parseFloat(getCSSVariable("--text-box-width")) / 100;

@@ -28,6 +28,12 @@ body {
   --black: #0f0a0a;
   --white: rgb(246, 244, 245);
   --faded-white: rgba(246, 244, 245, 0.9);
+
+  /* CHARACTERS SECTION */
+  --text-box-y: 6vh;
+  --text-box-x: 32.5vw;
+  --text-box-height: 35vh;
+  --text-box-width: 35vw;
 }
 
 body {

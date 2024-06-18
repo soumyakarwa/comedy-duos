@@ -4,7 +4,10 @@
 
 <section class="standalone-section webpage-section">
     <div class="desc">
-        {#each text as t}
+        <img id="standalone-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+        {text[0]}
+        <br>
+        {#each text.slice(1) as t}
             <br>
             {t}
             <br>
@@ -21,12 +24,21 @@
         display: flex; 
         justify-content: center;
         align-items: center;
+        
+        /* background-color: var(--white);  */
     }
 
     .desc {
-        width: 25vw;
+        position: relative; 
+        width: var(--text-box-width);
         height: fit-content; 
-        margin: var(--margin); 
         padding: var(--margin); 
+        background: var(--white); 
     }
+
+    #standalone-pin {
+        top: -0.5rem;
+        left: 50%; 
+    }
+
 </style>
