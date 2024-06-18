@@ -1,4 +1,124 @@
 <script>
+  import { onMount } from "svelte";
+  import * as d3 from 'd3';
+  import { setSvgDimensions, createThumbPin, createLine} from "./Util.js";
+
+  let textBox, charactersSvg, characterSection;
+  let svgWidth, svgHeight, svg, pinTop, pinRight, pinLeft; 
+  let raymond; 
+  let connectingLine = false; 
+  const sectionTexts = [
+    `If you don’t already know what Brooklyn Nine–Nine is (which is borderline ridiculous btw), let me bring you up to speed on one of the most iconic sitcoms of our time. A Golden Globe winner, Brooklyn Nine–Nine is a 2013–2021 workplace sitcom about Brooklyn’s 99th Precinct’s detective squad when a rule-following, outwardly-unemotional, highly decorated NYPD <span class="yellow">Captain Raymond Holt</span> (played by Andre Braugher) takes over.`,
+    `Being the first openly Black Gay Police officer in the NYPD, Captain Holt has fought many uphill battles; but bringing the carefree, talented, almost irresponsible Detective Jacob Peralta (played by Andy Samberg) in line, might just be the toughest battle yet (lol I kid ofcourse).`,
+    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
+    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
+    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
+    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
+    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`
+  ];
+
+  let characterElements = {}; 
+
+  const characterGifs = [{name: "Captain Raymond Holt", id:"raymond", var: raymond}]; 
+
+  onMount(() => {
+    svg = d3.select(charactersSvg);
+    [svgWidth, svgHeight] = setSvgDimensions("characters", svg);
+    pinTop = [svgWidth*0.5, svgHeight*0.1]; 
+    pinLeft = [svgWidth*0.675, svgHeight*0.2]; 
+    pinRight = [svgWidth*0.325, svgHeight*0.25]; 
+    createThumbPin(svg, pinTop); 
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if(!connectingLine){
+            character1(); 
+            connectingLine = true;  
+          }
+        } else {
+          console.log("is not intersecting")
+          // setTimeout(() => box.classList.remove("scrolled"), 0);
+        }
+      });
+    }, {
+      threshold: 0.1 // Adjust this threshold as needed
+    });
+
+    observer.observe(textBox);
+
+    return () => {
+      observer.disconnect();
+    };
+  });
+
+  function character1(){
+    createLine(svg, [svgWidth*0.45, 0], pinTop, 0); 
+    createThumbPin(svg, pinLeft); 
+    createThumbPin(svg, pinRight); 
+  }
+
+</script>
+
+<section bind:this={characterSection} class="webpage-section characters-section" id="characters">
+  <div bind:this={textBox} id="textBox">
+    <div id="charText">{@html sectionTexts[0]}</div>
+  </div>
+  {#each characterGifs as c}
+    <div bind:this={c.var} id={c.id} class="character-containers">
+      <img src="assets/{c.id}.gif" alt="{c.name} intro gif"/>
+      <div>{c.name}</div>
+    </div>
+  {/each}
+  <svg bind:this={charactersSvg}></svg>
+</section>
+
+<style>
+  .characters-section {
+    height: 100vh;
+    position: relative;
+  }
+
+  .character-containers {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    gap: calc(var(--margin)/2); 
+  }
+
+  #textBox {
+    width: 35vw;
+    background-color: var(--white);
+    position: absolute; 
+    top: 10%; 
+    left: 32.5vw; 
+    z-index: 0; 
+  }
+
+  #raymond {
+    background-color: var(--white); 
+    width: fit-content;
+    padding: calc(var(--margin)/2); 
+    position: absolute; 
+    top: 27%; 
+    left: 75vw;
+  }
+
+  #charText {
+    padding: var(--margin);
+    height: fit-content; 
+    font-size: var(--body-font-size); 
+  }
+
+  .characters-section svg{
+    position: relative; 
+    z-index: 1; 
+  }
+</style>
+
+
+<!-- <script>
   import Scroller from '@sveltejs/svelte-scroller';
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
@@ -44,9 +164,10 @@
   }
 
   $: backgroundImage = backgroundImages[index] || 'defaultImage.jpg';
-</script>
+  // $: sectionText = sectionText[index]
+</script> -->
 
-<section class="webpage-section">
+<!-- <section class="webpage-section">
   <Scroller
     {top}
     {threshold}
@@ -57,8 +178,7 @@
     bind:progress
   >
     <div slot="background" style="padding: 0;"> 
-      <!-- svelte-ignore a11y-img-redundant-alt -->
-      <img src={backgroundImage} alt="show character image" style="opacity: {$imgOpacity}">        
+      <img src={backgroundImage} alt="brooklyn nine nine character image" style="opacity: {$imgOpacity}">        
     </div>
 
     <div slot="foreground">
@@ -67,9 +187,13 @@
       {/each}
     </div>
   </Scroller>
-</section>
-
+</section> -->
+<!-- 
 <style>
+  [slot="background"] fixed{
+    background-color: var(--white); 
+  }
+
   [slot="background"] {
     width: 100%;
     height: 100%;
@@ -88,4 +212,4 @@
     pointer-events: all;
   }
 
-</style>
+</style> -->

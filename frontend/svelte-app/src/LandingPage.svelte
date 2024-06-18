@@ -2,29 +2,15 @@
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
   import * as Constants from "./Constants.js";
-  import {createLine, createThumbPin} from "./Util.js"
+  import {createLine, createThumbPin, setSvgDimensions} from "./Util.js"
   
   let landingPageSvg;
   let svgWidth, svgHeight; 
 
   onMount(async () => {
     const svg = d3.select(landingPageSvg);
-
-    // Set width and height based on the container
-    function setSvgDimensions() {
-      const container = document.querySelector('.landing-page-container');
-      svgWidth = container.clientWidth;
-      svgHeight = container.clientHeight;
-
-      svg.attr('width', svgWidth)
-         .attr('height', svgHeight);
-
-      svg.attr('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
-
-      return [svgWidth, svgHeight]
-    }
-
-    [svgWidth, svgHeight] = setSvgDimensions();
+    
+    [svgWidth, svgHeight] = setSvgDimensions("landing", svg); 
 
     // svg.append('rect').attr('x', 0).attr('y', 0).attr('width', svgWidth).attr('height', svgHeight).attr('fill', Constants.whiteColor); 
 
@@ -39,7 +25,7 @@
     const titleImgY = svgHeight * 0.285; 
     const titleTopPin1 = [titleImgX + svgWidth*0.206, titleImgY]; 
     const titleTopPin2 = [titleImgX + titleImgWidth - 4, titleImgY]; 
-    const titleBottomPin1 = [titleImgX + titleImgWidth/3, titleImgY + svgHeight*0.46];
+    const titleBottomPin1 = [svgWidth * 0.34, titleImgY + svgHeight*0.46];
     const titleBottomPin2 = [titleImgX + titleImgWidth - 4, titleImgY + svgHeight*0.46];
 
     const detectiveImgHeight = svgHeight * 0.09;
@@ -72,10 +58,10 @@
     createThumbPin(svg, titleBottomPin1);       
     createThumbPin(svg, titleBottomPin2);    
     createThumbPin(svg, detectiveTopPin1);    
-    createLine(svg, caseBottomPin1, titleTopPin1, Math.random() * 2000); 
-    createLine(svg, titleTopPin2, [svgWidth, 0],  Math.random() * 2000); 
-    createLine(svg, titleBottomPin1, [svgWidth*0.45, svgHeight],  Math.random() * 2000); 
-    createLine(svg, titleBottomPin2, detectiveTopPin1,  Math.random() * 2000); 
+    createLine(svg, caseBottomPin1, titleTopPin1, Math.random() * Constants.maxLineDelay); 
+    createLine(svg, titleTopPin2, [svgWidth, 0],  Math.random() * Constants.maxLineDelay); 
+    createLine(svg, titleBottomPin1, [svgWidth*0.45, svgHeight],  Math.random() * Constants.maxLineDelay); 
+    createLine(svg, titleBottomPin2, detectiveTopPin1,  Math.random() * Constants.maxLineDelay); 
 
     // Update positioning on window resize
     window.addEventListener('resize', () => {
@@ -84,7 +70,7 @@
   });
 </script>
 
-<div class="landing-page-container">
+<div class="landing-page-container" id="landing">
   <svg bind:this={landingPageSvg}></svg>
 </div>
 

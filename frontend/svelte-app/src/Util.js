@@ -29,3 +29,15 @@ export function createLine(svg, pos1, pos2, delay) {
     .attr("x2", pos2[0])
     .attr("y2", pos2[1]);
 }
+
+export function setSvgDimensions(id, svg) {
+  const container = document.getElementById(id);
+  let width = container.clientWidth;
+  let height = container.clientHeight;
+
+  svg.attr("width", width).attr("height", height);
+
+  svg.attr("viewBox", `0 0 ${width} ${height}`);
+
+  return [width, height];
+}

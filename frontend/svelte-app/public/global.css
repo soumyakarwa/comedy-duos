@@ -9,7 +9,8 @@ body {
 :root {
   /* FONT SIZE */
   --title-font-size: 5.5rem;
-  --body-font-size: 1.1rem;
+  --body-font-size: 1.2rem;
+  /* --body-font-size: 1.3rem; */
   --label-font-size: 0.9rem;
 
   /* MISC */
@@ -35,7 +36,11 @@ body {
   box-sizing: border-box;
   font-family: "Old-Standard-TT";
   color: var(--black);
-  line-height: 1.3;
+  line-height: 1.4;
+}
+
+.box.scrolled {
+  transform: scale(1.5);
 }
 
 .italic {
