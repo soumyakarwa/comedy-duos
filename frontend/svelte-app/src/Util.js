@@ -9,7 +9,11 @@ export function createThumbPin(svg, pos) {
     .attr("ry", Constants.ellipseSize)
     .attr("cx", pos[0])
     .attr("cy", pos[1])
-    .attr("fill", Constants.yellowColor);
+    .attr("fill", Constants.yellowColor)
+    .attr("opacity", 0)
+    .transition()
+    .duration(Constants.transitionTime)
+    .attr("opacity", 1);
 }
 
 export function createLine(svg, pos1, pos2, delay) {

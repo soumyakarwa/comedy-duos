@@ -65,7 +65,7 @@
 
     // Update positioning on window resize
     window.addEventListener('resize', () => {
-      [svgWidth, svgHeight] = setSvgDimensions();      
+      [svgWidth, svgHeight] = setSvgDimensions("landing", svg); 
     });
   });
 </script>

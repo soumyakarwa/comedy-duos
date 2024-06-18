@@ -2,10 +2,12 @@
   import { onMount } from "svelte";
   import * as d3 from 'd3';
   import { setSvgDimensions, createThumbPin, createLine} from "./Util.js";
+  import * as Constants from "./Constants.js"
 
   let textBox, charactersSvg, characterSection;
-  let svgWidth, svgHeight, svg, pinTop, pinRight, pinLeft; 
+  let svgWidth, svgHeight, svg, pinTop, pinRight, pinLeft, raymondPin; 
   let raymond; 
+  let currentTextIndex = 0;
   let connectingLine = false; 
   const sectionTexts = [
     `If you don’t already know what Brooklyn Nine–Nine is (which is borderline ridiculous btw), let me bring you up to speed on one of the most iconic sitcoms of our time. A Golden Globe winner, Brooklyn Nine–Nine is a 2013–2021 workplace sitcom about Brooklyn’s 99th Precinct’s detective squad when a rule-following, outwardly-unemotional, highly decorated NYPD <span class="yellow">Captain Raymond Holt</span> (played by Andre Braugher) takes over.`,
@@ -20,25 +22,59 @@
   let characterElements = {}; 
 
   const characterGifs = [{name: "Captain Raymond Holt", id:"raymond", var: raymond}]; 
+  let characterVisibility = characterGifs.map(() => false);
 
   onMount(() => {
     svg = d3.select(charactersSvg);
     [svgWidth, svgHeight] = setSvgDimensions("characters", svg);
     pinTop = [svgWidth*0.5, svgHeight*0.1]; 
-    pinLeft = [svgWidth*0.675, svgHeight*0.2]; 
-    pinRight = [svgWidth*0.325, svgHeight*0.25]; 
+    pinRight = [svgWidth*0.675, svgHeight*0.2]; 
+    pinLeft = [svgWidth*0.325, svgHeight*0.25]; 
+    raymondPin = [svgWidth * 0.84, svgHeight*0.27]; 
     createThumbPin(svg, pinTop); 
+
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        console.log('Observer entry:', entry); 
+        if (entry.isIntersecting) {
+          console.log("intersecting"); 
+          document.body.style.overflow = 'hidden'; 
+        } else {
+          document.body.style.overflow = 'auto'; // Unlock scrolling when section is out of view
+        }
+      });
+    }, {
+      threshold: 0.99 // Trigger only when the entire section is in view
+    });
+
+    sectionObserver.observe(characterSection);
 
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          if(!connectingLine){
-            character1(); 
-            connectingLine = true;  
+          if (!connectingLine) {
+            let raymondElement = document.getElementById('raymond');
+            createLine(svg, [svgWidth*0.45, 0], pinTop, 0); 
+            createThumbPin(svg, pinLeft); 
+            createThumbPin(svg, pinRight); 
+            connectingLine = true;
+            setTimeout(() => {
+              setTimeout(() => {
+              if (raymondElement) {
+                raymondElement.style.visibility = 'visible'; 
+                // raymondElement.style.opacity = 1;// Set visibility to visible
+              }
+              }, Constants.maxLineDelay);
+              setTimeout(() => {createThumbPin(svg, raymondPin)}, Constants.maxLineDelay*1.5);
+              setTimeout(() => {createLine(svg, pinRight, raymondPin, Math.random() * Constants.maxLineDelay)}, Constants.maxLineDelay*2);
+            }, Constants.maxLineDelay);
           }
-        } else {
-          console.log("is not intersecting")
-          // setTimeout(() => box.classList.remove("scrolled"), 0);
+          // if (currentTextIndex < sectionTexts.length - 1) {
+          //   currentTextIndex++;
+          // } else {
+          //   allVisible = true;
+          //   document.body.style.overflow = 'auto'; // Allow scrolling
+          // }
         }
       });
     }, {
@@ -49,20 +85,20 @@
 
     return () => {
       observer.disconnect();
+      sectionObserver.disconnect(); 
+      document.body.style.overflow = 'auto';
     };
   });
 
-  function character1(){
-    createLine(svg, [svgWidth*0.45, 0], pinTop, 0); 
-    createThumbPin(svg, pinLeft); 
-    createThumbPin(svg, pinRight); 
+  $: if (currentTextIndex < characterGifs.length) {
+    characterVisibility[currentTextIndex] = true;
   }
 
 </script>
 
 <section bind:this={characterSection} class="webpage-section characters-section" id="characters">
   <div bind:this={textBox} id="textBox">
-    <div id="charText">{@html sectionTexts[0]}</div>
+    <div id="charText">{@html sectionTexts[currentTextIndex]}</div>
   </div>
   {#each characterGifs as c}
     <div bind:this={c.var} id={c.id} class="character-containers">
@@ -103,6 +139,9 @@
     position: absolute; 
     top: 27%; 
     left: 75vw;
+    visibility: hidden; 
+    /* opacity: 0;  */
+    transition: visibility var(--transition-time) ease-in-out; 
   }
 
   #charText {
