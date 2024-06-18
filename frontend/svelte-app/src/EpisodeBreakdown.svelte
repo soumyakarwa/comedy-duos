@@ -17,6 +17,7 @@
     let yScale; 
     let rectWidth;
     let rectYPosIncrement;
+    let episodeSection; 
 
     export let episodeData;
     export let specificDataPoint;
@@ -25,11 +26,41 @@
     let episodeDescriptions = []; 
     let newDescription3;
     let characterHighlights = []; 
-    let currentStep;
+    let currentStep = 0;
     let previousStep = -1; 
     
     const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Comparing the descriptions to identify distinct groups. For instance, all three descriptions contain a distinct group of Jake, Charles and Terry.`, `Now it gets interesting. Description 1 is just one long sentence, but Description 3 is comprehensible and divided. I used Description 3 to correspond and break-up larger groups in Descriptions 1 & 2. So we know the second pair is, Captain Holt & Rosa.`, `And lastly, we have the unlikely duo of Amy & Gina! And so we know the groupings in __ episode. The next step, is to carry this out for all episodes of all seasons!`]
-    
+
+    onMount(() => {
+        let lastScrollTop = document.documentElement.scrollTop;
+        const sectionObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            const currentScrollTop = document.documentElement.scrollTop;
+            if (entry.isIntersecting && currentScrollTop > lastScrollTop) {
+                console.log("intersecting"); 
+                document.body.style.overflow = 'hidden';
+            } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
+                document.body.style.overflow = 'auto';
+            }
+
+            lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // For Mobile or negative scrolling
+            });
+        }, {
+        threshold: 0.99 // Trigger only when the entire section is in view
+        });
+        sectionObserver.observe(episodeSection);
+
+        if (episodeSection) {
+            episodeSection.addEventListener('click', handleClick);
+        }
+
+        return () => {
+            sectionObserver.disconnect(); 
+            document.body.style.overflow = 'auto';
+            episodeSection.removeEventListener('click', handleClick);
+        };
+    }); 
+
     $: if (specificDataPoint){
         episodeDescriptions[0] = setSentenceHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
         episodeDescriptions[1] = setSentenceHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
@@ -57,6 +88,14 @@
         rectWidth = 0.3*window.innerWidth; 
         rectYPosIncrement = rectWidth/3; 
     };
+
+    function handleClick(){
+        currentStep++; 
+        if(currentStep == steps.length-1){
+            document.body.style.overflow = 'auto';
+            episodeSection.removeEventListener('click', handleClick);
+        }
+    }
 
         /**
      * Setting initial sentence highlight spans in current step = 2
@@ -426,11 +465,10 @@
         rectWidth = 0.25*window.innerWidth; 
         rectYPosIncrement = rectWidth/3; 
     })();
-
 </script>
 
-<section class="episode-section webpage-section">
-    <Scroll bind:value={currentStep}>
+<section bind:this={episodeSection} class="episode-section webpage-section">
+    <!-- <Scroll bind:value={currentStep}>
         {#each steps as text, i}
             <div class="step" class:active={currentStep === i}>
                 <div class="step-content">
@@ -438,9 +476,14 @@
                 </div>
             </div>
         {/each}
-    </Scroll>   
+    </Scroll>    -->
+    <div class="content">
+        <img id="episode-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+        {@html steps[currentStep]}
+    </div>
 
     <div class="chart">
+        <img id="chart-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
         <div id="col1"> 
             <div bind:this={heatMap}>
                 <svg bind:this={episodeSvg} width={rectWidth} height={rectWidth} viewbox="0 0 {rectWidth} {rectWidth}">
@@ -477,9 +520,6 @@
                 {/if}
             </div>
         </div>
-        <!-- <div id="col2">
-           
-        </div> -->
     </div>  
 </section>
 
@@ -488,7 +528,10 @@
     .episode-section {
         display: flex;
         justify-content: center;
-        gap: calc(var(--margin)*2); 
+        gap: calc(var(--margin)*3); 
+        height: 100vh; 
+        width: 100vw; 
+        position: relative; 
     }
 
     .chart {
@@ -499,6 +542,7 @@
         display: flex; 
         flex-direction: row;
         align-items: center;
+        background-color: var(--white); 
         /* gap: var(--margin); */
         /* padding-left:calc(var(--margin)*2);  */
     }
@@ -509,20 +553,28 @@
         gap: calc(var(--margin)/2); 
         width: 25vw;
         justify-content: center;
+        padding: var(--margin); 
         /* max-width: 75%;  */
     }
-    /* 
-    #col2 {
-        max-width: 50%; 
-    } */
 
-    /* #wikifandomDescription {
-        margin-top: 0.3rem; 
-    } */
+    .content {
+        width: 25vw; 
+        height: 15vh; 
+        padding: var(--margin); 
+        background-color: var(--white);
+        top: 10vh;
+        position: sticky;
+    }
 
-    /* #wikipediaDescription {
-        max-width: 80%; 
-    } */
+    #episode-pin {
+        top: -0.5rem;
+        left: 50%; 
+    }
+
+    #chart-pin {
+        top: -0.5rem;
+        left: 50%; 
+    }
 
     .episodeDescriptions {
         opacity: 0;

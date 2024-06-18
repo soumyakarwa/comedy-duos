@@ -132,7 +132,7 @@
         }
       });
     }, {
-      threshold: 0.1 // Adjust this threshold as needed
+      threshold: 0.01 // Adjust this threshold as needed
     });
 
     observer.observe(textBox);
@@ -157,15 +157,15 @@
   }
 
   function handleClick() {
+    currentTextIndex++; 
+    console.log(currentTextIndex); 
+    let char = characters[currentTextIndex]
+    let charElement = document.getElementById(char.id);
+    charElement.style.visibility = 'visible'; 
+    addCharacterDiv(charElement, svg, char.pin, char.originPin); 
     if(currentTextIndex == sectionTexts.length-1){
       document.body.style.overflow = 'auto';
       characterSection.removeEventListener('click', handleClick);
-    } else {
-      currentTextIndex++; 
-      let char = characters[currentTextIndex]
-      let charElement = document.getElementById(char.id);
-      charElement.style.visibility = 'visible'; 
-      addCharacterDiv(charElement, svg, char.pin, char.originPin); 
     }
   }
 </script>
