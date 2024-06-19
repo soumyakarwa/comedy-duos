@@ -7,7 +7,7 @@
     import * as Constants from "./Constants.js"; 
     
     // SVG ELEMENTS
-    let episodeSvg; 
+    let episodeSvg, chartDiv, contentDiv; 
     let baseRect; 
     let heatMap; 
     let episodeRectText = [{rect: null, text: null},{rect: null, text: null}, {rect: null, text: null}]
@@ -36,9 +36,10 @@
         const sectionObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             const currentScrollTop = document.documentElement.scrollTop;
-            if (entry.isIntersecting && currentScrollTop > lastScrollTop) {
-                console.log("intersecting"); 
+            if (entry.isIntersecting && currentScrollTop > lastScrollTop && currentStep != steps.length-1) {
                 document.body.style.overflow = 'hidden';
+                // contentDiv.style.position = "sticky"
+                // chartDiv.style.position = "sticky"
             } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
                 document.body.style.overflow = 'auto';
             }
@@ -94,6 +95,8 @@
         if(currentStep == steps.length-1){
             document.body.style.overflow = 'auto';
             episodeSection.removeEventListener('click', handleClick);
+            // contentDiv.style.position = "static"
+            // chartDiv.style.position = "static"
         }
     }
 
@@ -477,12 +480,12 @@
             </div>
         {/each}
     </Scroll>    -->
-    <div class="content">
+    <div class="content" bind:this={contentDiv}>
         <img id="episode-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
         {@html steps[currentStep]}
     </div>
 
-    <div class="chart">
+    <div class="chart" bind:this={chartDiv}>
         <img id="chart-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
         <div id="col1"> 
             <div bind:this={heatMap}>
@@ -528,6 +531,7 @@
     .episode-section {
         display: flex;
         justify-content: center;
+        align-items: center;
         gap: calc(var(--margin)*3); 
         height: 100vh; 
         width: 100vw; 
@@ -537,8 +541,9 @@
     .chart {
         width: fit-content;
         height: fit-content;
-        position: sticky;
+        position: absolute;  
         top: 10vh;
+        left: 53vw; 
         display: flex; 
         flex-direction: row;
         align-items: center;
@@ -562,8 +567,9 @@
         height: 15vh; 
         padding: var(--margin); 
         background-color: var(--white);
+        position: absolute;  
         top: 10vh;
-        position: sticky;
+        left: 22vw; 
     }
 
     #episode-pin {

@@ -31,7 +31,7 @@
 <Characters/>
 <Standalone text={standaloneText}/>
 <EpisodeBreakdown {episodeData} {specificDataPoint}/>
-<!-- <HeatMap {episodeData} {specificDataPoint}/> -->
+<HeatMap {episodeData} {specificDataPoint}/> 
 
 <style>
 </style>

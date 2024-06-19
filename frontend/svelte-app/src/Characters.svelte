@@ -102,13 +102,13 @@
     const sectionObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         const currentScrollTop = document.documentElement.scrollTop;
-          if (entry.isIntersecting && currentScrollTop > lastScrollTop) {
+          if (entry.isIntersecting && currentScrollTop > lastScrollTop && currentTextIndex != characters.length-1) {
             document.body.style.overflow = 'hidden';
           } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
             document.body.style.overflow = 'auto';
           }
 
-          lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // For Mobile or negative scrolling
+          lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
         });
     }, {
       threshold: 0.99 // Trigger only when the entire section is in view

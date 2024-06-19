@@ -665,49 +665,41 @@
 
 </script>
 
-<section class="webpage-section">
-    <Scroller
-      {top}
-      {threshold}
-      {bottom}
-      bind:count
-      bind:index
-      bind:offset
-      bind:progress
-    >
-      <div slot="background" style="padding: 0; pointer-events: all;">         
-        <div class="svg-container">
-            <svg bind:this={heatMapSvg} width={svgWidth} height={svgHeight} viewBox="0 0 {svgWidth} {svgHeight}" class="heatmap-svg"></svg>
-        </div>
+<section class="heatmap-section webpage-section">
+      <div class="svg-container">
+          <svg bind:this={heatMapSvg} width={svgWidth} height={svgHeight} viewBox="0 0 {svgWidth} {svgHeight}" class="heatmap-svg"></svg>
       </div>
-  
-      <div slot="foreground">
-          {#each sectionTexts as text}
-              <section class="text-section"><div class="description">{@html text}</div></section>
-          {/each}
+      <div class="heatmap-content">
+        {@html sectionTexts[0]}
       </div>
-    </Scroller>
 </section>
   
-  <style>
-    [slot="background"] {
-      width: 100%;
-      height: 100vh;
-      pointer-events: all;
-      /* background-color: red; */
-      /* transform: translate(0px,0px);  */
-    }
-  
-    /* [slot="foreground"] {
-      pointer-events: none;
-    } */
-
-    .svg-container {
+<style>
+    .heatmap-section{
       width: 100vw; 
       height: 100vh; 
+      position: relative; 
       display: flex; 
       align-items: center;
       justify-content: center;
+    }
+
+    .svg-container {
+      z-index: 0; 
+      width: fit-content; 
+      height: fit-content; 
+      position: absolute; 
+      background-color: var(--white); 
+    }
+
+    .heatmap-content {
+      z-index: 10; 
+      position: absolute;  
+      background-color: var(--yellow); 
+      width: var(--text-box-width); 
+      height: 15vh; 
+      top: 10vh; 
+      left: 25vw; 
     }
 
 </style>
