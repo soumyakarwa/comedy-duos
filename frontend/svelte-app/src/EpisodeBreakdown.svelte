@@ -33,22 +33,7 @@
 
     onMount(() => {
         let lastScrollTop = document.documentElement.scrollTop;
-        const sectionObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            const currentScrollTop = document.documentElement.scrollTop;
-            if (entry.isIntersecting && currentScrollTop > lastScrollTop && currentStep != steps.length-1) {
-                document.body.style.overflow = 'hidden';
-                // contentDiv.style.position = "sticky"
-                // chartDiv.style.position = "sticky"
-            } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
-                document.body.style.overflow = 'auto';
-            }
-
-            lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // For Mobile or negative scrolling
-            });
-        }, {
-        threshold: 0.99 // Trigger only when the entire section is in view
-        });
+        const sectionObserver = freezeSectionScroll(lastScrollTop, currentStep, steps); 
         sectionObserver.observe(episodeSection);
 
         if (episodeSection) {
@@ -470,7 +455,7 @@
     })();
 </script>
 
-<section bind:this={episodeSection} class="episode-section webpage-section">
+<section bind:this={episodeSection} class="episode-section">
     <!-- <Scroll bind:value={currentStep}>
         {#each steps as text, i}
             <div class="step" class:active={currentStep === i}>
@@ -542,7 +527,7 @@
         width: fit-content;
         height: fit-content;
         position: absolute;  
-        top: 10vh;
+        top: 5vh;
         left: 53vw; 
         display: flex; 
         flex-direction: row;
@@ -568,8 +553,8 @@
         padding: var(--margin); 
         background-color: var(--white);
         position: absolute;  
-        top: 10vh;
-        left: 22vw; 
+        top: 5vh;
+        left: 20vw; 
     }
 
     #episode-pin {

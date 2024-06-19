@@ -99,20 +99,7 @@
 
     createThumbPin(svg, pinTop); 
 
-    const sectionObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        const currentScrollTop = document.documentElement.scrollTop;
-          if (entry.isIntersecting && currentScrollTop > lastScrollTop && currentTextIndex != characters.length-1) {
-            document.body.style.overflow = 'hidden';
-          } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
-            document.body.style.overflow = 'auto';
-          }
-
-          lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
-        });
-    }, {
-      threshold: 0.99 // Trigger only when the entire section is in view
-    });
+    const sectionObserver = freezeSectionScroll(lastScrollTop, currentTextIndex, sectionTexts); 
     sectionObserver.observe(characterSection);
 
     const observer = new IntersectionObserver(entries => {
@@ -170,7 +157,7 @@
   }
 </script>
 
-<section bind:this={characterSection} class="webpage-section characters-section" id="characters">
+<section bind:this={characterSection} class="characters-section" id="characters">
   <div bind:this={textBox} id="textBox">
     <div id="charText">{@html sectionTexts[currentTextIndex]}</div>
   </div>

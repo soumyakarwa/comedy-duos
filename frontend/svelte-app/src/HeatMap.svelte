@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
   import * as Constants from "./Constants.js"; 
+  import freezeSectionScroll from "./Util.js"; 
 
   let sectionTexts = [`Continuing from previous analysis.`, `In the previous section we analysed Season 3, Episode 6, "Into the woods". Let's put the anlaysis onto a grid.`, `Conducting the same analysis for all episodes.`, `To streamline, let’s consider pairs with top 10% pairings together.`, `Now, there are two ways of finding the most iconic duo. The easiest, is to see which pair got the most screentime.`,
   `To no one's surprise, we can see that the pair with the most appearences together iss DUN DUN DUN Jake & Amy.`, `In another approach, (perhaps more accurate) let's account for the number of votes and average rating of each episode to calculate the average cummilative rating.`, `And evidently, despite having lesser screentime, the most iconic duo of Brooklyn Nine-Nine is CAPTAIN HOLT & JAKE! They've appeared together 36 times, with over ____ votes and an average episode rating of 8.26. The viewers have spoken!`];
@@ -15,6 +16,7 @@
   let bottom = 0.9;
   const characterRatingDict = {};
   let sortedCharacterRatingArray; 
+  let heatMapSection; 
 
   export let episodeData;
   export let specificDataPoint; 
@@ -151,6 +153,33 @@
         .range([chartHeight, margin.top/2]);
 
   };
+
+  onMount(() => {
+        let lastScrollTop = document.documentElement.scrollTop;
+        const sectionObserver = freezeSectionScroll(lastScrollTop, index, sectionTexts);
+        sectionObserver.observe(heatMapSection);
+
+        if (heatMapSection) {
+          heatMapSection.addEventListener('click', handleClick);
+        }
+
+        return () => {
+            sectionObserver.disconnect(); 
+            document.body.style.overflow = 'auto';
+            heatMapSection.removeEventListener('click', handleClick);
+        };
+    }); 
+  
+  function handleClick(){
+      index++; 
+      if(index == sectionTexts.length-1){
+          document.body.style.overflow = 'auto';
+          heatMapSection.removeEventListener('click', handleClick);
+          // contentDiv.style.position = "static"
+          // chartDiv.style.position = "static"
+      }
+  }
+
 
   /**
    * Reverts axes to original heat map axes
@@ -665,12 +694,17 @@
 
 </script>
 
-<section class="heatmap-section webpage-section">
+<section bind:this={heatMapSection} class="heatmap-section">
       <div class="svg-container">
+          <img id="heatmap-pin1" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+          <img id="heatmap-pin2" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+          <img id="heatmap-pin3" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+          <img id="heatmap-pin4" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
           <svg bind:this={heatMapSvg} width={svgWidth} height={svgHeight} viewBox="0 0 {svgWidth} {svgHeight}" class="heatmap-svg"></svg>
       </div>
       <div class="heatmap-content">
-        {@html sectionTexts[0]}
+        <img id="heatmap-content-pin" src="/assets/white-pin.svg" alt="thumb pin" class="thumb-pin"/>
+        {@html sectionTexts[index]}
       </div>
 </section>
   
@@ -692,14 +726,40 @@
       background-color: var(--white); 
     }
 
+    #heatmap-pin1 {
+      top: -0.5rem; 
+      left: 0; 
+    }
+
+    #heatmap-pin2 {
+      top: -0.5rem; 
+      left: 100%; 
+    }
+
+    #heatmap-pin3 {
+      top: 99%; 
+      left: 0; 
+    }
+
+    #heatmap-pin4 {
+      top: 99%;  
+      left: 100%; 
+    }
+
     .heatmap-content {
       z-index: 10; 
       position: absolute;  
       background-color: var(--yellow); 
-      width: var(--text-box-width); 
-      height: 15vh; 
-      top: 10vh; 
+      width: 25vw; 
+      padding: var(--margin); 
+      height: 10vh; 
+      top: 3vh; 
       left: 25vw; 
+    }
+
+    #heatmap-content-pin{
+      top: -0.5rem; 
+      left: 50%; 
     }
 
 </style>

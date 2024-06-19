@@ -45,3 +45,45 @@ export function setSvgDimensions(id, svg) {
 
   return [width, height];
 }
+
+export function freezeSectionScroll(lastScrollTop, index, sectionTexts) {
+  let sectionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const currentScrollTop = document.documentElement.scrollTop;
+        // if (
+        //   entry.isIntersecting &&
+        //   // currentScrollTop > lastScrollTop &&
+        //   index != sectionTexts.length - 1
+        // ) {
+        //   document.body.style.overflow = "hidden";
+        // } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
+        //   document.body.style.overflow = "auto";
+        // }
+
+        if (
+          entry.isIntersecting &&
+          entry.intersectionRatio >= 0.5 &&
+          index !== sectionTexts.length - 1
+        ) {
+          // Scroll the section into full view
+          entry.target.scrollIntoView({ behavior: "smooth" });
+
+          // Freeze the scroll once the section is fully in view
+          setTimeout(() => {
+            document.body.style.overflow = "hidden";
+          }, 500);
+        } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
+          document.body.style.overflow = "auto";
+        }
+
+        lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // For Mobile or negative scrolling
+      });
+    },
+    {
+      threshold: [0.5, 1.0],
+      rootMargin: "50px", // Trigger only when the entire section is in view
+    }
+  );
+  return sectionObserver;
+}

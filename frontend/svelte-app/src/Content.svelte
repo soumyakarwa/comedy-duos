@@ -32,6 +32,7 @@
 <Standalone text={standaloneText}/>
 <EpisodeBreakdown {episodeData} {specificDataPoint}/>
 <HeatMap {episodeData} {specificDataPoint}/> 
+<Standalone text={standaloneText}/>
 
 <style>
 </style>
