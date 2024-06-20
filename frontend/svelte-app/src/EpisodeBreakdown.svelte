@@ -1,6 +1,4 @@
 <script>
-    import Scroll from "./Scrolly.svelte";
-    import { fade, slide } from 'svelte/transition';
     import * as d3 from 'd3';
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
@@ -32,32 +30,36 @@
     
     const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Comparing the descriptions to identify distinct groups. For instance, all three descriptions contain a distinct group of Jake, Charles and Terry.`, `Now it gets interesting. Description 1 is just one long sentence, but Description 3 is comprehensible and divided. I used Description 3 to correspond and break-up larger groups in Descriptions 1 & 2. So we know the second pair is, Captain Holt & Rosa.`, `And lastly, we have the unlikely duo of Amy & Gina! And so we know the groupings in __ episode. The next step, is to carry this out for all episodes of all seasons!`]
 
-    onMount(() => {
-        let lastScrollTop = document.documentElement.scrollTop;
-        const sectionObserver = freezeSectionScroll(lastScrollTop, currentStep, steps); 
-        sectionObserver.observe(episodeSection);
+    // onMount(() => {
+    //     let lastScrollTop = document.documentElement.scrollTop;
+    //     const sectionObserver = freezeSectionScroll(lastScrollTop, currentStep, steps); 
+    //     sectionObserver.observe(episodeSection);
 
-        if (episodeSection) {
-            episodeSection.addEventListener('click', handleClick);
-        }
+    //     if (episodeSection) {
+    //         episodeSection.addEventListener('click', handleClick);
+    //     }
 
-        return () => {
-            sectionObserver.disconnect(); 
-            document.body.style.overflow = 'auto';
-            episodeSection.removeEventListener('click', handleClick);
-        };
-    }); 
+    //     return () => {
+    //         sectionObserver.disconnect(); 
+    //         document.body.style.overflow = 'auto';
+    //         episodeSection.removeEventListener('click', handleClick);
+    //     };
+    // }); 
 
     $: if (specificDataPoint){
         episodeDescriptions[0] = setSentenceHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
         episodeDescriptions[1] = setSentenceHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
         episodeDescriptions[2] = setSentenceHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
 
-        const svgSelection = d3.select(episodeSvg);
-        const baseRectSelection = d3.select(baseRect);
+        if(episodeSvg){
+            const svgSelection = d3.select(episodeSvg);
+            specificEpisodeGroup = svgSelection.append('g'); 
+        }
 
-        specificEpisodeGroup = svgSelection.append('g'); 
-        specificEpisodeGroup.node().appendChild(baseRectSelection.node());
+        if(baseRect){
+            const baseRectSelection = d3.select(baseRect);
+            specificEpisodeGroup.node().appendChild(baseRectSelection.node());
+        }
 
         const seasons = Array.from(new Set(episodeData.map(d => d.Season)));
         const episodes = Array.from(new Set(episodeData.map(d => d.Episode)));
@@ -76,15 +78,15 @@
         rectYPosIncrement = rectWidth/3; 
     };
 
-    function handleClick(){
-        currentStep++; 
-        if(currentStep == steps.length-1){
-            document.body.style.overflow = 'auto';
-            episodeSection.removeEventListener('click', handleClick);
-            // contentDiv.style.position = "static"
-            // chartDiv.style.position = "static"
-        }
-    }
+    // function handleClick(){
+    //     currentStep++; 
+    //     if(currentStep == steps.length-1){
+    //         document.body.style.overflow = 'auto';
+    //         episodeSection.removeEventListener('click', handleClick);
+    //         // contentDiv.style.position = "static"
+    //         // chartDiv.style.position = "static"
+    //     }
+    // }
 
         /**
      * Setting initial sentence highlight spans in current step = 2
@@ -577,32 +579,5 @@
 
     .episodeDescriptions.active {
         opacity: 1;
-    }
-
-    /* Scrollytelling CSS */
-    .step {
-        height: 55vh;
-        max-width: 25vw; 
-        display: flex;
-        place-items: center;
-        justify-content: center;
-        align-items: flex-start;
-    }
-
-    .step-content {
-        /* max-width: 35vw;  */
-        background: var(--white);
-        opacity: 0.2; 
-        color: var(--black);
-        padding: var(--margin);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        transition: background-color var(--transition-time) ease;
-        z-index: 10;
-    }
-
-    .step.active .step-content {
-        opacity: 1;  
     }
 </style>

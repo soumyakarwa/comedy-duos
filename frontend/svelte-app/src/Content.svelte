@@ -14,6 +14,7 @@
     
     export let episodeData; 
     export let specificDataPoint; 
+    export let currentSection;
 
     onMount(async () => {
         try {   
@@ -26,13 +27,33 @@
         }
     });
 
+    $: {
+        console.log(currentSection);
+    }
+
 </script>
 
-<Characters/>
+<!-- <Characters/>
 <Standalone text={standaloneText}/>
 <EpisodeBreakdown {episodeData} {specificDataPoint}/>
 <HeatMap {episodeData} {specificDataPoint}/> 
-<Standalone text={standaloneText}/>
+<Standalone text={standaloneText}/> -->
+
+{#if currentSection == 1}
+	<Characters/>
+{/if}
+{#if currentSection == 2}
+	<Standalone text={standaloneText}/>
+{/if}
+{#if currentSection == 3}
+	<EpisodeBreakdown {episodeData} {specificDataPoint}/>
+{/if}
+{#if currentSection == 4}
+	<HeatMap {episodeData} {specificDataPoint}/> 
+{/if}
+{#if currentSection == 5}
+	<Standalone text={standaloneText}/>
+{/if}
 
 <style>
 </style>
