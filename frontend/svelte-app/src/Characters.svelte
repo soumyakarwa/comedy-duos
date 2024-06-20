@@ -3,6 +3,7 @@
   import * as d3 from 'd3';
   import { setSvgDimensions, createThumbPin, createLine} from "./Util.js";
   import * as Constants from "./Constants.js"
+  import { freezeSectionScroll } from "./Util.js";
 
   let textBox, charactersSvg, characterSection;
   let svgWidth, svgHeight, svg; 
@@ -145,7 +146,6 @@
 
   function handleClick() {
     currentTextIndex++; 
-    console.log(currentTextIndex); 
     let char = characters[currentTextIndex]
     let charElement = document.getElementById(char.id);
     charElement.style.visibility = 'visible'; 

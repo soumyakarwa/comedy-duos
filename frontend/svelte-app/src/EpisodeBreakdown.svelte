@@ -5,7 +5,8 @@
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
     import * as Constants from "./Constants.js"; 
-    
+    import { freezeSectionScroll } from "./Util";
+
     // SVG ELEMENTS
     let episodeSvg, chartDiv, contentDiv; 
     let baseRect; 
