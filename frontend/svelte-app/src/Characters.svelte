@@ -25,7 +25,6 @@
   let characters = [];
 
   onMount(() => {
-    console.log("mounted"); 
     svg = d3.select(charactersSvg);
     [svgWidth, svgHeight] = setSvgDimensions("characters", svg);
     let lastScrollTop = document.documentElement.scrollTop;
