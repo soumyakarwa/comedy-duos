@@ -1,38 +1,102 @@
 <script>
-    import Characters from "./Characters.svelte"
-    import Standalone from "./Standalone.svelte";
-    import EpisodeBreakdown from "./EpisodeBreakdown.svelte";
-    import HeatMap from "./HeatMap.svelte";
-    import { onMount } from 'svelte';
+    import LandingPage from "./LandingPage.svelte";
+	import Characters from "./Characters.svelte";
+	import Standalone from "./Standalone.svelte";
+	import EpisodeBreakdown from "./EpisodeBreakdown.svelte";
+	import HeatMap from "./HeatMap.svelte";
+	import { onMount } from 'svelte';
+    import * as Constants from "./Constants.js"; 
 
-    // let episodeSvg;
-    const standaloneText = [
-    `To figure out the most iconic character duo, I first needed to figure out which characters were paired together. In order to do that I consolidated three different versions of the epiode descriptions, text about what three different sources I used.`, 
-    `Second paragpraph in some way about how I consolidated the three texts and analysed the language to identify pairings.`, 
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ut mauris ipsum. Pellentesque venenatis mollis metus, eu mattis sapien rhoncus ac. Nam arcu dolor, suscipit consequat tortor nec, condimentum aliquet eros. Nullam posuere vel mauris vitae tincidunt.`,
-    `Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed nec lacus posuere justo porttitor consectetur id sed mi. Nulla dapibus dolor a ex viverra fringilla. Fusce facilisis ligula vel dui mattis posuere.`]
+    // const pageSections = [LandingPage, Characters, Standalone, EpisodeBreakdown, HeatMap, Standalone]
+
+    const pageSections = [
+        { component: LandingPage, subSteps: 0 },
+        { component: Characters, subSteps: 6 },
+        { component: Standalone, subSteps: 0 },
+        { component: EpisodeBreakdown, subSteps: 7 },
+        { component: HeatMap, subSteps: 6 },
+        { component: Standalone, subSteps: 0 }
+    ];
+
+	export let episodeData;
+	export let specificDataPoint;
+    let container;
+    let currentIndex = 0;
+    let subIndexes = Array(pageSections.length).fill(0);
     
-    export let episodeData; 
-    export let specificDataPoint; 
 
-    onMount(async () => {
-        try {   
-            const response = await fetch("/data/brooklynNineNineCharactersStreamlined.json");
-            const text = await response.text();
-            episodeData = JSON.parse(text);
-            specificDataPoint = episodeData.find(d => d.Title === "Into the Woods"); 
-        } catch (error) {
-            console.error("Error loading data:", error);
+	function handleKeydown(event) {
+        if (event.key === 'ArrowRight') {
+        if (subIndexes[currentIndex] < pageSections[currentIndex].subSteps) {
+            subIndexes[currentIndex]++;
+        } else if (currentIndex < pageSections.length - 1) {
+            subIndexes[currentIndex] = 0;
+            currentIndex++;
         }
-    });
+        } else if (event.key === 'ArrowLeft') {
+            console.log(subIndexes[currentIndex]); 
+        if (subIndexes[currentIndex] > 0) {
+            console.log(pageSections[currentIndex]);
+            console.log(subIndexes[currentIndex]);
+            subIndexes[currentIndex]--;
+        } else if (currentIndex > 0) {
+            subIndexes[currentIndex] = 0;
+            currentIndex--;
+        }
+        }
+    }
+
+
+	onMount(async () => {
+		try {
+			const response = await fetch("/data/brooklynNineNineCharactersStreamlined.json");
+			const text = await response.text();
+			episodeData = JSON.parse(text);
+			specificDataPoint = episodeData.find(d => d.Title === "Into the Woods");
+		} catch (error) {
+			console.error("Error loading data:", error);
+		}
+
+        window.addEventListener('keydown', handleKeydown);
+
+		return () => {
+			window.removeEventListener('keydown', handleKeydown);
+		};
+
+	});
+
+    document.addEventListener('wheel', (e) => {
+		e.preventDefault();
+	}, { passive: false });
+
+	document.addEventListener('touchmove', (e) => {
+		e.preventDefault();
+	}, { passive: false });
+
+    $: if (container) {
+        container.style.transform = `translateY(-${(currentIndex) * 100}vh)`;
+    }
 
 </script>
 
-<Characters/>
-<Standalone text={standaloneText}/>
-<EpisodeBreakdown {episodeData} {specificDataPoint}/>
-<HeatMap {episodeData} {specificDataPoint}/> 
-<Standalone text={standaloneText}/>
+<div bind:this={container} class="container">
+    <div class="section"><LandingPage/></div>
+    <div class="section"><Characters currentTextIndex={subIndexes[1]}/></div>
+    <div class="section"><Standalone text={Constants.standaloneText1}/></div>
+    <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[3]}/></div>
+    <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[4]}/></div>
+    <div class="section"><Standalone text={Constants.standaloneText1}/></div>
+</div>
 
 <style>
+.container {
+    transition: transform var(--transition-time) ease-in-out;
+    will-change: transform;
+}
+
+.section {
+    height: 100vh;
+    width: 100vw;
+}
+
 </style>

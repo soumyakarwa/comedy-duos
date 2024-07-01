@@ -9,7 +9,10 @@
   let svgWidth, svgHeight, svg; 
   let pinTop, pinRight, pinLeft, pinBottom; 
   let raymond, jake, amy, terry, rosa, gina, charles; 
-  let currentTextIndex = 0;
+  
+  // let currentTextIndex = 0;
+  export let currentTextIndex; 
+  
   let connectingLine = false; 
   const sectionTexts = [
     `If you don’t already know what Brooklyn Nine–Nine is (which is borderline ridiculous btw), let me bring you up to speed on one of the most iconic sitcoms of our time. A Golden Globe winner, Brooklyn Nine–Nine is a 2013–2021 workplace sitcom about Brooklyn’s 99th Precinct’s detective squad when a rule-following, outwardly-unemotional, highly decorated NYPD <span class="yellow">Captain Raymond Holt</span> (played by Andre Braugher) takes over.`,
@@ -149,6 +152,21 @@
         Constants.maxLineDelay);
       setTimeout(() => {createThumbPin(svg, characterPin)}, Constants.maxLineDelay);
       setTimeout(() => {createLine(svg, originPin, characterPin, Math.random() * Constants.maxLineDelay)}, Constants.maxLineDelay);
+  }
+
+  $: {
+    if (characters.length > 0 && typeof currentTextIndex === 'number' && currentTextIndex > 0 && currentTextIndex < characters.length) {
+      let char = characters[currentTextIndex];
+      let charElement = document.getElementById(char.id);
+
+      // Ensure the element exists before manipulating it
+      if (charElement) {
+        charElement.style.visibility = 'visible';
+        addCharacterDiv(charElement, svg, char.pin, char.originPin);
+      } else {
+        console.error(`Element with ID ${char.id} not found.`);
+      }
+    }
   }
 
   function handleClick() {

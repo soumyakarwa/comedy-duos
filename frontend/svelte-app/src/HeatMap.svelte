@@ -8,7 +8,8 @@
   let sectionTexts = [`Continuing from previous analysis.`, `In the previous section we analysed Season 3, Episode 6, "Into the woods". Let's put the anlaysis onto a grid.`, `Conducting the same analysis for all episodes.`, `To streamline, let’s consider pairs with top 10% pairings together.`, `Now, there are two ways of finding the most iconic duo. The easiest, is to see which pair got the most screentime.`,
   `To no one's surprise, we can see that the pair with the most appearences together iss DUN DUN DUN Jake & Amy.`, `In another approach, (perhaps more accurate) let's account for the number of votes and average rating of each episode to calculate the average cummilative rating.`, `And evidently, despite having lesser screentime, the most iconic duo of Brooklyn Nine-Nine is CAPTAIN HOLT & JAKE! They've appeared together 36 times, with over ____ votes and an average episode rating of 8.26. The viewers have spoken!`];
   let count;
-  let index = 0;
+  // let index = 0;
+  
   let offset;
   let progress;
   let top = 0;
@@ -20,6 +21,7 @@
 
   export let episodeData;
   export let specificDataPoint; 
+  export let index; 
   
   let heatMapSvg;
   const svgWidth = 0.9 * window.innerWidth;
@@ -53,8 +55,13 @@
     chartWidth = svgWidth - margin.left - margin.right;
     chartHeight = svgHeight - margin.top - margin.bottom;
 
-    g = svg.append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
+    g = svg.select('g');
+    if (g.empty()) {
+      g = svg.append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+    }
+    
+    console.log(g); 
 
     // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
     originalXScale = d3.scaleBand()
@@ -681,23 +688,23 @@
   }
 
   // Call the updateHeatMap function based on the index value
-  $: if(g) {
-    if (index == 1) {
-      showSpecificSquare();
-    } else if (index == 2) {
-      showAllSquares();
-    } else if (index == 3) {
-      updateSquaresForTopPairs();
-    } else if (index == 4) {
-      createStackedBarChart();
-    } else if (index == 6) {
-      createRatingBarChart();
-    } else if (index == 7) {
-      highlightWinningBar();
+  $: {
+    if(g) {
+      if (index == 1) {
+        showSpecificSquare();
+      } else if (index == 2) {
+        showAllSquares();
+      } else if (index == 3) {
+        updateSquaresForTopPairs();
+      } else if (index == 4) {
+        createStackedBarChart();
+      } else if (index == 6) {
+        createRatingBarChart();
+      } else if (index == 7) {
+        highlightWinningBar();
+      }
     }
-     
   }
-
 
 </script>
 

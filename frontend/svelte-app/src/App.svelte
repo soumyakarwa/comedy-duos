@@ -1,16 +1,16 @@
 <script>
 	import LandingPage from './LandingPage.svelte';
 	import Content from './Content.svelte';
+	import { onMount } from 'svelte';
 
 	let episodeData = []; // Initialize with appropriate default values
-  	let specificDataPoint = null;
+	let specificDataPoint = null;
+
 </script>
 
 <main>
 	<img src="/assets/dot-grid.svg" alt="case board dot grid" class="background-svg" />
-	<LandingPage />
 	<Content {episodeData} {specificDataPoint}/>
-	<!-- <LandingPage /> -->
 </main>
 
 <style>
@@ -22,7 +22,5 @@
 		stroke: var(--white);
 		stroke-width: 5; 
 		z-index: -1; /* Ensure it is behind other content */
-		/* background-size: cover; */
 	}
-  </style>
-
+</style>
