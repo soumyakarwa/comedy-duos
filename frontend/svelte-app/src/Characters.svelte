@@ -3,34 +3,21 @@
   import * as d3 from 'd3';
   import { setSvgDimensions, createThumbPin, createLine} from "./Util.js";
   import * as Constants from "./Constants.js"
-  import { freezeSectionScroll } from "./Util.js";
 
   let textBox, charactersSvg, characterSection;
   let svgWidth, svgHeight, svg; 
   let pinTop, pinRight, pinLeft, pinBottom; 
   let raymond, jake, amy, terry, rosa, gina, charles; 
   
-  // let currentTextIndex = 0;
   export let currentTextIndex; 
   
   let connectingLine = false; 
-  const sectionTexts = [
-    `If you don’t already know what Brooklyn Nine–Nine is (which is borderline ridiculous btw), let me bring you up to speed on one of the most iconic sitcoms of our time. A Golden Globe winner, Brooklyn Nine–Nine is a 2013–2021 workplace sitcom about Brooklyn’s 99th Precinct’s detective squad when a rule-following, outwardly-unemotional, highly decorated NYPD <span class="yellow">Captain Raymond Holt</span> (played by Andre Braugher) takes over.`,
-    `Being the first openly Black Gay Police officer in the NYPD, Captain Holt has fought many uphill battles; but bringing the carefree, talented, almost irresponsible Detective Jacob Peralta (played by Andy Samberg) in line, might just be the toughest battle yet (lol I kid ofcourse).`,
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`
-  ];
-  let sectionObserver; 
   let characterGifs; 
   let characters = [];
 
   onMount(() => {
     svg = d3.select(charactersSvg);
     [svgWidth, svgHeight] = setSvgDimensions("characters", svg);
-    let lastScrollTop = document.documentElement.scrollTop;
     
     const textBoxBottom = Constants.characterTextBoxY + Constants.characterTextBoxHeight; 
     const textBoxLeft = 0.5 - Constants.characterTextBoxWidth/2; 
@@ -101,10 +88,7 @@
     characterGifs.rosa.pin = [svgWidth * (textBoxRight), svgHeight*0.48];
     characters = Object.values(characterGifs); 
 
-    createThumbPin(svg, pinTop); 
-
-    sectionObserver = freezeSectionScroll(lastScrollTop); 
-    
+    createThumbPin(svg, pinTop);     
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -126,25 +110,11 @@
     });
 
     observer.observe(textBox);
-
-    // if (characterSection) {
-    //   characterSection.addEventListener('click', handleClick);
-    // }
     
     return () => {
       observer.disconnect();
-      sectionObserver.disconnect(); 
-      document.body.style.overflow = 'auto';
     };
   });
-
-  // $: if(currentTextIndex == 0 && characterSection){
-  //   sectionObserver.observe(characterSection);
-  // }
-
-  // $: if(currentTextIndex == sectionTexts.length-1 && characterSection){
-  //   sectionObserver.unobserve(characterSection);
-  // }
 
   function addCharacterDiv(element, svg, characterPin, originPin){
       setTimeout(() => { 
@@ -169,22 +139,11 @@
     }
   }
 
-  function handleClick() {
-    currentTextIndex++; 
-    let char = characters[currentTextIndex]
-    let charElement = document.getElementById(char.id);
-    charElement.style.visibility = 'visible'; 
-    addCharacterDiv(charElement, svg, char.pin, char.originPin); 
-    if(currentTextIndex == sectionTexts.length-1){
-      document.body.style.overflow = 'auto';
-      characterSection.removeEventListener('click', handleClick);
-    }
-  }
 </script>
 
 <section bind:this={characterSection} class="characters-section" id="characters">
   <div bind:this={textBox} id="textBox">
-    <div id="charText">{@html sectionTexts[currentTextIndex]}</div>
+    <div id="charText">{@html Constants.characterSectionText[currentTextIndex]}</div>
   </div>
   {#if characters}
     {#each characters as c}

@@ -7,14 +7,12 @@
 	import { onMount } from 'svelte';
     import * as Constants from "./Constants.js"; 
 
-    // const pageSections = [LandingPage, Characters, Standalone, EpisodeBreakdown, HeatMap, Standalone]
-
     const pageSections = [
         { component: LandingPage, subSteps: 0 },
-        { component: Characters, subSteps: 6 },
+        { component: Characters, subSteps: Constants.characterSectionText.length-1 },
         { component: Standalone, subSteps: 0 },
-        { component: EpisodeBreakdown, subSteps: 7 },
-        { component: HeatMap, subSteps: 6 },
+        { component: EpisodeBreakdown, subSteps: Constants.episodeBreakdownText.length-1 },
+        { component: HeatMap, subSteps: Constants.heatMapSectionText.length-1 },
         { component: Standalone, subSteps: 0 }
     ];
 
@@ -30,17 +28,12 @@
         if (subIndexes[currentIndex] < pageSections[currentIndex].subSteps) {
             subIndexes[currentIndex]++;
         } else if (currentIndex < pageSections.length - 1) {
-            subIndexes[currentIndex] = 0;
             currentIndex++;
         }
         } else if (event.key === 'ArrowLeft') {
-            console.log(subIndexes[currentIndex]); 
         if (subIndexes[currentIndex] > 0) {
-            console.log(pageSections[currentIndex]);
-            console.log(subIndexes[currentIndex]);
             subIndexes[currentIndex]--;
         } else if (currentIndex > 0) {
-            subIndexes[currentIndex] = 0;
             currentIndex--;
         }
         }

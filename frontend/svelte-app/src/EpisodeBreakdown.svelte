@@ -1,11 +1,7 @@
 <script>
-    import Scroll from "./Scrolly.svelte";
-    import { fade, slide } from 'svelte/transition';
     import * as d3 from 'd3';
-    import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
     import * as Constants from "./Constants.js"; 
-    import { freezeSectionScroll } from "./Util";
 
     // SVG ELEMENTS
     let episodeSvg, chartDiv, contentDiv; 
@@ -28,28 +24,7 @@
     let episodeDescriptions = []; 
     let newDescription3;
     let characterHighlights = []; 
-    
-    // let currentStep = 0;
     let previousStep = -1; 
-    
-    let sectionObserver; 
-    
-    const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Comparing the descriptions to identify distinct groups. For instance, all three descriptions contain a distinct group of Jake, Charles and Terry.`, `Now it gets interesting. Description 1 is just one long sentence, but Description 3 is comprehensible and divided. I used Description 3 to correspond and break-up larger groups in Descriptions 1 & 2. So we know the second pair is, Captain Holt & Rosa.`, `And lastly, we have the unlikely duo of Amy & Gina! And so we know the groupings in __ episode. The next step, is to carry this out for all episodes of all seasons!`]
-
-    onMount(() => {
-        let lastScrollTop = document.documentElement.scrollTop;
-        sectionObserver = freezeSectionScroll(lastScrollTop); 
-
-        // if (episodeSection) {
-        //     episodeSection.addEventListener('click', handleClick);
-        // }
-
-        return () => {
-            sectionObserver.disconnect(); 
-            document.body.style.overflow = 'auto';
-            episodeSection.removeEventListener('click', handleClick);
-        };
-    }); 
 
     $: if (specificDataPoint){
         episodeDescriptions[0] = setSentenceHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
@@ -78,24 +53,6 @@
         rectWidth = 0.3*window.innerWidth; 
         rectYPosIncrement = rectWidth/3; 
     };
-
-    // $: if(episodeSection && currentStep == 0){
-    //     sectionObserver.observe(episodeSection);
-    // }
-
-    // $: if(episodeSection && currentStep == steps.length-1){
-    //     sectionObserver.unobserve(episodeSection);
-    // }
-
-    function handleClick(){
-        currentStep++; 
-        if(currentStep == steps.length-1){
-            document.body.style.overflow = 'auto';
-            episodeSection.removeEventListener('click', handleClick);
-            // contentDiv.style.position = "static"
-            // chartDiv.style.position = "static"
-        }
-    }
 
         /**
      * Setting initial sentence highlight spans in current step = 2
@@ -468,18 +425,9 @@
 </script>
 
 <section bind:this={episodeSection} class="episode-section">
-    <!-- <Scroll bind:value={currentStep}>
-        {#each steps as text, i}
-            <div class="step" class:active={currentStep === i}>
-                <div class="step-content">
-                    {@html text}
-                </div>
-            </div>
-        {/each}
-    </Scroll>    -->
     <div class="content" bind:this={contentDiv}>
         <img id="episode-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
-        {@html steps[currentStep]}
+        {@html Constants.episodeBreakdownText[currentStep]}
     </div>
 
     <div class="chart" bind:this={chartDiv}>

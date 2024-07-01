@@ -1,20 +1,7 @@
 <script>
-  import Scroller from '@sveltejs/svelte-scroller';
-  import { onMount } from 'svelte';
   import * as d3 from 'd3';
   import * as Constants from "./Constants.js"; 
-  import { freezeSectionScroll } from "./Util.js"; 
 
-  let sectionTexts = [`Continuing from previous analysis.`, `In the previous section we analysed Season 3, Episode 6, "Into the woods". Let's put the anlaysis onto a grid.`, `Conducting the same analysis for all episodes.`, `To streamline, let’s consider pairs with top 10% pairings together.`, `Now, there are two ways of finding the most iconic duo. The easiest, is to see which pair got the most screentime.`,
-  `To no one's surprise, we can see that the pair with the most appearences together iss DUN DUN DUN Jake & Amy.`, `In another approach, (perhaps more accurate) let's account for the number of votes and average rating of each episode to calculate the average cummilative rating.`, `And evidently, despite having lesser screentime, the most iconic duo of Brooklyn Nine-Nine is CAPTAIN HOLT & JAKE! They've appeared together 36 times, with over ____ votes and an average episode rating of 8.26. The viewers have spoken!`];
-  let count;
-  // let index = 0;
-  
-  let offset;
-  let progress;
-  let top = 0;
-  let threshold = 0.5;
-  let bottom = 0.9;
   const characterRatingDict = {};
   let sortedCharacterRatingArray; 
   let heatMapSection; 
@@ -26,7 +13,6 @@
   let heatMapSvg;
   const svgWidth = 0.9 * window.innerWidth;
   const svgHeight = 0.9 * window.innerHeight;
-  let sectionObserver; 
   
   /**
    * svg: heatmap svg
@@ -161,39 +147,6 @@
         .range([chartHeight, margin.top/2]);
 
   };
-
-  onMount(() => {
-        let lastScrollTop = document.documentElement.scrollTop;
-        sectionObserver = freezeSectionScroll(lastScrollTop);
-
-        // if (heatMapSection) {
-        //   heatMapSection.addEventListener('click', handleClick);
-        // }
-
-        return () => {
-            sectionObserver.disconnect(); 
-            document.body.style.overflow = 'auto';
-            heatMapSection.removeEventListener('click', handleClick);
-        };
-    }); 
-  
-  // $: if(heatMapSection && index == 0){
-  //   sectionObserver.observe(heatMapSection);
-  // }
-
-  // $: if(heatMapSection && index == sectionTexts.length-1){
-  //   sectionObserver.unobserve(heatMapSection);
-  // }
-  
-  function handleClick(){
-      index++; 
-      if(index == sectionTexts.length-1){
-          document.body.style.overflow = 'auto';
-          heatMapSection.removeEventListener('click', handleClick);
-          // contentDiv.style.position = "static"
-          // chartDiv.style.position = "static"
-      }
-  }
 
   /**
    * Reverts axes to original heat map axes
@@ -718,7 +671,7 @@
       </div>
       <div class="heatmap-content">
         <img id="heatmap-content-pin" src="/assets/white-pin.svg" alt="thumb pin" class="thumb-pin"/>
-        {@html sectionTexts[index]}
+        {@html Constants.heatMapSectionText[index]}
       </div>
 </section>
   
