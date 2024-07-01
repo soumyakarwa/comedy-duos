@@ -5,6 +5,7 @@
 <section class="standalone-section webpage-section">
     <div class="desc">
         <img id="standalone-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+        <img id="standalone-bottom-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
         {text[0]}
         <br>
         {#each text.slice(1) as t}
@@ -38,6 +39,11 @@
 
     #standalone-pin {
         top: -0.5rem;
+        left: 50%; 
+    }
+
+    #standalone-bottom-pin {
+        top: 99%;
         left: 50%; 
     }
 

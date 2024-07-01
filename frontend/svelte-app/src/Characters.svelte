@@ -20,11 +20,12 @@
     `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
     `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`
   ];
-
+  let sectionObserver; 
   let characterGifs; 
   let characters = [];
 
   onMount(() => {
+    console.log("mounted"); 
     svg = d3.select(charactersSvg);
     [svgWidth, svgHeight] = setSvgDimensions("characters", svg);
     let lastScrollTop = document.documentElement.scrollTop;
@@ -100,9 +101,8 @@
 
     createThumbPin(svg, pinTop); 
 
-    const sectionObserver = freezeSectionScroll(lastScrollTop, currentTextIndex, sectionTexts); 
-    sectionObserver.observe(characterSection);
-
+    sectionObserver = freezeSectionScroll(lastScrollTop); 
+    
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -135,6 +135,14 @@
       document.body.style.overflow = 'auto';
     };
   });
+
+  $: if(currentTextIndex == 0 && characterSection){
+    sectionObserver.observe(characterSection);
+  }
+
+  $: if(currentTextIndex == sectionTexts.length-1 && characterSection){
+    sectionObserver.unobserve(characterSection);
+  }
 
   function addCharacterDiv(element, svg, characterPin, originPin){
       setTimeout(() => { 

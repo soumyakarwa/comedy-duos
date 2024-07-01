@@ -46,44 +46,41 @@ export function setSvgDimensions(id, svg) {
   return [width, height];
 }
 
-export function freezeSectionScroll(lastScrollTop, index, sectionTexts) {
+export function freezeSectionScroll(lastScrollTop) {
   let sectionObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         const currentScrollTop = document.documentElement.scrollTop;
-        // if (
-        //   entry.isIntersecting &&
-        //   // currentScrollTop > lastScrollTop &&
-        //   index != sectionTexts.length - 1
-        // ) {
-        //   document.body.style.overflow = "hidden";
-        // } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
-        //   document.body.style.overflow = "auto";
-        // }
-
-        if (
-          entry.isIntersecting &&
-          entry.intersectionRatio >= 0.5 &&
-          index !== sectionTexts.length - 1
-        ) {
-          console.log(entry.isIntersecting);
-          // Scroll the section into full view
-          entry.target.scrollIntoView({ behavior: "smooth" });
-
-          // Freeze the scroll once the section is fully in view
-          setTimeout(() => {
-            document.body.style.overflow = "hidden";
-          }, 500);
+        if (entry.isIntersecting && currentScrollTop > lastScrollTop) {
+          console.log("hidden");
+          document.body.style.overflow = "hidden";
         } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
           document.body.style.overflow = "auto";
         }
 
+        // if (
+        //   entry.isIntersecting &&
+        //   entry.intersectionRatio >= 0.5 &&
+        //   index !== sectionTexts.length - 1
+        // ) {
+        //   console.log(entry.isIntersecting);
+        //   // Scroll the section into full view
+        //   entry.target.scrollIntoView({ behavior: "smooth" });
+
+        //   // Freeze the scroll once the section is fully in view
+        //   setTimeout(() => {
+        //     document.body.style.overflow = "hidden";
+        //   }, 500);
+        // } else if (!entry.isIntersecting || currentScrollTop <= lastScrollTop) {
+        //   document.body.style.overflow = "auto";
+        // }
+
         // lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // For Mobile or negative scrolling
       });
+    },
+    {
+      threshold: 0.99,
     }
-    // {
-    //   threshold: [0],
-    // }
   );
   return sectionObserver;
 }

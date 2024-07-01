@@ -24,6 +24,7 @@
   let heatMapSvg;
   const svgWidth = 0.9 * window.innerWidth;
   const svgHeight = 0.9 * window.innerHeight;
+  let sectionObserver; 
   
   /**
    * svg: heatmap svg
@@ -156,8 +157,7 @@
 
   onMount(() => {
         let lastScrollTop = document.documentElement.scrollTop;
-        const sectionObserver = freezeSectionScroll(lastScrollTop, index, sectionTexts);
-        sectionObserver.observe(heatMapSection);
+        sectionObserver = freezeSectionScroll(lastScrollTop);
 
         if (heatMapSection) {
           heatMapSection.addEventListener('click', handleClick);
@@ -170,6 +170,14 @@
         };
     }); 
   
+  $: if(heatMapSection && index == 0){
+    sectionObserver.observe(heatMapSection);
+  }
+
+  $: if(heatMapSection && index == sectionTexts.length-1){
+    sectionObserver.unobserve(heatMapSection);
+  }
+  
   function handleClick(){
       index++; 
       if(index == sectionTexts.length-1){
@@ -179,7 +187,6 @@
           // chartDiv.style.position = "static"
       }
   }
-
 
   /**
    * Reverts axes to original heat map axes

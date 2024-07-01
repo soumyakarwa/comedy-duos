@@ -29,13 +29,13 @@
     let characterHighlights = []; 
     let currentStep = 0;
     let previousStep = -1; 
+    let sectionObserver; 
     
     const steps = [`Let's consider this square to represent an episode.`, `Using three different descriptions provided me more insight, and allowed me to compare and contrast the plots for each episode.`, `Breaking the descriptions down to sentences provides insight about the different plot points.`, `Breaking down complicated sentences into clauses to improve analysis.`, `Analysing each part for character groups or pairings.`, `Comparing the descriptions to identify distinct groups. For instance, all three descriptions contain a distinct group of Jake, Charles and Terry.`, `Now it gets interesting. Description 1 is just one long sentence, but Description 3 is comprehensible and divided. I used Description 3 to correspond and break-up larger groups in Descriptions 1 & 2. So we know the second pair is, Captain Holt & Rosa.`, `And lastly, we have the unlikely duo of Amy & Gina! And so we know the groupings in __ episode. The next step, is to carry this out for all episodes of all seasons!`]
 
     onMount(() => {
         let lastScrollTop = document.documentElement.scrollTop;
-        const sectionObserver = freezeSectionScroll(lastScrollTop, currentStep, steps); 
-        sectionObserver.observe(episodeSection);
+        sectionObserver = freezeSectionScroll(lastScrollTop); 
 
         if (episodeSection) {
             episodeSection.addEventListener('click', handleClick);
@@ -75,6 +75,14 @@
         rectWidth = 0.3*window.innerWidth; 
         rectYPosIncrement = rectWidth/3; 
     };
+
+    $: if(episodeSection && currentStep == 0){
+        sectionObserver.observe(episodeSection);
+    }
+
+    $: if(episodeSection && currentStep == steps.length-1){
+        sectionObserver.unobserve(episodeSection);
+    }
 
     function handleClick(){
         currentStep++; 
