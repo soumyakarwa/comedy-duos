@@ -37,9 +37,9 @@
         let lastScrollTop = document.documentElement.scrollTop;
         sectionObserver = freezeSectionScroll(lastScrollTop); 
 
-        if (episodeSection) {
-            episodeSection.addEventListener('click', handleClick);
-        }
+        // if (episodeSection) {
+        //     episodeSection.addEventListener('click', handleClick);
+        // }
 
         return () => {
             sectionObserver.disconnect(); 
@@ -76,13 +76,13 @@
         rectYPosIncrement = rectWidth/3; 
     };
 
-    $: if(episodeSection && currentStep == 0){
-        sectionObserver.observe(episodeSection);
-    }
+    // $: if(episodeSection && currentStep == 0){
+    //     sectionObserver.observe(episodeSection);
+    // }
 
-    $: if(episodeSection && currentStep == steps.length-1){
-        sectionObserver.unobserve(episodeSection);
-    }
+    // $: if(episodeSection && currentStep == steps.length-1){
+    //     sectionObserver.unobserve(episodeSection);
+    // }
 
     function handleClick(){
         currentStep++; 

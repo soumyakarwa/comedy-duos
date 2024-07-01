@@ -124,9 +124,9 @@
 
     observer.observe(textBox);
 
-    if (characterSection) {
-      characterSection.addEventListener('click', handleClick);
-    }
+    // if (characterSection) {
+    //   characterSection.addEventListener('click', handleClick);
+    // }
     
     return () => {
       observer.disconnect();
@@ -135,13 +135,13 @@
     };
   });
 
-  $: if(currentTextIndex == 0 && characterSection){
-    sectionObserver.observe(characterSection);
-  }
+  // $: if(currentTextIndex == 0 && characterSection){
+  //   sectionObserver.observe(characterSection);
+  // }
 
-  $: if(currentTextIndex == sectionTexts.length-1 && characterSection){
-    sectionObserver.unobserve(characterSection);
-  }
+  // $: if(currentTextIndex == sectionTexts.length-1 && characterSection){
+  //   sectionObserver.unobserve(characterSection);
+  // }
 
   function addCharacterDiv(element, svg, characterPin, originPin){
       setTimeout(() => { 

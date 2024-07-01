@@ -159,9 +159,9 @@
         let lastScrollTop = document.documentElement.scrollTop;
         sectionObserver = freezeSectionScroll(lastScrollTop);
 
-        if (heatMapSection) {
-          heatMapSection.addEventListener('click', handleClick);
-        }
+        // if (heatMapSection) {
+        //   heatMapSection.addEventListener('click', handleClick);
+        // }
 
         return () => {
             sectionObserver.disconnect(); 
@@ -170,13 +170,13 @@
         };
     }); 
   
-  $: if(heatMapSection && index == 0){
-    sectionObserver.observe(heatMapSection);
-  }
+  // $: if(heatMapSection && index == 0){
+  //   sectionObserver.observe(heatMapSection);
+  // }
 
-  $: if(heatMapSection && index == sectionTexts.length-1){
-    sectionObserver.unobserve(heatMapSection);
-  }
+  // $: if(heatMapSection && index == sectionTexts.length-1){
+  //   sectionObserver.unobserve(heatMapSection);
+  // }
   
   function handleClick(){
       index++; 
