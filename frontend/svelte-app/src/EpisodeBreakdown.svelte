@@ -1,10 +1,12 @@
 <script>
+    import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import { writable } from 'svelte/store';
     import * as Constants from "./Constants.js"; 
+    import {setSvgDimensions, createLine} from "./Util.js"; 
 
     // SVG ELEMENTS
-    let episodeSvg, chartDiv, contentDiv; 
+    let episodeSvg, chartDiv, contentDiv, overlaySvg; 
     let baseRect; 
     let heatMap; 
     let episodeRectText = [{rect: null, text: null},{rect: null, text: null}, {rect: null, text: null}]
@@ -15,6 +17,8 @@
     let rectWidth;
     let rectYPosIncrement;
     let episodeSection; 
+    let svgWidth, svgHeight; 
+    let connectingLine = false; 
 
     export let episodeData;
     export let specificDataPoint;
@@ -54,7 +58,44 @@
         rectYPosIncrement = rectWidth/3; 
     };
 
-        /**
+    onMount(async () => {
+        const svg = d3.select(overlaySvg);
+        
+        [svgWidth, svgHeight] = setSvgDimensions("episode-breakdown-section", svg);
+
+        const top = svgHeight * 0.05; 
+        const contentDiv = document.querySelector('.content');
+        const contentDivWidth =contentDiv.offsetWidth;
+        const leftContent = svgWidth*0.2; 
+        
+        const chartDiv = document.getElementById("col1");
+        const chartDivWidth = chartDiv.offsetWidth;
+        const rightChart = svgWidth*0.53; 
+
+        const leftPinPosition = [leftContent+contentDivWidth/2, top]; 
+        const rightPinPosition = [rightChart+chartDivWidth/2, top]; 
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (!connectingLine) {
+                        connectingLine = true;
+                        createLine(svg, [svgWidth * 0.375, 0], leftPinPosition, Constants.maxLineDelay/3);
+                        createLine(svg, [svgWidth * 0.625, 0], rightPinPosition,Constants.maxLineDelay/3);
+                    }
+                }
+            });
+        }, {
+            threshold: 0.5 // Adjust this threshold as needed
+        });
+        
+        observer.observe(episodeSection);
+
+       
+
+    });    
+
+    /**
      * Setting initial sentence highlight spans in current step = 2
      * @param description
      * @param analysis
@@ -424,7 +465,7 @@
     })();
 </script>
 
-<section bind:this={episodeSection} class="episode-section">
+<section bind:this={episodeSection} class="episode-section" id="episode-breakdown-section">
     <div class="content" bind:this={contentDiv}>
         <img id="episode-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
         {@html Constants.episodeBreakdownText[currentStep]}
@@ -469,15 +510,12 @@
             </div>
         </div>
     </div>  
+    <svg bind:this={overlaySvg} id="overlaySvg-episodeBreakdown"></svg>
 </section>
 
 
 <style>
     .episode-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: calc(var(--margin)*3); 
         height: 100vh; 
         width: 100vw; 
         position: relative; 
@@ -493,6 +531,7 @@
         flex-direction: row;
         align-items: center;
         background-color: var(--white); 
+        z-index: 0; 
         /* gap: var(--margin); */
         /* padding-left:calc(var(--margin)*2);  */
     }
@@ -515,6 +554,13 @@
         position: absolute;  
         top: 5vh;
         left: 20vw; 
+        z-index: 0; 
+    }
+
+    #overlaySvg-episodeBreakdown {
+        position: absolute; 
+        display: block;
+        z-index: 1;
     }
 
     #episode-pin {
@@ -536,32 +582,5 @@
 
     .episodeDescriptions.active {
         opacity: 1;
-    }
-
-    /* Scrollytelling CSS */
-    .step {
-        height: 55vh;
-        max-width: 25vw; 
-        display: flex;
-        place-items: center;
-        justify-content: center;
-        align-items: flex-start;
-    }
-
-    .step-content {
-        /* max-width: 35vw;  */
-        background: var(--white);
-        opacity: 0.2; 
-        color: var(--black);
-        padding: var(--margin);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        transition: background-color var(--transition-time) ease;
-        z-index: 10;
-    }
-
-    .step.active .step-content {
-        opacity: 1;  
     }
 </style>

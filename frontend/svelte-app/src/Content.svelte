@@ -18,6 +18,9 @@
 
 	export let episodeData;
 	export let specificDataPoint;
+    export let firstStandaloneBoolean = true; 
+    export let secondStandaloneBoolean = false;  
+
     let container;
     let currentIndex = 0;
     let subIndexes = Array(pageSections.length).fill(0);
@@ -75,10 +78,10 @@
 <div bind:this={container} class="container">
     <div class="section"><LandingPage/></div>
     <div class="section"><Characters currentTextIndex={subIndexes[1]}/></div>
-    <div class="section"><Standalone text={Constants.standaloneText1}/></div>
+    <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={firstStandaloneBoolean}/></div>
     <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[3]}/></div>
     <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[4]}/></div>
-    <div class="section"><Standalone text={Constants.standaloneText1}/></div>
+    <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={secondStandaloneBoolean}/></div>
 </div>
 
 <style>

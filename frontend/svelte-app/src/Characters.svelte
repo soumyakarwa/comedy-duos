@@ -119,12 +119,12 @@
   function addCharacterDiv(element, svg, characterPin, originPin){
       setTimeout(() => { 
         if (element) {element.style.visibility = 'visible';}}, 
-        Constants.maxLineDelay);
+        Constants.maxLineDelay/3);
       // setTimeout(() => {createThumbPin(svg, characterPin)}, Constants.maxLineDelay);
       setTimeout(() => {
         createThumbPin(svg, characterPin)
-        createLine(svg, originPin, characterPin, Math.random() * Constants.maxLineDelay)}, 
-        Constants.maxLineDelay);
+        createLine(svg, originPin, characterPin, 0)}, 
+        Constants.maxLineDelay/3);
   }
 
   $: {
@@ -187,6 +187,12 @@
     z-index: 0; 
   }
 
+  #charText {
+    padding: var(--margin);
+    height: fit-content; 
+    font-size: var(--body-font-size); 
+  }
+
   .character-containers img{
     max-width: 15vw; 
   }
@@ -240,11 +246,6 @@
     transition: visibility var(--transition-time) ease-in-out; 
   }
 
-  #charText {
-    padding: var(--margin);
-    height: fit-content; 
-    font-size: var(--body-font-size); 
-  }
 
   .characters-section svg{
     position: relative; 

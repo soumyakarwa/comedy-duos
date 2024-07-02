@@ -58,6 +58,32 @@ export function remToPixels(rem) {
   return numericalValue * 16;
 }
 
+export function convertViewportUnits(value) {
+  // Check if the value is a string and ends with 'vh' or 'vw'
+  if (
+    typeof value !== "string" ||
+    (!value.endsWith("vh") && !value.endsWith("vw"))
+  ) {
+    throw new Error('Value must be a string ending with "vh" or "vw".');
+  }
+
+  // Get the numeric part of the value
+  const numericValue = parseFloat(value);
+
+  // Get the unit (vh or vw)
+  const unit = value.slice(-2);
+
+  // Calculate the conversion based on the unit
+  let convertedValue;
+  if (unit === "vh") {
+    convertedValue = numericValue * (window.innerHeight / 100);
+  } else if (unit === "vw") {
+    convertedValue = numericValue * (window.innerWidth / 100);
+  }
+
+  return convertedValue;
+}
+
 // COLORS
 export const blackColor = getCSSVariable("--black");
 export const whiteColor = getCSSVariable("--white");
@@ -84,7 +110,7 @@ export const titleFontSize = getCSSVariable("--title-font-size");
 export const labelFontSize = getCSSVariable("--label-font-size");
 export const margin = getCSSVariable("--margin");
 export const ellipseSize = 7;
-export const maxLineDelay = 500;
+export const maxLineDelay = 750;
 
 export const characterTextBoxX =
   parseFloat(getCSSVariable("--text-box-x")) / 100;
