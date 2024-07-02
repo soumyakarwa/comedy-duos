@@ -118,7 +118,7 @@
 
   function addCharacterDiv(element, svg, characterPin, originPin){
       setTimeout(() => { 
-        if (element) {element.style.visibility = 'visible';}}, 
+        if (element) {element.style.opacity = 1;}}, 
         Constants.maxLineDelay/3);
       // setTimeout(() => {createThumbPin(svg, characterPin)}, Constants.maxLineDelay);
       setTimeout(() => {
@@ -200,52 +200,51 @@
   #raymond {
     top: 24vh; 
     left: 80vw;
-    visibility: hidden; 
-    transition: visibility var(--transition-time) ease-in-out; 
+    opacity: 0; 
+    transition: opacity var(--transition-time) ease-in-out; 
   }
 
   #charles {
     top: 65vh; 
     left: 80vw;
-    visibility: hidden; 
-    transition: visibility var(--transition-time) ease-in-out; 
+    opacity: 0; 
+    transition: opacity var(--transition-time) ease-in-out; 
   }
 
   #jake {
     top: 24vh; 
     left: 4vw;
-    visibility: hidden; 
-    transition: visibility var(--transition-time) ease-in-out; 
+    opacity: 0; 
+    transition: opacity var(--transition-time) ease-in-out;  
   }
 
   #amy {
     top: 65vh; 
     left: 4vw;
-    visibility: hidden; 
-    transition: visibility var(--transition-time) ease-in-out; 
+    opacity: 0; 
+    transition: opacity var(--transition-time) ease-in-out; 
   }
 
   #terry {
     top: 50vh; 
     left: 24vw;
-    visibility: hidden; 
-    transition: visibility var(--transition-time) ease-in-out; 
+    opacity: 0; 
+    transition: opacity var(--transition-time) ease-in-out; 
   }
 
   #gina {
     top: 68vh; 
     left: 42vw;
-    visibility: hidden; 
-    transition: visibility var(--transition-time) ease-in-out; 
+    opacity: 0; 
+    transition: opacity var(--transition-time) ease-in-out; 
   }
 
   #rosa {
     top: 48vh; 
     left: 60vw;
-    visibility: hidden; 
-    transition: visibility var(--transition-time) ease-in-out; 
+    opacity: 0; 
+    transition: opacity var(--transition-time) ease-in-out; 
   }
-
 
   .characters-section svg{
     position: relative; 

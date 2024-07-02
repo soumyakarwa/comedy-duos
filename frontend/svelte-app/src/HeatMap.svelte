@@ -47,7 +47,6 @@
         .attr('transform', `translate(${margin.left},${margin.top})`);
     }
     
-    console.log(g); 
 
     // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
     originalXScale = d3.scaleBand()
@@ -119,7 +118,6 @@
             ratingDifference: averageCumulativeRating - averageRating
         };
     }).sort((a, b) => b.frequency - a.frequency); 
-    console.log(sortedCharacterRatingArray); 
     topPairs = sortedCharacterRatingArray.slice(0, 10).map(d => pairToString(d.pair));
     frequencies = sortedCharacterRatingArray.slice(0, 10).map(d => d.frequency);
     ratings = sortedCharacterRatingArray.slice(0, 10).map(d => d.averageCumulativeRating);

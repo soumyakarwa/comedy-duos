@@ -50,10 +50,6 @@ body {
   line-height: 1.4;
 }
 
-.box.scrolled {
-  transform: scale(1.5);
-}
-
 .italic {
   /* color: var(--yellow); */
   font-family: "Old-Standard-TT-Italic";
