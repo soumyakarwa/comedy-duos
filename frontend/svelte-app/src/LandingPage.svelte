@@ -18,13 +18,15 @@
     const caseBottomPin1 = [caseImgX*7.5, caseImgY + caseImgHeight]; 
     const caseTopPin1 = [caseImgX*6, caseImgY]; 
 
-    const titleImgWidth = svgWidth * 0.6; 
+    const titleImgRatio = 1011/435; 
+    const titleImgHeight = svgHeight * 0.46;
+    const titleImgWidth = titleImgRatio * titleImgHeight; 
     const titleImgX = svgWidth*0.215; 
     const titleImgY = svgHeight * 0.285; 
-    const titleTopPin1 = [titleImgX + svgWidth*0.206, titleImgY]; 
+    const titleTopPin1 = [titleImgX + 0.3*titleImgWidth, titleImgY]; 
     const titleTopPin2 = [titleImgX + titleImgWidth - 4, titleImgY]; 
-    const titleBottomPin1 = [svgWidth * 0.34, titleImgY + svgHeight*0.46];
-    const titleBottomPin2 = [titleImgX + titleImgWidth - 4, titleImgY + svgHeight*0.46];
+    const titleBottomPin1 = [titleImgX + 0.1*titleImgWidth, titleImgY + titleImgHeight];
+    const titleBottomPin2 = [titleImgX + titleImgWidth - 6, titleImgY + titleImgHeight];
 
     const detectiveImgHeight = svgHeight * 0.09;
     const detectiveImgX = svgWidth*0.88; 
@@ -41,7 +43,9 @@
        .attr("xlink:href", "/assets/title.svg") 
        .attr("x", titleImgX) 
        .attr("y", titleImgY)
-       .attr("width", titleImgWidth);   
+      //  .attr("width", titleImgWidth);   
+       .attr("height", titleImgHeight);
+  
 
     const detectiveImg = svg.append("image")
     .attr("xlink:href", "/assets/detective.svg") 
