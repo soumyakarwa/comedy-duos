@@ -36,6 +36,8 @@
   // margin from svgHeight, svgWidth to create chartSize
   const margin = { top: 150, right: 20, bottom: 50, left: 50 };
 
+  let xAxisLabelBase = margin.top/6; 
+
   $: if(episodeData.length) {
     svg = d3.select(heatMapSvg);
     chartWidth = svgWidth - margin.left - margin.right;
@@ -77,7 +79,7 @@
       .attr("class", "x-axis-label")
       .attr("text-anchor", "middle")
       .attr("x", chartWidth / 2)
-      .attr("y", chartHeight + margin.top/4)
+      .attr("y", chartHeight + xAxisLabelBase)
       .text("Episode");
 
     g.append("text")
@@ -172,7 +174,7 @@
         .transition()
         .duration(Constants.transitionTime)
         .attr("x", chartWidth / 2)
-        .attr("y", chartHeight + margin.top / 4)
+        .attr("y", chartHeight + xAxisLabelBase)
         .text("Episode");
 
     // Update y-axis label
@@ -502,7 +504,7 @@
      g.select(".x-axis-label")
         .transition()
         .duration(Constants.transitionTime)
-        .attr("y", chartHeight + margin.top/4+15)
+        .attr("y", chartHeight + xAxisLabelBase +15)
         .text("Top Character Pairs");
 
     // Update y-axis with transition
