@@ -34,7 +34,7 @@
   let svg, g, originalXScale, originalYScale, legend, chartWidth, chartHeight, frequencyXScale, frequencyYScale, topPairs, frequencies, pairToColor, ratingXScale, ratingYScale, ratings;
   
   // margin from svgHeight, svgWidth to create chartSize
-  const margin = { top: 100, right: 20, bottom: 50, left: 50 };
+  const margin = { top: 150, right: 20, bottom: 50, left: 50 };
 
   $: if(episodeData.length) {
     svg = d3.select(heatMapSvg);
@@ -717,7 +717,7 @@
       background-color: var(--yellow); 
       width: 25vw; 
       padding: var(--margin); 
-      height: 10vh; 
+      height: 16vh; 
       top: 3vh; 
       left: 25vw; 
     }

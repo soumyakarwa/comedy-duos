@@ -25,7 +25,7 @@
     const titleImgY = svgHeight * 0.285; 
     const titleTopPin1 = [titleImgX + 0.3*titleImgWidth, titleImgY]; 
     const titleTopPin2 = [titleImgX + titleImgWidth - 4, titleImgY]; 
-    const titleBottomPin1 = [titleImgX + 0.1*titleImgWidth, titleImgY + titleImgHeight];
+    const titleBottomPin1 = [titleImgX + 0.2*titleImgWidth, titleImgY + titleImgHeight];
     const titleBottomPin2 = [titleImgX + titleImgWidth - 6, titleImgY + titleImgHeight];
 
     const detectiveImgHeight = svgHeight * 0.09;
