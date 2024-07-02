@@ -120,8 +120,11 @@
       setTimeout(() => { 
         if (element) {element.style.visibility = 'visible';}}, 
         Constants.maxLineDelay);
-      setTimeout(() => {createThumbPin(svg, characterPin)}, Constants.maxLineDelay);
-      setTimeout(() => {createLine(svg, originPin, characterPin, Math.random() * Constants.maxLineDelay)}, Constants.maxLineDelay);
+      // setTimeout(() => {createThumbPin(svg, characterPin)}, Constants.maxLineDelay);
+      setTimeout(() => {
+        createThumbPin(svg, characterPin)
+        createLine(svg, originPin, characterPin, Math.random() * Constants.maxLineDelay)}, 
+        Constants.maxLineDelay);
   }
 
   $: {

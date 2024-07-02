@@ -27,7 +27,7 @@ export function createLine(svg, pos1, pos2, delay) {
     .attr("x2", pos1[0])
     .attr("y2", pos1[1])
     .transition()
-    .delay(delay)
+    // .delay(delay)
     .duration(Constants.transitionTime * 2)
     .ease(d3.easeSinInOut)
     .attr("x2", pos2[0])
