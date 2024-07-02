@@ -33,6 +33,13 @@
     const detectiveImgY = svgHeight * 0.88; 
     const detectiveTopPin1 = [detectiveImgX + svgWidth*0.047, detectiveImgY];
 
+    const arrowImgRatio = 169/88.41; 
+    const arrowImgHeight = titleImgHeight * 0.2; 
+    const arrowImgWidth = arrowImgHeight*arrowImgRatio; 
+    const arrowImgX = titleImgX + titleImgWidth + 10; 
+    const arrowImgY = titleImgY + titleImgHeight - arrowImgHeight; 
+    const arrowPin = [arrowImgX + arrowImgWidth/2, arrowImgY];
+
     const caseImg = svg.append("image")
         .attr("xlink:href", "/assets/caseText.svg") 
         .attr("x", caseImgX) 
@@ -45,13 +52,25 @@
        .attr("y", titleImgY)
       //  .attr("width", titleImgWidth);   
        .attr("height", titleImgHeight);
-  
 
     const detectiveImg = svg.append("image")
     .attr("xlink:href", "/assets/detective.svg") 
     .attr("x", detectiveImgX) 
     .attr("y", detectiveImgY)
     .attr("height", detectiveImgHeight); 
+
+    setTimeout(() => {
+      const arrowKeyImg = svg.append("image")
+        .attr("xlink:href", "/assets/arrows.svg")
+        .attr("x", arrowImgX) 
+        .attr("y", arrowImgY)
+        .attr("height", arrowImgHeight)
+        .attr("opacity", 0)
+        .transition()
+        .duration(Constants.transitionTime)
+        .attr("opacity", 1); 
+      createThumbPin(svg, arrowPin); 
+    }, Constants.maxLineDelay*3);    
 
     createThumbPin(svg, caseBottomPin1); 
     createThumbPin(svg, caseTopPin1); 
