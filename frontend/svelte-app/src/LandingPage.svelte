@@ -70,7 +70,7 @@
         .duration(Constants.transitionTime)
         .attr("opacity", 1); 
       createThumbPin(svg, arrowPin); 
-    }, Constants.maxLineDelay*3);    
+    }, Constants.maxLineDelay*2);    
 
     createThumbPin(svg, caseBottomPin1); 
     createThumbPin(svg, caseTopPin1); 
