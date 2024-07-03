@@ -122,6 +122,11 @@ export const characterTextBoxWidth =
   parseFloat(getCSSVariable("--text-box-width")) / 100;
 
 // SECTION TEXTS
+export const standaloneIntroduction = [
+  `Golden Globe winner Brooklyn Nine-Nine is a situational comedy show about the detectives of Brooklyn’s 99th Precinct when a rule-following, outwardly unemotional, and highly decorated NYPD Captain Raymond Holt (played by Andre Braugher) takes charge. Under new leadership, the offbeat albeit talented detectives must get their act together–some more happily than others.`,
+  `Like in most sitcoms, each Brooklyn Nine-Nine episode presents a self-contained story that contributes to the overall growth of characters and their relationships. Consequently, what makes Brooklyn Nine-Nine so unique isn’t the part where they bust the bad guys but rather about the people doing the busting! It’s about how their lives, relationships, and ambitions change as a result of their experiences on the job and their interactions with each other. But set against a grim backdrop of a police precinct where things don’t usually go as planned, Brooklyn Nine-Nine reminds its viewers that with the right people by our side and a sense of humor, we can handle anything!`,
+];
+
 export const standaloneText1 = [
   `To figure out the most iconic character duo, I first needed to figure out which characters were paired together. In order to do that I consolidated three different versions of the episode descriptions, text about what three different sources I used.`,
   `Second paragraph in some way about how I consolidated the three texts and analyzed the language to identify pairings.`,
@@ -130,24 +135,14 @@ export const standaloneText1 = [
 ];
 
 export const characterSectionText = [
-  `If you don’t already know what Brooklyn Nine–Nine is (which is borderline ridiculous btw), let me bring you up to speed on one of the most iconic sitcoms of our time. A Golden Globe winner, Brooklyn Nine–Nine is a 2013–2021 workplace sitcom about Brooklyn’s 99th Precinct’s detective squad when a rule-following, outwardly-unemotional, highly decorated NYPD <span class="yellow">Captain Raymond Holt</span> (played by Andre Braugher) takes over.`,
-  `Being the first openly Black Gay Police officer in the NYPD, Captain Holt has fought many uphill battles; but bringing the carefree, talented, almost irresponsible Detective Jacob Peralta (played by Andy Samberg) in line, might just be the toughest battle yet (lol I kid ofcourse).`,
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempus commodo placerat. Cras vehicula purus non eros laoreet ultrices. Suspendisse congue bibendum dolor, non eleifend nunc ullamcorper sed. Praesent pulvinar ullamcorper malesuada. Proin scelerisque purus sed nibh vulputate ultrices. Nunc vitae ullamcorper sapien, sit amet sollicitudin quam. Orci varius natoque.`,
-];
-
-export const heatMapSectionText = [
-  `Continuing from previous analysis.`,
-  `In the previous section we analysed Season 3, Episode 6, "Into the woods". Let's put the anlaysis onto a grid.`,
-  `Conducting the same analysis for all episodes.`,
-  `To streamline, let’s consider pairs with top 10% pairings together.`,
-  `Now, there are two ways of finding the most iconic duo. The easiest, is to see which pair got the most screentime.`,
-  `To no one's surprise, we can see that the pair with the most appearences together iss DUN DUN DUN Jake & Amy.`,
-  `In another approach, (perhaps more accurate) let's account for the number of votes and average rating of each episode to calculate the average cummilative rating.`,
-  `And evidently, despite having lesser screentime, the most iconic duo of Brooklyn Nine-Nine is CAPTAIN HOLT & JAKE! They've appeared together 36 times, with over ____ votes and an average episode rating of 8.26. The viewers have spoken!`,
+  `Whether it’s Jake & Amy navigating their feelings for each other against all odds, Captain Holt & Jake developing mutual respect despite being complete opposites, or Charles & Rosa’s strange but strong dynamic, I was intrigued by these unlikely duos. I wanted to delve deeper into the character relationships and, just for fun, analyze which character duo is the most popular and most loved! But before I jump into my analysis, let me introduce the beloved Brooklyn Nine-Nine characters!`,
+  `Captain Raymond Holt is known for his unwavering dedication, dry wit, and calm demeanor. Despite his outwardly unemotional facade, Holt deeply cares for his team, bringing order and unexpected humor to their daily lives. Being the first openly Black Gay Police officer in the NYPD, Captain Holt has fought many tough battles. However, bringing the carefree, talented, but irresponsible Detective Jacob Peralta (played by Andy Samberg) in line might be one of the most brutal battles yet.`,
+  `Detective Jacob "Jake" Peralta, the talented yet immature detective of Brooklyn's 99th Precinct, is known for his reckless behavior and unwavering confidence. He often neglects responsibility and enjoys pranks, but his natural detective skills and charm make him an invaluable, if unpredictable, member of the team. Over time, Jake's character grows significantly, primarily through his relationship with Detective Amy Santiago, where he learns responsibility, maturity, and the value of teamwork and commitment.`,
+  `Detective Amy Santiago is the fiercely competitive, highly organized, and detail-oriented detective of Brooklyn's 99th Precinct. Known for her unwavering ambition and obsession with rules, Amy strives for perfection in everything she does, from her meticulously organized binders to her quest to become the youngest captain in NYPD history. Her dedication and efficiency make her an indispensable asset to the team, though her intense focus on her career sometimes leads to humorous and endearing quirks. `,
+  `Sergeant Terry Jeffords is the brawny yet tender-hearted sergeant of Brooklyn's 99th Precinct. While he is known for his immense strength and imposing physique, he also has a heart of gold and is a self-declared family man. Terry strives to keep the detective squad in line, help with cases, and care for them when sick or injured. Though he can be tough and skeptical of the precinct shenanigans, he knows how to have fun and relax and allows himself to indulge in life's little pleasures, like his beloved yogurt.`,
+  `Gina Linetti, the eccentric and hilariously self-absorbed civilian administrator, is known for her unique brand of sarcasm, unmatched confidence, and penchant for the dramatic. With a personality as bold as her fashion choices, Gina often steals the spotlight with her biting humor and unapologetic self-assurance. Despite her seemingly aloof attitude, Gina is undeniably loyal to her friends and colleagues, often offering surprisingly profound insights and unwavering support when they least expect it. `,
+  `Detective Charles Boyle is the devoted, kind-hearted, and incredibly quirky detective of Brooklyn's 99th Precinct. Known for his loyalty and admiration for his best friend, Jake, Charles often goes all out to support his colleagues, even if it means putting himself in awkward situations. His culinary expertise, particularly his love for exotic foods adds an endearing dimension to his character. Though often perceived as a pushover due to his earnestness, Charles' dedication to his work and friends is unquestionable.`,
+  `Detective Rosa Diaz is tough-as-nails and known for her intense demeanor and mysterious past. With a no-nonsense attitude and a penchant for maintaining a highly private personal life, Rosa keeps her colleagues at arm's length. However, beneath her stoic exterior, Rosa harbors a surprising depth of compassion, often revealing her softer side in moments of vulnerability. Her dark humor and unexpected interests, such as classical ballet and motorcycling, add layers to her complex and intriguing personality.`,
 ];
 
 export const episodeBreakdownText = [
@@ -159,4 +154,15 @@ export const episodeBreakdownText = [
   `Comparing the descriptions to identify distinct groups. For instance, all three descriptions contain a distinct group of Jake, Charles and Terry.`,
   `Now it gets interesting. Description 1 is just one long sentence, but Description 3 is comprehensible and divided. I used Description 3 to correspond and break-up larger groups in Descriptions 1 & 2. So we know the second pair is, Captain Holt & Rosa.`,
   `And lastly, we have the unlikely duo of Amy & Gina! And so we know the groupings in __ episode. The next step, is to carry this out for all episodes of all seasons!`,
+];
+
+export const heatMapSectionText = [
+  `Continuing from previous analysis.`,
+  `In the previous section we analysed Season 3, Episode 6, "Into the woods". Let's put the anlaysis onto a grid.`,
+  `Conducting the same analysis for all episodes.`,
+  `To streamline, let’s consider pairs with top 10% pairings together.`,
+  `Now, there are two ways of finding the most iconic duo. The easiest, is to see which pair got the most screentime.`,
+  `To no one's surprise, we can see that the pair with the most appearences together iss DUN DUN DUN Jake & Amy.`,
+  `In another approach, (perhaps more accurate) let's account for the number of votes and average rating of each episode to calculate the average cummilative rating.`,
+  `And evidently, despite having lesser screentime, the most iconic duo of Brooklyn Nine-Nine is CAPTAIN HOLT & JAKE! They've appeared together 36 times, with over ____ votes and an average episode rating of 8.26. The viewers have spoken!`,
 ];

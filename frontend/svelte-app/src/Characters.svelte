@@ -97,11 +97,11 @@
             createThumbPin(svg, pinLeft); 
             createThumbPin(svg, pinRight); 
             createThumbPin(svg, pinBottom); 
-            let raymondElement = document.getElementById('raymond');
+            // let raymondElement = document.getElementById('raymond');
             connectingLine = true;
-            setTimeout(() => {
-              addCharacterDiv(raymondElement, svg, characterGifs.raymond.pin, pinRight); 
-            }, Constants.maxLineDelay);
+            // setTimeout(() => {
+            //   addCharacterDiv(raymondElement, svg, characterGifs.raymond.pin, pinRight); 
+            // }, Constants.maxLineDelay);
           }
         }
       });
@@ -128,8 +128,8 @@
   }
 
   $: {
-    if (characters.length > 0 && typeof currentTextIndex === 'number' && currentTextIndex > 0 && currentTextIndex < characters.length) {
-      let char = characters[currentTextIndex];
+    if (characters.length > 0 && typeof currentTextIndex === 'number' && currentTextIndex > 0 && currentTextIndex < characters.length+1) {
+      let char = characters[currentTextIndex-1];
       let charElement = document.getElementById(char.id);
 
       // Ensure the element exists before manipulating it
@@ -172,6 +172,7 @@
     align-items: center;
     gap: calc(var(--margin)/2); 
     background-color: var(--white); 
+    font-size: var(--label-font-size); 
     width: fit-content;
     padding: calc(var(--margin)/2); 
     position: absolute; 

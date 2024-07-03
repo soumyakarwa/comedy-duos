@@ -552,6 +552,7 @@
         padding: var(--margin); 
         background-color: var(--white);
         position: absolute;  
+        font-size: var(--body-font-size);
         top: 5vh;
         left: 20vw; 
         z-index: 0; 

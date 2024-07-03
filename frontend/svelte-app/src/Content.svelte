@@ -9,6 +9,7 @@
 
     const pageSections = [
         { component: LandingPage, subSteps: 0 },
+        { component: Standalone, subSteps: 0 },
         { component: Characters, subSteps: Constants.characterSectionText.length-1 },
         { component: Standalone, subSteps: 0 },
         { component: EpisodeBreakdown, subSteps: Constants.episodeBreakdownText.length-1 },
@@ -28,9 +29,12 @@
 
 	function handleKeydown(event) {
         if (event.key === 'ArrowRight') {
+            console.log("arrow right"); 
         if (subIndexes[currentIndex] < pageSections[currentIndex].subSteps) {
+            console.log(`subindex is ${subIndexes[currentIndex]}`); 
             subIndexes[currentIndex]++;
         } else if (currentIndex < pageSections.length - 1) {
+            console.log(`current index is ${currentIndex}`); 
             currentIndex++;
         }
         } else if (event.key === 'ArrowLeft') {
@@ -77,7 +81,8 @@
 
 <div bind:this={container} class="container">
     <div class="section"><LandingPage/></div>
-    <div class="section"><Characters currentTextIndex={subIndexes[1]}/></div>
+    <div class="section"><Standalone text={Constants.standaloneIntroduction} connectionBoolean={secondStandaloneBoolean}/></div>
+    <div class="section"><Characters currentTextIndex={subIndexes[2]}/></div>
     <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={firstStandaloneBoolean}/></div>
     <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[3]}/></div>
     <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[4]}/></div>

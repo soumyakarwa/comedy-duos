@@ -86,7 +86,7 @@
 
     .desc {
         width: var(--text-box-width);
-        height: 74vh; 
+        height: 77vh; 
         background-color: var(--white);
         position: absolute; 
         top: 10%; 
