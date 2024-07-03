@@ -81,7 +81,7 @@
     createThumbPin(svg, detectiveTopPin1);    
     createLine(svg, caseBottomPin1, titleTopPin1, Math.random() * Constants.maxLineDelay); 
     createLine(svg, titleTopPin2, [svgWidth, 0],  Math.random() * Constants.maxLineDelay); 
-    createLine(svg, titleBottomPin1, [svgWidth*0.47, svgHeight],  Math.random() * Constants.maxLineDelay); 
+    createLine(svg, titleBottomPin1, [svgWidth*0.455, svgHeight],  Math.random() * Constants.maxLineDelay); 
     createLine(svg, titleBottomPin2, detectiveTopPin1,  Math.random() * Constants.maxLineDelay); 
 
     // Update positioning on window resize

@@ -548,7 +548,7 @@
 
     .content {
         width: 25vw; 
-        height: 15vh; 
+        height: var(--text-box-height); 
         padding: var(--margin); 
         background-color: var(--white);
         position: absolute;  

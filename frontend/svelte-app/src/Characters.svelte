@@ -93,7 +93,7 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           if (!connectingLine) {
-            createLine(svg, [svgWidth*0.47, 0], pinTop, 0); 
+            createLine(svg, [svgWidth*0.5, 0], pinTop, 0); 
             createThumbPin(svg, pinLeft); 
             createThumbPin(svg, pinRight); 
             createThumbPin(svg, pinBottom); 

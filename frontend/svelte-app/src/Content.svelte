@@ -19,8 +19,12 @@
 
 	export let episodeData;
 	export let specificDataPoint;
-    export let firstStandaloneBoolean = true; 
-    export let secondStandaloneBoolean = false;  
+    export let firstStandaloneBoolean = 
+    {top: false, bottom: true, lineTop: [[0, 0]], lineBottom: [[0.375, 1], [0.625, 1]]}; 
+    export let secondStandaloneBoolean = 
+    {top: false, bottom: false, lineTop: [[0, 0]], lineBottom: [[0, 0]]}; 
+    export let standaloneIntroduction = 
+    {top: true, bottom: true, lineTop: [[0.455, 0]], lineBottom: [[0.5, 1]]}; 
 
     let container;
     let currentIndex = 0;
@@ -29,9 +33,7 @@
 
 	function handleKeydown(event) {
         if (event.key === 'ArrowRight') {
-            console.log("arrow right"); 
         if (subIndexes[currentIndex] < pageSections[currentIndex].subSteps) {
-            console.log(`subindex is ${subIndexes[currentIndex]}`); 
             subIndexes[currentIndex]++;
         } else if (currentIndex < pageSections.length - 1) {
             console.log(`current index is ${currentIndex}`); 
@@ -81,11 +83,11 @@
 
 <div bind:this={container} class="container">
     <div class="section"><LandingPage/></div>
-    <div class="section"><Standalone text={Constants.standaloneIntroduction} connectionBoolean={secondStandaloneBoolean}/></div>
+    <div class="section"><Standalone text={Constants.standaloneIntroduction} connectionBoolean={standaloneIntroduction}/></div>
     <div class="section"><Characters currentTextIndex={subIndexes[2]}/></div>
     <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={firstStandaloneBoolean}/></div>
-    <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[3]}/></div>
-    <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[4]}/></div>
+    <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[4]}/></div>
+    <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[5]}/></div>
     <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={secondStandaloneBoolean}/></div>
 </div>
 

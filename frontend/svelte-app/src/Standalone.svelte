@@ -13,7 +13,7 @@
 
     onMount(async () => {
         
-        if(connectionBoolean){
+        if(connectionBoolean.top || connectionBoolean.bottom){
             const svg = d3.select(standaloneSvg);
             
             [svgWidth, svgHeight] = setSvgDimensions("standalone", svg);
@@ -21,23 +21,32 @@
             const descriptionDiv = document.querySelector('.desc');
             const descriptionDivHeight = descriptionDiv.offsetHeight;
             
-            // Create the top thumb pin
-            createThumbPin(svg, [svgWidth * 0.5, top]);
-
             // Create the bottom thumb pin
             const bottomPinYPosition = top + descriptionDivHeight;
 
             // Observer for standalone text
             const standaloneBottomPinPos = [svgWidth * 0.5, bottomPinYPosition];
+            const standaloneTopPinPos = [svgWidth * 0.5, top]; 
 
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         if (!connectingLine) {
                             connectingLine = true;
-                            createThumbPin(svg, standaloneBottomPinPos); 
-                            createLine(svg, standaloneBottomPinPos, [svgWidth * 0.375, svgHeight], Constants.maxLineDelay/3);
-                            createLine(svg, standaloneBottomPinPos, [svgWidth * 0.625, svgHeight], Constants.maxLineDelay/3);
+                            if(connectionBoolean.top){
+                                createThumbPin(svg, standaloneTopPinPos);
+                                connectionBoolean.lineTop.forEach((line) => {
+                                createLine(svg, [svgWidth * line[0], svgHeight * line[1]], standaloneTopPinPos, 0);
+                                });                  
+                            }
+                            if(connectionBoolean.bottom){
+                                createThumbPin(svg, standaloneBottomPinPos); 
+                                connectionBoolean.lineBottom.forEach((line) => {
+                                createLine(svg, standaloneBottomPinPos, [svgWidth * line[0], svgHeight * line[1]], 0);
+                                });   
+                            }
+                            // createLine(svg, standaloneBottomPinPos, [svgWidth * 0.375, svgHeight], Constants.maxLineDelay/3);
+                            // createLine(svg, standaloneBottomPinPos, [svgWidth * 0.625, svgHeight], Constants.maxLineDelay/3);
                         }
                     }
                 });
@@ -52,8 +61,10 @@
 
 <section class="standalone-section webpage-section" id="standalone">
     <div class="desc">
-        {#if !connectionBoolean}
+        {#if !connectionBoolean.top}
             <img id="standalone-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+        {/if}
+        {#if !connectionBoolean.bottom}
             <img id="standalone-bottom-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
         {/if}
         <div bind:this={standaloneText} id="standalone-text">
