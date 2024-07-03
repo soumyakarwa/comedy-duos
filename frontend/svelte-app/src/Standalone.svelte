@@ -45,8 +45,6 @@
                                 createLine(svg, standaloneBottomPinPos, [svgWidth * line[0], svgHeight * line[1]], 0);
                                 });   
                             }
-                            // createLine(svg, standaloneBottomPinPos, [svgWidth * 0.375, svgHeight], Constants.maxLineDelay/3);
-                            // createLine(svg, standaloneBottomPinPos, [svgWidth * 0.625, svgHeight], Constants.maxLineDelay/3);
                         }
                     }
                 });
@@ -97,7 +95,7 @@
 
     .desc {
         width: var(--text-box-width);
-        height: 77vh; 
+        height: 76vh; 
         background-color: var(--white);
         position: absolute; 
         top: 10%; 
