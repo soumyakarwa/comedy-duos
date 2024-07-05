@@ -164,5 +164,11 @@ export const heatMapSectionText = [
   `One way to measure a character duo's popularity is by counting how often they appear together in the series, which measures frequency.`,
   `In the bar chart below, it's clear that the most frequently appearing character duo is none other than Jake & Amy. However, is this the only way to measure popularity?`,
   `Another, perhaps more accurate, way to measure a duo's popularity is to calculate the average rating of each episode they appeared in, accounting for the number of votes that episode received. This gives us the average cumulative rating.`,
-  `AND there we have it! Despite having less screen time, the most iconic duo of Brooklyn Nine-Nine is CAPTAIN HOLT & JAKE! They've appeared together 36 times, with over ____ votes and an average episode rating of 8.26. The viewers have spoken! Sorry, Amy, it seems like you lost this one!`,
+  `AND there we have it! Despite having less screen time, the most iconic duo of Brooklyn Nine-Nine is CAPTAIN HOLT & JAKE! They've appeared together 36 times, with over ____ votes and an average episode rating of 8.47. The viewers have spoken! Sorry, Amy, it seems like you lost this one!`,
+];
+
+export const standaloneConclusion = [
+  `After meticulous analysis of all 153 episodes, taking into account both frequency of appearances and episode ratings, it is clear that the most iconic duo of Brooklyn Nine-Nine is Captain Holt and Jake Peralta. Despite their contrasting personalities and initial friction, their relationship evolves into one of mutual respect, camaraderie, and heartfelt moments that resonate deeply with the audience. Their 36 appearances together, with an impressive average rating of 8.47, solidify their status as the viewers' favorite pair.`,
+  `Brooklyn Nine-Nine not only provides laughs but also explores themes of friendship, loyalty, and growth, reminding us that no matter how different we may seem, we can always find common ground and support each other. As the precinct's adventures continue to entertain and inspire, Captain Holt and Jake's iconic duo stands as a testament to the show's brilliance and the power of unlikely friendships.`,
+  `So, here's to the many more hilarious and touching moments from the 99th Precinct, and to Captain Holt and Jake—Brooklyn Nine-Nine's most iconic duo!`,
 ];

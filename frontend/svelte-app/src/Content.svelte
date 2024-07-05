@@ -88,7 +88,7 @@
     <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={firstStandaloneBoolean}/></div>
     <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[4]}/></div>
     <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[5]}/></div>
-    <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={secondStandaloneBoolean}/></div>
+    <div class="section"><Standalone text={Constants.standaloneConclusion} connectionBoolean={secondStandaloneBoolean}/></div>
 </div>
 
 <style>
