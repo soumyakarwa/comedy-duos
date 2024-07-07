@@ -14,6 +14,7 @@
         { component: Standalone, subSteps: 0 },
         { component: EpisodeBreakdown, subSteps: Constants.episodeBreakdownText.length-1 },
         { component: HeatMap, subSteps: Constants.heatMapSectionText.length-1 },
+        { component: Standalone, subSteps: 0 },
         { component: Standalone, subSteps: 0 }
     ];
 
@@ -25,6 +26,8 @@
     {top: false, bottom: false, lineTop: [[0, 0]], lineBottom: [[0, 0]]}; 
     export let standaloneIntroduction = 
     {top: true, bottom: true, lineTop: [[0.455, 0]], lineBottom: [[0.5, 1]]}; 
+    export let standaloneNotes = 
+    {top: false, bottom: false, lineTop: [[0, 0]], lineBottom: [[0, 0]]}; 
 
     let container;
     let currentIndex = 0;
@@ -89,6 +92,7 @@
     <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[4]}/></div>
     <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[5]}/></div>
     <div class="section"><Standalone text={Constants.standaloneConclusion} connectionBoolean={secondStandaloneBoolean}/></div>
+    <div class="section"><Standalone text={Constants.standaloneNotes} connectionBoolean={standaloneNotes}/></div>
 </div>
 
 <style>

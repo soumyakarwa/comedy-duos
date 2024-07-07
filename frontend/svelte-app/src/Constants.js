@@ -172,3 +172,11 @@ export const standaloneConclusion = [
   `Brooklyn Nine-Nine not only provides laughs but also explores themes of friendship, loyalty, and growth, reminding us that no matter how different we may seem, we can always find common ground and support each other. As the precinct's adventures continue to entertain and inspire, Captain Holt and Jake's iconic duo stands as a testament to the show's brilliance and the power of unlikely friendships.`,
   `So, here's to the many more hilarious and touching moments from the 99th Precinct, and to Captain Holt and Jake—Brooklyn Nine-Nine's most iconic duo!`,
 ];
+
+export const standaloneNotes = [
+  `Data Sources: The original Kaggle dataset can be found here. Wiki fandom and Wikipedia Descriptions are the two additional episode description sources. I manually checked all descriptions and pair results.`,
+  `Data Cleaning & Analysis: BeautifulSoup for web scraping. Natural Language Toolkit, OpenAI API for language analysis.`,
+  `Data Visualization: Svelte.js & D3.js.`,
+  `Here’s the GitHub for this project. If this peaked your interest, you can find some of my other work on soumyakarwa.xyz and sk.arwaa on Instagram.`,
+  `Thanks for reading!`,
+];
