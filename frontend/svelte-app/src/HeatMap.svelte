@@ -1,6 +1,7 @@
 <script>
   import * as d3 from 'd3';
   import * as Constants from "./Constants.js"; 
+  import {remToPixels} from "./Constants.js"; 
 
   const characterRatingDict = {};
   let sortedCharacterRatingArray; 
@@ -31,17 +32,34 @@
    * pairToColor: a map for pair-color from Constants.colors
    * ratings: sortedCharacterArray for just pair and average cummulative frequency
    */
-  let svg, g, originalXScale, originalYScale, legend, chartWidth, chartHeight, frequencyXScale, frequencyYScale, topPairs, frequencies, pairToColor, ratingXScale, ratingYScale, ratings;
+  let svg, g, originalXScale, originalYScale, legend, chartWidth, chartHeight, frequencyXScale, frequencyYScale, topPairs, frequencies, pairToColor, ratingXScale, ratingYScale, ratings; 
   
+  let xAxisXYPos, xAxisWidth, xAxisTranslatePos, xAxisLabelXYPos;
+  let yAxisXYPos, yAxisHeight, yAxisTranslatePos, yAxisLabelTranslatePos;
+  
+  const pageMarginInPixels = remToPixels(Constants.margin); 
   // margin from svgHeight, svgWidth to create chartSize
-  const margin = { top: 150, right: 20, bottom: 50, left: 50 };
-
-  let xAxisLabelBase = margin.top/6; 
+  const margin = { 
+    top: pageMarginInPixels*9, 
+    right: pageMarginInPixels, 
+    bottom: pageMarginInPixels, 
+    left: pageMarginInPixels*2 
+  };
 
   $: if(episodeData.length) {
     svg = d3.select(heatMapSvg);
     chartWidth = svgWidth - margin.left - margin.right;
     chartHeight = svgHeight - margin.top - margin.bottom;
+    
+    xAxisTranslatePos = [0, chartHeight - pageMarginInPixels]; 
+    xAxisXYPos = [pageMarginInPixels*2, chartWidth]; 
+    xAxisWidth = xAxisXYPos[1] - xAxisXYPos[0];
+    xAxisLabelXYPos = [margin.left + xAxisWidth / 2, chartHeight+5]; 
+
+    yAxisTranslatePos = [pageMarginInPixels*2, 0]; 
+    yAxisXYPos = [pageMarginInPixels*2, chartHeight]; 
+    yAxisHeight = yAxisXYPos[1] - yAxisXYPos[0]; 
+    yAxisLabelTranslatePos = [0, margin.bottom + yAxisHeight/2]; 
 
     g = svg.select('g');
     if (g.empty()) {
@@ -49,43 +67,52 @@
         .attr('transform', `translate(${margin.left},${margin.top})`);
     }
     
+    // g
+    // .append("rect")
+    // .attr("x", 0)
+    // .attr("y", 0)
+    // .attr("width", chartWidth)
+    // .attr("height", chartHeight)
+    // .attr("fill", Constants.greenColor)
+    // .style("stroke", Constants.yellowColor); 
 
     // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
     originalXScale = d3.scaleBand()
       .domain(episodeData.map(d => d.Episode))
-      .range([0, chartWidth])
+      .range([xAxisXYPos[0], xAxisXYPos[1]])
       .padding(0.1);
 
     // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
     originalYScale = d3.scaleBand()
       .domain(episodeData.map(d => d.Season))
-      .range([chartHeight, 0])
+      .range([yAxisHeight, 0])
       .padding(0.1);
 
     g.append('g')
       .attr('class', 'axis axis-x')
-      .attr('transform', `translate(0,${chartHeight+10})`)
+      .attr('transform', `translate(${xAxisTranslatePos[0]},${xAxisTranslatePos[1]})`)
       .call(d3.axisTop(originalXScale))
       .call(g => g.select(".domain").remove()) 
       .call(g => g.selectAll(".tick line").remove()); 
+    
+    g.append("text")
+      .attr("class", "x-axis-label")
+      .attr("text-anchor", "middle")
+      .attr("x", xAxisLabelXYPos[0])
+      .attr("y", xAxisLabelXYPos[1])
+      .text("Episode");
 
     g.append('g')
       .attr('class', 'axis axis-y')
+      .attr('transform', `translate(${yAxisTranslatePos[0]},${yAxisTranslatePos[1]})`)
       .call(d3.axisLeft(originalYScale))
       .call(g => g.select(".domain").remove()) 
       .call(g => g.selectAll(".tick line").remove());
 
     g.append("text")
-      .attr("class", "x-axis-label")
-      .attr("text-anchor", "middle")
-      .attr("x", chartWidth / 2)
-      .attr("y", chartHeight + xAxisLabelBase)
-      .text("Episode");
-
-    g.append("text")
       .attr("class", "y-axis-label")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(${-margin.left/2},${chartHeight/2}) rotate(-90)`)
+      .attr("transform", `translate(${yAxisLabelTranslatePos[0]},${yAxisLabelTranslatePos[1]}) rotate(-90)`)
       .text("Season");
 
 
@@ -126,13 +153,13 @@
 
     frequencyXScale = d3.scaleBand()
         .domain(topPairs)
-        .range([0, chartWidth])
+        .range([xAxisXYPos[0], xAxisXYPos[1]])
         .padding(0.1);
 
     // Create yScale for frequencies
     frequencyYScale = d3.scaleLinear()
         .domain([0, 45])
-        .range([chartHeight, margin.top/2]);
+        .range([yAxisHeight, 0]); 
 
     pairToColor = new Map();
     topPairs.forEach((pair, index) => {
@@ -144,7 +171,7 @@
     // Create yScale for frequencies
     ratingYScale = d3.scaleLinear()
         .domain([7, 9])
-        .range([chartHeight, margin.top/2]);
+        .range([yAxisHeight, 0]); 
 
   };
 
@@ -155,7 +182,7 @@
     g.select('.axis-x')
         .transition()
         .duration(Constants.transitionTime)
-        .attr('transform', `translate(0,${chartHeight + 10})`)
+        .attr('transform', `translate(${xAxisTranslatePos[0]},${xAxisTranslatePos[1]})`)
         .call(d3.axisTop(originalXScale))
         .call(g => g.selectAll(".tick line").remove())
         .call(g => g.select(".domain").remove());
@@ -173,15 +200,14 @@
     g.select(".x-axis-label")
         .transition()
         .duration(Constants.transitionTime)
-        .attr("x", chartWidth / 2)
-        .attr("y", chartHeight + xAxisLabelBase)
+        .attr("x", xAxisLabelXYPos[0])
+        .attr("y", xAxisLabelXYPos[1])
         .text("Episode");
 
     // Update y-axis label
     g.select(".y-axis-label")
         .transition()
         .duration(Constants.transitionTime)
-        .attr("transform", `translate(${-margin.left / 2},${chartHeight / 2}) rotate(-90)`)
         .text("Season");
   }
 
@@ -355,7 +381,7 @@
       .transition()
       .duration(Constants.transitionTime)
       .style('opacity', 0)
-      .attr('y', chartHeight) 
+      .attr('y', yAxisHeight) 
       .attr('height', 0)
       .remove();
 
@@ -477,7 +503,7 @@
       .transition()
       .duration(Constants.transitionTime)
       .style('opacity', 0)
-      .attr('y', chartHeight) 
+      .attr('y', yAxisHeight) 
       .attr('height', 0)
       .remove();
 
@@ -498,26 +524,29 @@
         .transition()
         .duration(Constants.transitionTime)
         .call(d3.axisBottom(frequencyXScale))
-        .attr('transform', `translate(0,${chartHeight})`);
+        .attr('transform', `translate(0,${yAxisHeight})`)
+        .call(g => g.selectAll(".tick line").remove()); 
+        
 
         // Update x-axis label
      g.select(".x-axis-label")
         .transition()
         .duration(Constants.transitionTime)
-        .attr("y", chartHeight + xAxisLabelBase +15)
+        // .attr("y", chartHeight + xAxisLabelBase +15)
         .text("Top Character Pairs");
 
     // Update y-axis with transition
     g.select('.axis-y')
         .transition()
         .duration(Constants.transitionTime)
-        .call(d3.axisLeft(frequencyYScale));
+        .call(d3.axisLeft(frequencyYScale))
+        .call(g => g.selectAll(".tick line").remove());
      
     // Update y-axis label
     g.select(".y-axis-label")
         .transition()
         .duration(Constants.transitionTime)
-        .attr("transform", `translate(${-margin.left/2-5},${chartHeight/2}) rotate(-90)`)
+        // .attr("transform", `translate(${-margin.left/2-5},${chartHeight/2}) rotate(-90)`)
         .text("Frequency"); 
 
     // Move the remaining rects to the appropriate position in the new scale
@@ -530,7 +559,7 @@
         .transition()
         .duration(Constants.transitionTime*2)
         .attr('x', d => frequencyXScale(pairToString(d.char)) + frequencyXScale.bandwidth()/4)
-        .attr('y', chartHeight - 11)
+        .attr('y', yAxisHeight - 11)
         .attr('width', frequencyXScale.bandwidth()/2 - 2)
         .attr('height', 10)
         .on('end', function(d, i) {
@@ -544,14 +573,14 @@
         .enter().append('rect')
         .attr('class', 'frequency-bar')
         .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth()/4)
-        .attr('y', chartHeight) 
+        .attr('y', yAxisHeight) 
         .attr('width', frequencyXScale.bandwidth()/2)
         .attr('height', 0) 
         .style('fill', d => pairToColor.get(pairToString(d.pair)))
         .transition()
         .duration(Constants.transitionTime)
         .attr('y', d => frequencyYScale(d.frequency))
-        .attr('height', d => chartHeight - frequencyYScale(d.frequency))
+        .attr('height', d => yAxisHeight - frequencyYScale(d.frequency))
         .on('end', function(d, i) {
           g.selectAll('.frequency-label')
             .data(sortedCharacterRatingArray.slice(0, 10))
@@ -589,7 +618,8 @@
     g.select('.axis-y')
         .transition()
         .duration(Constants.transitionTime)
-        .call(d3.axisLeft(ratingYScale));
+        .call(d3.axisLeft(ratingYScale))
+        .call(g => g.selectAll(".tick line").remove());
      
     // Update y-axis label
     g.select(".y-axis-label")
@@ -601,7 +631,7 @@
         .transition()
         .duration(Constants.transitionTime)
         .attr('y', d => ratingYScale(d.averageCumulativeRating))
-        .attr('height', d => chartHeight - ratingYScale(d.averageCumulativeRating))
+        .attr('height', d => yAxisHeight - ratingYScale(d.averageCumulativeRating))
         .style('opacity', 1); 
         // .on('end', function(d, i) { 
     g.selectAll('.frequency-label')
