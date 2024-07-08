@@ -21,7 +21,7 @@ export function createLine(svg, pos1, pos2, delay) {
     .append("line")
     .style("stroke", Constants.yellowColor)
     .style("stroke-width", 2)
-    .style("opacity", 0.5)
+    .style("opacity", 1)
     .attr("x1", pos1[0])
     .attr("y1", pos1[1])
     .attr("x2", pos1[0])

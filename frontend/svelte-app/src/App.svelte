@@ -7,7 +7,8 @@
 </script>
 
 <main>
-	<img src="/assets/dot-grid.svg" alt="case board dot grid" class="background-svg" />
+	<img src="/assets/dot-grid-pls-work.svg" alt="case board dot grid" class="background-svg" />
+	<!-- <div class="background-svg" id="background-div"/> -->
 	<Content {episodeData} {specificDataPoint}/>
 </main>
 
@@ -21,4 +22,9 @@
 		stroke-width: 5; 
 		z-index: -1; /* Ensure it is behind other content */
 	}
+
+	#background-div{
+		background-color: #292929;
+	}
+
 </style>
