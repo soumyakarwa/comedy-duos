@@ -70,19 +70,39 @@
         .duration(Constants.transitionTime)
         .attr("opacity", 1); 
       createThumbPin(svg, arrowPin); 
-    }, Constants.maxLineDelay*2);    
-
-    createThumbPin(svg, caseBottomPin1); 
+    }, Constants.maxLineDelay*5);    
+   
     createThumbPin(svg, caseTopPin1); 
-    createThumbPin(svg, titleTopPin1);    
-    createThumbPin(svg, titleTopPin2); 
-    createThumbPin(svg, titleBottomPin1);       
-    createThumbPin(svg, titleBottomPin2);    
-    createThumbPin(svg, detectiveTopPin1);    
-    createLine(svg, caseBottomPin1, titleTopPin1, Math.random() * Constants.maxLineDelay); 
-    createLine(svg, titleTopPin2, [svgWidth, 0],  Math.random() * Constants.maxLineDelay); 
-    createLine(svg, titleBottomPin1, [svgWidth*0.455, svgHeight],  Math.random() * Constants.maxLineDelay); 
-    createLine(svg, titleBottomPin2, detectiveTopPin1,  Math.random() * Constants.maxLineDelay); 
+    
+    setTimeout(() => {
+      createThumbPin(svg, caseBottomPin1); 
+      createThumbPin(svg, titleTopPin1);    
+      setTimeout(() => {
+      createLine(svg, caseBottomPin1, titleTopPin1, 0)
+      }, Constants.maxLineDelay/2); 
+    }, Constants.maxLineDelay); 
+    
+    setTimeout(() => {
+      createThumbPin(svg, titleTopPin2); 
+      setTimeout(() => {
+        createLine(svg, titleTopPin2, [svgWidth, 0],  0)
+      }, Constants.maxLineDelay/2); 
+    }, Constants.maxLineDelay*2); 
+    
+    setTimeout(() => {
+      createThumbPin(svg, titleBottomPin1);     
+      setTimeout(() => {
+        createLine(svg, titleBottomPin1, [svgWidth*0.455, svgHeight],  0)
+      }, Constants.maxLineDelay/2); 
+    }, Constants.maxLineDelay*4);
+    
+    setTimeout(() => {
+      createThumbPin(svg, titleBottomPin2);  
+      createThumbPin(svg, detectiveTopPin1);  
+      setTimeout(() => {    
+        createLine(svg, titleBottomPin2, detectiveTopPin1,  0); 
+      }, Constants.maxLineDelay/2); 
+    }, Constants.maxLineDelay*3);
 
     // Update positioning on window resize
     window.addEventListener('resize', () => {

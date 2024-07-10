@@ -37,13 +37,15 @@
                                 createThumbPin(svg, standaloneTopPinPos);
                                 connectionBoolean.lineTop.forEach((line) => {
                                 createLine(svg, [svgWidth * line[0], svgHeight * line[1]], standaloneTopPinPos, 0);
-                                });                  
+                                });                
                             }
                             if(connectionBoolean.bottom){
-                                createThumbPin(svg, standaloneBottomPinPos); 
-                                connectionBoolean.lineBottom.forEach((line) => {
-                                createLine(svg, standaloneBottomPinPos, [svgWidth * line[0], svgHeight * line[1]], 0);
-                                });   
+                                setTimeout(() => {
+                                    createThumbPin(svg, standaloneBottomPinPos); 
+                                    connectionBoolean.lineBottom.forEach((line) => {
+                                    createLine(svg, standaloneBottomPinPos, [svgWidth * line[0], svgHeight * line[1]], 0);
+                                    });   
+                                }, Constants.maxLineDelay*5);   
                             }
                         }
                     }

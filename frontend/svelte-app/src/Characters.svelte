@@ -94,9 +94,11 @@
         if (entry.isIntersecting) {
           if (!connectingLine) {
             createLine(svg, [svgWidth*0.5, 0], pinTop, 0); 
-            createThumbPin(svg, pinLeft); 
-            createThumbPin(svg, pinRight); 
-            createThumbPin(svg, pinBottom); 
+            setTimeout(() => {
+              createThumbPin(svg, pinLeft); 
+              createThumbPin(svg, pinRight); 
+              createThumbPin(svg, pinBottom); 
+            }, Constants.maxLineDelay*2)
             // let raymondElement = document.getElementById('raymond');
             connectingLine = true;
             // setTimeout(() => {
