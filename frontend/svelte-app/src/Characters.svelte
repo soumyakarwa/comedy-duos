@@ -147,12 +147,12 @@
 </script>
 
 <section bind:this={characterSection} class="characters-section" id="characters">
-  <div bind:this={textBox} id="textBox">
+  <div bind:this={textBox} id="textBox" class="divBorder">
     <div id="charText">{@html Constants.characterSectionText[currentTextIndex]}</div>
   </div>
   {#if characters}
     {#each characters as c}
-      <div bind:this={c.var} id={c.id} class="character-containers">
+      <div bind:this={c.var} id={c.id} class="character-containers divBorder">
         <img src="assets/{c.id}.gif" alt="{c.name} intro gif"/>
         <div>{c.name}</div>
       </div>

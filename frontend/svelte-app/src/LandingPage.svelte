@@ -41,27 +41,27 @@
     const arrowPin = [arrowImgX + arrowImgWidth/2, arrowImgY];
 
     const caseImg = svg.append("image")
-        .attr("xlink:href", "/assets/caseText.svg") 
+        .attr("xlink:href", "/assets/caseTextWithBorder.svg") 
         .attr("x", caseImgX) 
         .attr("y", caseImgY)
         .attr("height", caseImgHeight);
 
     const titleImg = svg.append("image")
-       .attr("xlink:href", "/assets/title.svg") 
+       .attr("xlink:href", "/assets/titleWithBorder.svg") 
        .attr("x", titleImgX) 
        .attr("y", titleImgY)
       //  .attr("width", titleImgWidth);   
        .attr("height", titleImgHeight);
 
     const detectiveImg = svg.append("image")
-    .attr("xlink:href", "/assets/detective.svg") 
+    .attr("xlink:href", "/assets/detectiveWithBorder.svg") 
     .attr("x", detectiveImgX) 
     .attr("y", detectiveImgY)
     .attr("height", detectiveImgHeight); 
 
     setTimeout(() => {
       const arrowKeyImg = svg.append("image")
-        .attr("xlink:href", "/assets/arrows.svg")
+        .attr("xlink:href", "/assets/arrowsWithBorder.svg")
         .attr("x", arrowImgX) 
         .attr("y", arrowImgY)
         .attr("height", arrowImgHeight)

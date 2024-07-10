@@ -499,6 +499,12 @@
    * Helper function when index == 4
    */
   function createStackedBarChart(){
+
+    g.selectAll('.row-group')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 1); 
+      
     g.selectAll('.frequency-bar')
       .transition()
       .duration(Constants.transitionTime)
@@ -562,6 +568,7 @@
         .attr('y', yAxisHeight - 11)
         .attr('width', frequencyXScale.bandwidth()/2 - 2)
         .attr('height', 10)
+        // .attr("opacity", 1)
         .on('end', function(d, i) {
           addFrequencyBars(); 
           });
@@ -599,6 +606,33 @@
     }
 
   }
+
+  /**
+   * Helper function when index == 5
+   */
+  function highlightHighestFrequencyBar(){
+    const winningPair = pairToString(sortedCharacterRatingArray.slice(0, 10).reduce((max, obj) => (obj.frequency > max.frequency ? obj : max)).pair)
+    console.log(winningPair); 
+
+    g.selectAll('.row-group')
+      .style('opacity', 0); 
+
+    g.selectAll('.frequency-bar')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', function(d) {
+        return pairToString(d.pair) === winningPair ? 1 : 0.1;
+      });
+
+    g.selectAll('.frequency-label')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', function(d) {
+        return pairToString(d.pair) === winningPair ? 1 : 0.1;
+    });
+
+  }
+
 
   /**
    * Helper function when index == 6
@@ -673,6 +707,7 @@
   // Call the updateHeatMap function based on the index value
   $: {
     if(g) {
+      console.log(index); 
       if (index == 1) {
         showSpecificSquare();
       } else if (index == 2) {
@@ -681,6 +716,8 @@
         updateSquaresForTopPairs();
       } else if (index == 4) {
         createStackedBarChart();
+      } else if (index == 5){
+        highlightHighestFrequencyBar(); 
       } else if (index == 6) {
         createRatingBarChart();
       } else if (index == 7) {
@@ -692,7 +729,7 @@
 </script>
 
 <section bind:this={heatMapSection} class="heatmap-section">
-      <div class="svg-container">
+      <div class="svg-container divBorder">
           <img id="heatmap-pin1" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
           <img id="heatmap-pin2" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
           <img id="heatmap-pin3" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
@@ -700,7 +737,7 @@
           <svg bind:this={heatMapSvg} width={svgWidth} height={svgHeight} viewBox="0 0 {svgWidth} {svgHeight}" class="heatmap-svg"></svg>
       </div>
       <div class="heatmap-content">
-        <img id="heatmap-content-pin" src="/assets/white-pin.svg" alt="thumb pin" class="thumb-pin"/>
+        <img id="heatmap-content-pin" src="/assets/orange-pin.svg" alt="thumb pin" class="thumb-pin"/>
         {@html Constants.heatMapSectionText[index]}
       </div>
 </section>

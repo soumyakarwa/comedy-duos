@@ -39,7 +39,6 @@
         if (subIndexes[currentIndex] < pageSections[currentIndex].subSteps) {
             subIndexes[currentIndex]++;
         } else if (currentIndex < pageSections.length - 1) {
-            console.log(`current index is ${currentIndex}`); 
             currentIndex++;
         }
         } else if (event.key === 'ArrowLeft') {

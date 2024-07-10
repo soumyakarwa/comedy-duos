@@ -466,12 +466,12 @@
 </script>
 
 <section bind:this={episodeSection} class="episode-section" id="episode-breakdown-section">
-    <div class="content" bind:this={contentDiv}>
+    <div class="content divBorder" bind:this={contentDiv}>
         <img id="episode-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
         {@html Constants.episodeBreakdownText[currentStep]}
     </div>
 
-    <div class="chart" bind:this={chartDiv}>
+    <div class="chart divBorder" bind:this={chartDiv}>
         <img id="chart-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
         <div id="col1"> 
             <div bind:this={heatMap}>

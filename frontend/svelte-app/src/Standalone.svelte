@@ -21,20 +21,9 @@
             
             [svgWidth, svgHeight] = setSvgDimensions(parentDiv.id, svg);
             const top = svgHeight * 0.1; 
-    
-            // console.log('Parent height:', parentDiv.offsetHeight);
-            // console.log('Description height:', descriptionDiv.offsetHeight);
-
-            // console.log(parentDiv.offsetHeight, descriptionDiv); 
-
-            // descriptionDivHeight = descriptionDiv.clientHeight; 
-            // console.log(`top is ${top}`)
-            // console.log(connectionBoolean.index, descriptionDivHeight); 
 
             if (descriptionDiv) {
-                console.log(descriptionDiv); 
                 descriptionDivHeight = descriptionDiv.offsetHeight;
-                console.log(descriptionDivHeight);
             }
             
             // Create the bottom thumb pin
@@ -60,7 +49,7 @@
                                     connectionBoolean.lineBottom.forEach((line) => {
                                     createLine(svg, standaloneBottomPinPos, [svgWidth * line[0], svgHeight * line[1]], 0);
                                     });   
-                                }, Constants.maxLineDelay*5);   
+                                }, Constants.maxLineDelay*3);   
                             }
                         }
                     }
@@ -76,7 +65,7 @@
 </script>
 
 <section class="standalone-section webpage-section" id={`standalone-${connectionBoolean.index}`}>
-    <div class="desc" id={`standalone-description-${connectionBoolean.index}`}>
+    <div class="desc divBorder" id={`standalone-description-${connectionBoolean.index}`}>
         {#if !connectionBoolean.top}
             <img id={`standalone-top-pin-${connectionBoolean.index}`} src="/assets/pin.svg" alt="thumb pin" class="standalone-pin thumb-pin"/>
         {/if}
@@ -84,11 +73,11 @@
             <img id={`standalone-bottom-pin-${connectionBoolean.index}`} src="/assets/pin.svg" alt="thumb pin" class="standalone-bottom-pin thumb-pin"/>
         {/if}
         <div bind:this={standaloneText} class="standalone-text" id={`standalone-text-${connectionBoolean.index}`}>
-            {text[0]}
+            {@html text[0]}
             <br>
             {#each text.slice(1) as t}
                 <br>
-                {t}
+                {@html t}
                 <br>
             {/each}
         </div>
