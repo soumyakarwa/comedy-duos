@@ -10,24 +10,39 @@
     let standaloneSvg, standaloneText; 
     let svgWidth, svgHeight; 
     let connectingLine = false; 
+    let descriptionDivHeight; 
 
     onMount(async () => {
         
         if(connectionBoolean.top || connectionBoolean.bottom){
-            const svg = d3.select(standaloneSvg);
+            const svg = d3.select(connectionBoolean.svg);
+            const parentDiv = document.querySelector(`#standalone-${connectionBoolean.index}`);
+            const descriptionDiv = parentDiv.querySelector(`#standalone-description-${connectionBoolean.index}`);
             
-            [svgWidth, svgHeight] = setSvgDimensions("standalone", svg);
+            [svgWidth, svgHeight] = setSvgDimensions(parentDiv.id, svg);
             const top = svgHeight * 0.1; 
-            const descriptionDiv = document.querySelector('.desc');
-            const descriptionDivHeight = descriptionDiv.offsetHeight;
+    
+            // console.log('Parent height:', parentDiv.offsetHeight);
+            // console.log('Description height:', descriptionDiv.offsetHeight);
+
+            // console.log(parentDiv.offsetHeight, descriptionDiv); 
+
+            // descriptionDivHeight = descriptionDiv.clientHeight; 
+            // console.log(`top is ${top}`)
+            // console.log(connectionBoolean.index, descriptionDivHeight); 
+
+            if (descriptionDiv) {
+                console.log(descriptionDiv); 
+                descriptionDivHeight = descriptionDiv.offsetHeight;
+                console.log(descriptionDivHeight);
+            }
             
             // Create the bottom thumb pin
             const bottomPinYPosition = top + descriptionDivHeight;
-
-            // Observer for standalone text
             const standaloneBottomPinPos = [svgWidth * 0.5, bottomPinYPosition];
             const standaloneTopPinPos = [svgWidth * 0.5, top]; 
 
+            // Observer for standalone text
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -57,17 +72,18 @@
             observer.observe(standaloneText);
             }
     }); 
+
 </script>
 
-<section class="standalone-section webpage-section" id="standalone">
-    <div class="desc">
+<section class="standalone-section webpage-section" id={`standalone-${connectionBoolean.index}`}>
+    <div class="desc" id={`standalone-description-${connectionBoolean.index}`}>
         {#if !connectionBoolean.top}
-            <img id="standalone-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+            <img id={`standalone-top-pin-${connectionBoolean.index}`} src="/assets/pin.svg" alt="thumb pin" class="standalone-pin thumb-pin"/>
         {/if}
         {#if !connectionBoolean.bottom}
-            <img id="standalone-bottom-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+            <img id={`standalone-bottom-pin-${connectionBoolean.index}`} src="/assets/pin.svg" alt="thumb pin" class="standalone-bottom-pin thumb-pin"/>
         {/if}
-        <div bind:this={standaloneText} id="standalone-text">
+        <div bind:this={standaloneText} class="standalone-text" id={`standalone-text-${connectionBoolean.index}`}>
             {text[0]}
             <br>
             {#each text.slice(1) as t}
@@ -78,7 +94,7 @@
         </div>
     </div>
     {#if connectionBoolean}
-        <svg bind:this={standaloneSvg} id="standalone-svg"></svg>
+        <svg bind:this={connectionBoolean.svg} class="standalone-svg" id={`standalone-svg-${connectionBoolean.index}`}></svg>
     {/if}
 </section>
 
@@ -97,32 +113,33 @@
 
     .desc {
         width: var(--text-box-width);
-        height: 76vh; 
+        /* height: fit-content;  */
         background-color: var(--white);
         position: absolute; 
         top: 10%; 
         left: var(--text-box-x); 
         z-index: 0; 
+        display: block;
     }
 
-    #standalone-text {
+    .standalone-text {
         padding: var(--margin);
         height: fit-content; 
         font-size: var(--body-font-size); 
     }
 
-    #standalone-svg {
+    .standalone-svg {
         position: absolute; 
         display: block;
         z-index: 1;
     }
 
-    #standalone-pin {
+    .standalone-pin {
         top: -0.5rem;
         left: 50%; 
     }
 
-    #standalone-bottom-pin {
+    .standalone-bottom-pin {
         top: 99%;
         left: 50%; 
     }

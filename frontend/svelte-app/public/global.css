@@ -39,7 +39,7 @@ body {
   /* CHARACTERS SECTION */
   --text-box-y: 6vh;
   --text-box-x: 32.5vw;
-  --text-box-height: 27vh;
+  --text-box-height: 30vh;
   --text-box-width: 35vw;
 }
 
@@ -105,6 +105,22 @@ body {
   /* color: var(--white); */
   background-size: 200% 100%;
   background-position: 100% 0;
+}
+
+#standalone-description-1 {
+  height: 68vh;
+}
+
+#standalone-description-2 {
+  height: 74vh;
+}
+
+#standalone-description-3 {
+  height: 75vh;
+}
+
+#standalone-description-4 {
+  height: 57vh;
 }
 
 @keyframes highlight-animation {

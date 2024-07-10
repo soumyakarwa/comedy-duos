@@ -183,6 +183,7 @@
   #textBox {
     width: var(--text-box-width);
     height: var(--text-box-height); 
+    /* height: fit-content; */
     background-color: var(--white);
     position: absolute; 
     top: var(--text-box-y); 

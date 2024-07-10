@@ -142,7 +142,6 @@ export const standaloneText1 = [
   `To identify Brooklyn Nine-Nine's most iconic duo, I first needed to analyze all the episodes of all the different duos. Some of the more obvious ones are Jake and Captain Holt or Jake and Amy, but there have been top-rated episodes with Charles and Amy paired together or even Terry and Rosa! The question is, how many episodes are these character duos paired together in, and how popular was the episode?`,
   `I used a Kaggle dataset of the IMDB ratings and votes of all 153 episodes, including other information like title, airdate, season number, episode number, official description, etc. Additionally, I scraped episode descriptions from different sources to improve the accuracy of the analysis. Using the Natural Language Toolkit and OpenAI API, I analyzed every description's language to identify which characters were grouped together in each episode.`,
   `Next, I calculated the total number of episodes and average rating for every character duo paired together. That was a lot of Math, but let me break it down with an example from Season 3, Episode 6, "Into the Woods."`,
-  `Keep reading for the most iconic duo!`,
 ];
 
 export const episodeBreakdownText = [
