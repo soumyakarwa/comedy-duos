@@ -43,4 +43,4 @@ sortedCharacterRatingDict = dict(sorted(characterRatingDict.items(), key=lambda 
 for entry, (frequency, cumulativeWeightedRating, totalVotes, totalRating) in sortedCharacterRatingDict.items():
     averageCumulativeRating = cumulativeWeightedRating / totalVotes if totalVotes > 0 else 0
     averageRating = totalRating / frequency if frequency > 0 else 0
-    print(f"Pair: {entry}, Frequency: {frequency}, Average Cumulative Rating: {averageCumulativeRating:.2f}, Average Rating: {averageRating:.2f}, Rating Difference: {averageCumulativeRating - averageRating:.2f}")
+    print(f"Pair: {entry}, Frequency: {frequency}, Average Cumulative Rating: {averageCumulativeRating:.2f}, Total Votes:{totalVotes}")

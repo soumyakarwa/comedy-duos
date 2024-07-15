@@ -730,14 +730,14 @@
 
 <section bind:this={heatMapSection} class="heatmap-section">
       <div class="svg-container divBorder">
-          <img id="heatmap-pin1" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
-          <img id="heatmap-pin2" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
-          <img id="heatmap-pin3" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
-          <img id="heatmap-pin4" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+          <img id="heatmap-pin1" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
+          <img id="heatmap-pin2" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
+          <img id="heatmap-pin3" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
+          <img id="heatmap-pin4" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
           <svg bind:this={heatMapSvg} width={svgWidth} height={svgHeight} viewBox="0 0 {svgWidth} {svgHeight}" class="heatmap-svg"></svg>
       </div>
       <div class="heatmap-content">
-        <img id="heatmap-content-pin" src="/assets/orange-pin.svg" alt="thumb pin" class="thumb-pin"/>
+        <img id="heatmap-content-pin" src="/assets/pins/orange-pin.svg" alt="thumb pin" class="thumb-pin"/>
         {@html Constants.heatMapSectionText[index]}
       </div>
 </section>

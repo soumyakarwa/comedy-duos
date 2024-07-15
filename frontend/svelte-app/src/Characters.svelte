@@ -153,7 +153,7 @@
   {#if characters}
     {#each characters as c}
       <div bind:this={c.var} id={c.id} class="character-containers divBorder">
-        <img src="assets/{c.id}.gif" alt="{c.name} intro gif"/>
+        <img src="assets/gifs/{c.id}.gif" alt="{c.name} intro gif"/>
         <div>{c.name}</div>
       </div>
     {/each}

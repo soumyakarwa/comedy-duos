@@ -33,6 +33,13 @@ body {
   --green: #8ed000;
   --black: #0f0a0a;
   --grey: #e1e1e1;
+
+  --light-yellow: #feec8c;
+  --light-orange: #ffd285;
+  --light-purple: #ceadff;
+  --light-blue: #addcff;
+  --light-green: #d6eaae;
+
   /* --white: rgb(246, 244, 245); */
   --white: rgb(255, 255, 255);
   /* --white: #e1e1e1; */

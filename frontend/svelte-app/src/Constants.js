@@ -94,11 +94,17 @@ export const purpleColor = getCSSVariable("--purple");
 export const greenColor = getCSSVariable("--green");
 export const orangeColor = getCSSVariable("--orange");
 
+export const lightBlueColor = getCSSVariable("--light-blue");
+export const lightYellowColor = getCSSVariable("--light-yellow");
+export const lightPurpleColor = getCSSVariable("--light-purple");
+export const lightGreenColor = getCSSVariable("--light-green");
+export const lightOrangeColor = getCSSVariable("--light-orange");
+
 export const colors = [
   blueColor,
-  yellowColor,
-  purpleColor,
   greenColor,
+  purpleColor,
+  yellowColor,
   orangeColor,
 ];
 

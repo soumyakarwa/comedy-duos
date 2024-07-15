@@ -11,3 +11,5 @@ venv/
 
 data-analysis/analysisVenv/
 public/build/
+script.docx
+~$script.docx

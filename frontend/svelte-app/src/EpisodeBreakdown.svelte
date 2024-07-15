@@ -9,7 +9,11 @@
     let episodeSvg, chartDiv, contentDiv, overlaySvg; 
     let baseRect; 
     let heatMap; 
-    let episodeRectText = [{rect: null, text: null},{rect: null, text: null}, {rect: null, text: null}]
+    let episodeRectText = [
+        {rect: null, texts: null, images: null},
+        {rect: null, texts: null, images: null},
+        {rect: null, texts: null, images: null}
+    ]    
     const showDescriptions = writable(false);
     let specificEpisodeGroup; 
     let xScale; 
@@ -237,40 +241,71 @@
      * @param width
      */
     function drawRect(xPos, yPos, characterNames, color){
-        const rowHeight = rectWidth/3; 
-        const characterNamesText = characterNames.join(', ');
+        const rowHeight = rectWidth / 3;
+        const imageRadius = rowHeight / 4;
+        const characterSpacing = imageRadius/2;
 
         const rect = specificEpisodeGroup
-        .append('rect')
-        .attr('x', xPos)
-        .attr('y', yPos)
-        .attr('width', 0) 
-        .attr('height', rowHeight)
-        .attr('fill', color); 
-        
+            .append('rect')
+            .attr('x', xPos)
+            .attr('y', yPos)
+            .attr('width', 0)
+            .attr('height', rowHeight)
+            .attr('fill', color);
+
         rect
-        .transition() 
-        .duration(Constants.transitionTime) 
-        .ease(d3.easeCubicIn)
-        .attr('width', rectWidth);
+            .transition()
+            .duration(Constants.transitionTime)
+            .ease(d3.easeCubicIn)
+            .attr('width', rectWidth);
 
-        // Append the text
-        const text = specificEpisodeGroup
-            .append('text')
-            .attr('x', xPos + rectWidth / 2) 
-            .attr('y', yPos + rowHeight / 2) 
-            .attr('dy', '.35em') 
-            .attr('text-anchor', 'middle')
-            .text(characterNamesText)
-            .style('fill', 'black')
-            .style('opacity', 0);
-        text
-        .transition()
-        .delay(Constants.transitionTime) 
-        .duration(Constants.transitionTime)
-        .style('opacity', 1);
+        const totalCharactersWidth = characterNames.length * (imageRadius * 2 + characterSpacing) - characterSpacing;
+        const startX = xPos + (rectWidth - totalCharactersWidth) / 2;
 
-        return {rect, text}; 
+        const texts = [];
+        const images = []
+
+        characterNames.forEach((name, index) => {
+            const imageX = startX + index * (imageRadius * 2 + characterSpacing) + imageRadius;
+            const imageY = yPos + rowHeight / 2.5;
+
+            const image = specificEpisodeGroup
+                .append('image')
+                .attr('x', imageX - imageRadius)
+                .attr('y', imageY - imageRadius)
+                .attr('width', 0)
+                .attr('height', 0)
+                .attr('xlink:href', `assets/yellow-background/${name}.png`);
+
+            image
+                .transition()
+                .duration(Constants.transitionTime)
+                .ease(d3.easeCubicIn)
+                .attr('width', imageRadius * 2)
+                .attr('height', imageRadius * 2);
+
+            const text = specificEpisodeGroup
+                .append('text')
+                .attr('x', imageX)
+                .attr('y', imageY+ imageRadius + 15) // Adjust the y position to place text below the image
+                .attr('dy', '.35em')
+                .attr('text-anchor', 'middle')
+                .text(name)
+                .style('fill', 'black')
+                .style('font-size', Constants.labelFontSize)
+                .style('opacity', 0);
+
+            text
+                .transition()
+                .delay(Constants.transitionTime)
+                .duration(Constants.transitionTime)
+                .style('opacity', 1);
+
+        texts.push(text);
+        images.push(image);
+        });
+
+        return {rect, texts, images}; 
     }
 
     /**
@@ -287,12 +322,22 @@
             .attr('width', 0)
             .remove();
 
-        elements.text
-            .transition()
+        elements.texts.forEach((t) => {
+            t.transition()
             .duration(500)
             .ease(d3.easeCubicOut)
             .style('opacity', 0)
             .remove();
+        })
+
+        elements.images.forEach((i) => {
+            i.transition()
+            .duration(500)
+            .ease(d3.easeCubicOut)
+            .style('opacity', 0)
+            .remove();
+        })
+
         }
     }
 
@@ -467,12 +512,12 @@
 
 <section bind:this={episodeSection} class="episode-section" id="episode-breakdown-section">
     <div class="content divBorder" bind:this={contentDiv}>
-        <img id="episode-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+        <img id="episode-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
         {@html Constants.episodeBreakdownText[currentStep]}
     </div>
 
     <div class="chart divBorder" bind:this={chartDiv}>
-        <img id="chart-pin" src="/assets/pin.svg" alt="thumb pin" class="thumb-pin"/>
+        <img id="chart-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
         <div id="col1"> 
             <div bind:this={heatMap}>
                 <svg bind:this={episodeSvg} width={rectWidth} height={rectWidth} viewbox="0 0 {rectWidth} {rectWidth}">

@@ -67,10 +67,10 @@
 <section class="standalone-section webpage-section" id={`standalone-${connectionBoolean.index}`}>
     <div class="desc divBorder" id={`standalone-description-${connectionBoolean.index}`}>
         {#if !connectionBoolean.top}
-            <img id={`standalone-top-pin-${connectionBoolean.index}`} src="/assets/pin.svg" alt="thumb pin" class="standalone-pin thumb-pin"/>
+            <img id={`standalone-top-pin-${connectionBoolean.index}`} src="/assets/pins/pin.svg" alt="thumb pin" class="standalone-pin thumb-pin"/>
         {/if}
         {#if !connectionBoolean.bottom}
-            <img id={`standalone-bottom-pin-${connectionBoolean.index}`} src="/assets/pin.svg" alt="thumb pin" class="standalone-bottom-pin thumb-pin"/>
+            <img id={`standalone-bottom-pin-${connectionBoolean.index}`} src="/assets/pins/pin.svg" alt="thumb pin" class="standalone-bottom-pin thumb-pin"/>
         {/if}
         <div bind:this={standaloneText} class="standalone-text" id={`standalone-text-${connectionBoolean.index}`}>
             {@html text[0]}
