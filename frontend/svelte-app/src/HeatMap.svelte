@@ -54,10 +54,10 @@
     xAxisTranslatePos = [0, chartHeight - pageMarginInPixels]; 
     xAxisXYPos = [pageMarginInPixels*2, chartWidth]; 
     xAxisWidth = xAxisXYPos[1] - xAxisXYPos[0];
-    xAxisLabelXYPos = [margin.left + xAxisWidth / 2, chartHeight+5]; 
+    xAxisLabelXYPos = [margin.left + xAxisWidth / 2, chartHeight+7]; 
 
     yAxisTranslatePos = [pageMarginInPixels*2, 0]; 
-    yAxisXYPos = [pageMarginInPixels*2, chartHeight]; 
+    yAxisXYPos = [pageMarginInPixels*2, chartHeight-5]; 
     yAxisHeight = yAxisXYPos[1] - yAxisXYPos[0]; 
     yAxisLabelTranslatePos = [0, margin.bottom + yAxisHeight/2]; 
 
@@ -391,6 +391,13 @@
       .style('opacity', 0)
       .remove();
 
+    g.select('.axis-x')
+      .selectAll('image')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 0)
+      .remove();
+
     const currentDomain = g.select('.axis-x').selectAll('.tick').data();
 
     // Compare current domain with new domain
@@ -518,6 +525,29 @@
         .call(d3.axisBottom(frequencyXScale))
         .attr('transform', `translate(0,${yAxisHeight})`)
         .call(g => g.selectAll(".tick line").remove()); 
+    
+    // renderXAxisWithImages(); 
+    
+    const axisGroup = g.select('.axis-x');
+    
+    // Remove existing labels if any
+    axisGroup.selectAll('text').remove();
+
+    // Append image elements as labels
+    axisGroup.selectAll('image')
+        .data(topPairs)
+        .enter()
+        .append('image')
+        .attr("opacity", 0)
+        .attr('x', d => frequencyXScale(d) + frequencyXScale.bandwidth()/4)
+        .attr('y', 4)
+        .attr('width', frequencyXScale.bandwidth()/2) 
+        // .attr('height', 36) 
+        .attr('xlink:href', d => `assets/legend/${d.replace(' & ', '-').toLowerCase()}.png`) // Path to the image
+        .attr('class', 'x-axis-label-image')
+        .transition()
+        .duration(Constants.transitionTime)
+        .attr("opacity", 1); // Assign a class for further styling if needed
         
 
         // Update x-axis label
