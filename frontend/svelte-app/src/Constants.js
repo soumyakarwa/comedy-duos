@@ -108,6 +108,19 @@ export const colors = [
   orangeColor,
 ];
 
+export const heatMapColors = [
+  blueColor,
+  yellowColor,
+  purpleColor,
+  greenColor,
+  orangeColor,
+  lightBlueColor,
+  lightYellowColor,
+  lightPurpleColor,
+  lightGreenColor,
+  lightOrangeColor,
+];
+
 // MISC
 export const transitionTime = convertToMilliseconds(
   getCSSVariable("--transition-time")

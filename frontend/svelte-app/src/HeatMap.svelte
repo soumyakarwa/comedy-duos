@@ -163,7 +163,7 @@
 
     pairToColor = new Map();
     topPairs.forEach((pair, index) => {
-        pairToColor.set(pair, Constants.colors[index % 5]);
+        pairToColor.set(pair, Constants.heatMapColors[index]);
     });
 
     ratingXScale = frequencyXScale;
@@ -425,7 +425,7 @@
             return topPairs.some(topPair => topPair === pairToString(pair)); 
           })
           .transition()
-          .delay(Constants.transitionTime)
+          .delay(Constants.transitionTime/2)
           .duration(Constants.transitionTime)
           .attr('x', (d) => calculateHeatMapX(d))
           .attr('y', (d, i, nodes) => calculateHeatMapY(d) + (i * originalXScale.bandwidth()) / nodes.length)
@@ -437,16 +437,6 @@
           });
       });
 
-    // Group pairs by color
-    const colorToPairs = new Map();
-    topPairs.forEach((pair, index) => {
-        const color = Constants.colors[index % 5];
-        if (!colorToPairs.has(color)) {
-            colorToPairs.set(color, []);
-        }
-        colorToPairs.get(color).push(pair);
-    });
-
     g.selectAll('.legend')
       .transition()
       .duration(Constants.transitionTime)
@@ -457,42 +447,38 @@
     // Create legend
     legend = g.append('g')
       .attr('class', 'legend')
-      .attr('transform', `translate(${chartWidth - 250}, 0)`)
+      .attr('transform', `translate(${chartWidth - 5 * originalXScale.bandwidth()*2}, 0)`)
       .style('opacity', 0);// Adjust position as needed
 
     let legendIndex = 0;
-    colorToPairs.forEach((pairs, color) => {
-        const pairText = pairs.join(' or ');
+    pairToColor.forEach((color, pair) => {
+        const pairText = pair.replace(' & ', '-').toLowerCase();
+        const pairImage = `assets/legend/${pairText}.png`; // Assuming you have saved the images with the pair names
+
+        const row = Math.floor(legendIndex / 5);
+        const col = legendIndex % 5;
+        const xOffset = originalXScale.bandwidth()/4 + col * originalXScale.bandwidth()*2; // Adjust spacing as needed
+        const yOffset = 10 + row * originalXScale.bandwidth(); // Adjust spacing as needed
 
         const legendItem = legend.append('g')
-          .attr('class', 'legend-item')
-          .attr('transform', `translate(0, ${legendIndex * 20})`); // Adjust spacing as needed
+            .attr('class', 'legend-item')
+            .attr('transform', `translate(${xOffset}, ${yOffset})`);
 
-        legendItem.append('rect')
-          .attr('x', 0)
-          .attr('y', 0)
-          .attr('width', 18)
-          .attr('height', 18)
-          .style('fill', color);
-
-        legendItem.append('text')
-          .attr('x', 24)
-          .attr('y', 9)
-          .attr('dy', '0.35em')
-          .attr('text-anchor', 'start') // Ensuring text is left-aligned
-          .style('font-size', Constants.labelFontSize) // Set font size using style
-          .style('transform', 'none') // Remove any transform styles
-          .text(pairText);
+        legendItem.append('image')
+            .attr('x', 0)
+            .attr('y', 0)
+            // .attr('width', originalXScale.bandwidth()*1.5)
+            .attr('height', originalXScale.bandwidth() * 0.75)
+            .attr('xlink:href', pairImage);
 
         legendIndex++;
     });
+
 
     legend
       .transition()
       .duration(Constants.transitionTime)
       .style('opacity', 1);
-
-
   }
 
   /**
