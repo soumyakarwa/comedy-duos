@@ -7,12 +7,9 @@
   let landingPageSvg;
   let svgWidth, svgHeight; 
   export let sectionIndex;
+  let caseImg, detectiveImg, arrowKeyImg, titleImg;  
 
-  onMount(async () => {
-    const svg = d3.select(landingPageSvg);
-    
-    [svgWidth, svgHeight] = setSvgDimensions("landing", svg); 
-
+  function setup(svg, svgWidth, svgHeight) {
     const caseImgHeight =  svgHeight * 0.07;
     const caseImgX =  svgWidth * 0.02; 
     const caseImgY =  svgHeight * 0.045;
@@ -41,28 +38,40 @@
     const arrowImgY = titleImgY + titleImgHeight - arrowImgHeight; 
     const arrowPin = [arrowImgX + arrowImgWidth/2, arrowImgY];
 
-    const caseImg = svg.append("image")
+    if(!caseImg){
+      caseImg = svg.append("image")
         .attr("xlink:href", "/assets/landing-page/caseTextWithBorder.svg") 
-        .attr("x", caseImgX) 
+    }
+    
+    caseImg.attr("x", caseImgX) 
         .attr("y", caseImgY)
         .attr("height", caseImgHeight);
 
-    const titleImg = svg.append("image")
-       .attr("xlink:href", "/assets/landing-page/titleWithBorder.svg") 
+    if(!titleImg){
+      titleImg = svg.append("image")
+       .attr("xlink:href", "/assets/landing-page/titleWithBorder.svg") ; 
+    }
+    titleImg
        .attr("x", titleImgX) 
        .attr("y", titleImgY)
       //  .attr("width", titleImgWidth);   
        .attr("height", titleImgHeight);
 
-    const detectiveImg = svg.append("image")
-    .attr("xlink:href", "/assets/landing-page/detectiveWithBorder.svg") 
+    if(!detectiveImg){
+      detectiveImg = svg.append("image")
+      .attr("xlink:href", "/assets/landing-page/detectiveWithBorder.svg") 
+    }
+    detectiveImg
     .attr("x", detectiveImgX) 
     .attr("y", detectiveImgY)
     .attr("height", detectiveImgHeight); 
 
     setTimeout(() => {
-      const arrowKeyImg = svg.append("image")
+      if(!arrowKeyImg){
+        arrowKeyImg = svg.append("image")
         .attr("xlink:href", "/assets/landing-page/arrowsWithBorder.svg")
+      }
+      arrowKeyImg
         .attr("x", arrowImgX) 
         .attr("y", arrowImgY)
         .attr("height", arrowImgHeight)
@@ -104,12 +113,24 @@
         createLine(svg, titleBottomPin2, detectiveTopPin1,  0); 
       }, Constants.maxLineDelay/2); 
     }, Constants.maxLineDelay*3);
+  }
 
-    // Update positioning on window resize
+  onMount(async () => {
+    const svg = d3.select(landingPageSvg);
+    
+    // [svgWidth, svgHeight] = setSvgDimensions("landing", svg); 
+    svgWidth = document.getElementById('landing').getBoundingClientRect().width; 
+    svgHeight = document.getElementById('landing').getBoundingClientRect().height; 
+
+    setup(svg, svgWidth, svgHeight); 
+
     window.addEventListener('resize', () => {
-      [svgWidth, svgHeight] = setSvgDimensions("landing", svg); 
+      svgWidth = document.getElementById('landing').getBoundingClientRect().width;
+      svgHeight = document.getElementById('landing').getBoundingClientRect().height;
+      setup(svg, svgWidth, svgHeight);
     });
   });
+
 </script>
 
 <div class="landing-page-container" id="landing">
@@ -121,9 +142,11 @@
   .landing-page-container {
     width: 100vw;
     height: 100vh;
+    resize: both;
   }
 
   svg {
-    display: block;
+    width: 100%; 
+    height: 100%; 
   }
 </style>
