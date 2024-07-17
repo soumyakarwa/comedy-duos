@@ -3,7 +3,7 @@ import * as Constants from "./Constants.js";
 import * as d3 from "d3";
 
 export function createThumbPin(svg, pos) {
-  svg
+  const ellipse = svg
     .append("ellipse")
     .attr("rx", Constants.ellipseSize)
     .attr("ry", Constants.ellipseSize)
@@ -14,6 +14,8 @@ export function createThumbPin(svg, pos) {
     .transition()
     .duration(Constants.transitionTime)
     .attr("opacity", 1);
+
+  return ellipse;
 }
 
 export function createLine(svg, pos1, pos2, delay) {

@@ -9,108 +9,157 @@
   export let sectionIndex;
   let caseImg, detectiveImg, arrowKeyImg, titleImg;  
 
+  let caseImageData = {
+    img: null,
+    height: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+    topPins: {ellipse: null, pos: null}, 
+    bottomPins: {ellipse: null, pos: null}
+  };
+
+  let detectiveImgData = {
+    img: null,
+    height: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+    bottomPins: null,
+    topPins: null
+  };
+
+  let arrowImgData = {
+    img: null,
+    height: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+    bottomPins: null,
+    topPins: null
+  };
+
+  let titleImgData = {
+    img: null,
+    height: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+    bottomPins: null,
+    topPins: null
+  };
+
+
+  function setPosition(svg, svgWidth, svgHeight){
+    caseImageData.height = svgHeight * 0.07;
+    caseImageData.x = svgWidth * 0.02;
+    caseImageData.y =  svgHeight * 0.045;
+    caseImageData.topPins.pos = [caseImageData.x*6, caseImageData.y]; 
+    caseImageData.bottomPins.pos = [caseImageData.x*7.5, caseImageData.y  + caseImageData.height]; 
+
+    detectiveImgData.height = svgHeight * 0.09;
+    detectiveImgData.x = svgWidth*0.88; 
+    detectiveImgData.y = svgHeight * 0.88; 
+    detectiveImgData.topPins = [detectiveImgData.x + svgWidth*0.047, detectiveImgData.y];
+
+    titleImgData.height = svgHeight * 0.46;
+    titleImgData.width = 1011/435 * titleImgData.height; 
+    titleImgData.x = svgWidth*0.215; 
+    titleImgData.y = svgHeight * 0.285; 
+    titleImgData.topPins = [
+      [titleImgData.x + 0.3*titleImgData.width, titleImgData.y], 
+      [titleImgData.x+ titleImgData.width - 4, titleImgData.y]
+    ]; 
+    titleImgData.bottomPins = [
+      [titleImgData.x + 0.2*titleImgData.width, titleImgData.y + titleImgData.height],
+      [titleImgData.x + titleImgData.width - 6, titleImgData.y + titleImgData.height]
+    ];
+
+    arrowImgData.height = titleImgData.height * 0.2; 
+    arrowImgData.width = arrowImgData.height*169/88.41; 
+    arrowImgData.x = titleImgData.x + titleImgData.width + 10; 
+    arrowImgData.y = titleImgData.y + titleImgData.height - arrowImgData.height; 
+    arrowImgData.topPins = [arrowImgData.x + arrowImgData.width/2, arrowImgData.y];
+
+  }
+
   function setup(svg, svgWidth, svgHeight) {
-    const caseImgHeight =  svgHeight * 0.07;
-    const caseImgX =  svgWidth * 0.02; 
-    const caseImgY =  svgHeight * 0.045;
-    const caseBottomPin1 = [caseImgX*7.5, caseImgY + caseImgHeight]; 
-    const caseTopPin1 = [caseImgX*6, caseImgY]; 
 
-    const titleImgRatio = 1011/435; 
-    const titleImgHeight = svgHeight * 0.46;
-    const titleImgWidth = titleImgRatio * titleImgHeight; 
-    const titleImgX = svgWidth*0.215; 
-    const titleImgY = svgHeight * 0.285; 
-    const titleTopPin1 = [titleImgX + 0.3*titleImgWidth, titleImgY]; 
-    const titleTopPin2 = [titleImgX + titleImgWidth - 4, titleImgY]; 
-    const titleBottomPin1 = [titleImgX + 0.2*titleImgWidth, titleImgY + titleImgHeight];
-    const titleBottomPin2 = [titleImgX + titleImgWidth - 6, titleImgY + titleImgHeight];
-
-    const detectiveImgHeight = svgHeight * 0.09;
-    const detectiveImgX = svgWidth*0.88; 
-    const detectiveImgY = svgHeight * 0.88; 
-    const detectiveTopPin1 = [detectiveImgX + svgWidth*0.047, detectiveImgY];
-
-    const arrowImgRatio = 169/88.41; 
-    const arrowImgHeight = titleImgHeight * 0.2; 
-    const arrowImgWidth = arrowImgHeight*arrowImgRatio; 
-    const arrowImgX = titleImgX + titleImgWidth + 10; 
-    const arrowImgY = titleImgY + titleImgHeight - arrowImgHeight; 
-    const arrowPin = [arrowImgX + arrowImgWidth/2, arrowImgY];
-
-    if(!caseImg){
-      caseImg = svg.append("image")
+    setPosition(svg, svgWidth, svgHeight);
+   
+    if(!caseImageData.img){
+      caseImageData.img = svg.append("image")
         .attr("xlink:href", "/assets/landing-page/caseTextWithBorder.svg") 
     }
     
-    caseImg.attr("x", caseImgX) 
-        .attr("y", caseImgY)
-        .attr("height", caseImgHeight);
+    caseImageData.img.attr("x", caseImageData.x) 
+        .attr("y", caseImageData.y)
+        .attr("height", caseImageData.height);
 
-    if(!titleImg){
-      titleImg = svg.append("image")
+    if(!titleImgData.img){
+      titleImgData.img = svg.append("image")
        .attr("xlink:href", "/assets/landing-page/titleWithBorder.svg") ; 
     }
-    titleImg
-       .attr("x", titleImgX) 
-       .attr("y", titleImgY)
+    titleImgData.img
+       .attr("x", titleImgData.x) 
+       .attr("y",titleImgData.y)
       //  .attr("width", titleImgWidth);   
-       .attr("height", titleImgHeight);
+       .attr("height", titleImgData.height);
 
-    if(!detectiveImg){
-      detectiveImg = svg.append("image")
+    if(!detectiveImgData.img){
+      detectiveImgData.img = svg.append("image")
       .attr("xlink:href", "/assets/landing-page/detectiveWithBorder.svg") 
     }
-    detectiveImg
-    .attr("x", detectiveImgX) 
-    .attr("y", detectiveImgY)
-    .attr("height", detectiveImgHeight); 
+    detectiveImgData.img
+    .attr("x", detectiveImgData.x) 
+    .attr("y", detectiveImgData.y)
+    .attr("height", detectiveImgData.height); 
 
     setTimeout(() => {
-      if(!arrowKeyImg){
-        arrowKeyImg = svg.append("image")
+      if(!arrowImgData.img){
+        arrowImgData.img = svg.append("image")
         .attr("xlink:href", "/assets/landing-page/arrowsWithBorder.svg")
       }
-      arrowKeyImg
-        .attr("x", arrowImgX) 
-        .attr("y", arrowImgY)
-        .attr("height", arrowImgHeight)
+      arrowImgData.img
+        .attr("x", arrowImgData.x) 
+        .attr("y", arrowImgData.y)
+        .attr("height", arrowImgData.height)
         .attr("opacity", 0)
         .transition()
         .duration(Constants.transitionTime)
         .attr("opacity", 1); 
-      createThumbPin(svg, arrowPin); 
+      createThumbPin(svg, arrowImgData.topPins); 
     }, Constants.maxLineDelay*5);    
    
-    createThumbPin(svg, caseTopPin1); 
+    createThumbPin(svg, caseImageData.topPins.pos); 
     
     setTimeout(() => {
-      createThumbPin(svg, caseBottomPin1); 
-      createThumbPin(svg, titleTopPin1);    
+      createThumbPin(svg, caseImageData.bottomPins.pos); 
+      createThumbPin(svg, titleImgData.topPins[0]);    
       setTimeout(() => {
-      createLine(svg, caseBottomPin1, titleTopPin1, 0)
+      createLine(svg, caseImageData.bottomPins.pos, titleImgData.topPins[0], 0)
       }, Constants.maxLineDelay/2); 
     }, Constants.maxLineDelay); 
     
     setTimeout(() => {
-      createThumbPin(svg, titleTopPin2); 
+      createThumbPin(svg, titleImgData.topPins[1]); 
       setTimeout(() => {
-        createLine(svg, titleTopPin2, [svgWidth, 0],  0)
+        createLine(svg, titleImgData.topPins[1], [svgWidth, 0],  0)
       }, Constants.maxLineDelay/2); 
     }, Constants.maxLineDelay*2); 
     
     setTimeout(() => {
-      createThumbPin(svg, titleBottomPin1);     
+      createThumbPin(svg, titleImgData.bottomPins[0]);     
       setTimeout(() => {
-        createLine(svg, titleBottomPin1, [svgWidth*0.455, svgHeight],  0)
+        createLine(svg, titleImgData.bottomPins[0], [svgWidth*0.455, svgHeight],  0)
       }, Constants.maxLineDelay/2); 
     }, Constants.maxLineDelay*4);
     
     setTimeout(() => {
-      createThumbPin(svg, titleBottomPin2);  
-      createThumbPin(svg, detectiveTopPin1);  
+      createThumbPin(svg, titleImgData.bottomPins[1]);  
+      createThumbPin(svg, detectiveImgData.topPins);  
       setTimeout(() => {    
-        createLine(svg, titleBottomPin2, detectiveTopPin1,  0); 
+        createLine(svg, titleImgData.bottomPins[1], detectiveImgData.topPins,  0); 
       }, Constants.maxLineDelay/2); 
     }, Constants.maxLineDelay*3);
   }
