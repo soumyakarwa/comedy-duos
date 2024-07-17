@@ -84,3 +84,17 @@ export function freezeSectionScroll(lastScrollTop) {
   );
   return sectionObserver;
 }
+
+export function resizeSVGs() {
+  // Select all SVG elements you want to resize
+  const svgs = document.querySelectorAll("svg");
+  svgs.forEach((svg) => {
+    const parent = svg.parentElement;
+    const width = parent.clientWidth;
+    const height = parent.clientHeight;
+
+    // Update the SVG dimensions
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
+  });
+}

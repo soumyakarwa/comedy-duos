@@ -6,6 +6,7 @@
   
   let landingPageSvg;
   let svgWidth, svgHeight; 
+  export let sectionIndex;
 
   onMount(async () => {
     const svg = d3.select(landingPageSvg);

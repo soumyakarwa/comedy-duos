@@ -27,6 +27,7 @@
     export let episodeData;
     export let specificDataPoint;
     export let currentStep; 
+    export let sectionIndex; 
     
     let rectYPos = 0; 
     let episodeDescriptions = []; 

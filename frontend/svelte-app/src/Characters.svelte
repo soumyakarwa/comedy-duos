@@ -9,6 +9,7 @@
   let pinTop, pinRight, pinLeft, pinBottom; 
   let raymond, jake, amy, terry, rosa, gina, charles; 
   
+  export let sectionIndex; 
   export let currentTextIndex; 
   
   let connectingLine = false; 

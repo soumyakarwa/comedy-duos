@@ -6,6 +6,7 @@
   const characterRatingDict = {};
   let sortedCharacterRatingArray; 
   let heatMapSection; 
+  export let sectionIndex; 
 
   export let episodeData;
   export let specificDataPoint; 

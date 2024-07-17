@@ -8,14 +8,14 @@
     import * as Constants from "./Constants.js"; 
 
     const pageSections = [
-        { component: LandingPage, subSteps: 0 },
-        { component: Standalone, subSteps: 0 },
-        { component: Characters, subSteps: Constants.characterSectionText.length-1 },
-        { component: Standalone, subSteps: 0 },
-        { component: EpisodeBreakdown, subSteps: Constants.episodeBreakdownText.length-1 },
-        { component: HeatMap, subSteps: Constants.heatMapSectionText.length-1 },
-        { component: Standalone, subSteps: 0 },
-        { component: Standalone, subSteps: 0 }
+        { component: LandingPage, subSteps: 0},
+        { component: Standalone, subSteps: 0},
+        { component: Characters, subSteps: Constants.characterSectionText.length-1},
+        { component: Standalone, subSteps: 0},
+        { component: EpisodeBreakdown, subSteps: Constants.episodeBreakdownText.length-1},
+        { component: HeatMap, subSteps: Constants.heatMapSectionText.length-1, index: 5},
+        { component: Standalone, subSteps: 0},
+        { component: Standalone, subSteps: 0}
     ];
 
 	export let episodeData;
@@ -84,14 +84,14 @@
 </script>
 
 <div bind:this={container} class="container">
-    <div class="section"><LandingPage/></div>
-    <div class="section"><Standalone text={Constants.standaloneIntroduction} connectionBoolean={standaloneIntroduction}/></div>
-    <div class="section"><Characters currentTextIndex={subIndexes[2]}/></div>
-    <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={firstStandaloneBoolean}/></div>
-    <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[4]}/></div>
-    <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[5]}/></div>
-    <div class="section"><Standalone text={Constants.standaloneConclusion} connectionBoolean={secondStandaloneBoolean}/></div>
-    <div class="section"><Standalone text={Constants.standaloneNotes} connectionBoolean={standaloneNotes}/></div>
+    <div class="section" ><LandingPage sectionIndex=0/></div>
+    <div class="section"><Standalone sectionIndex=1 text={Constants.standaloneIntroduction} connectionBoolean={standaloneIntroduction} /></div>
+    <div class="section"><Characters sectionIndex=2 currentTextIndex={subIndexes[2]}/></div>
+    <div class="section"><Standalone sectionIndex=3 text={Constants.standaloneText1} connectionBoolean={firstStandaloneBoolean}/></div>
+    <div class="section"><EpisodeBreakdown sectionIndex=4 {episodeData} {specificDataPoint} currentStep={subIndexes[4]}/></div>
+    <div class="section"><HeatMap sectionIndex=5 {episodeData} {specificDataPoint} index={subIndexes[5]}/></div>
+    <div class="section"><Standalone sectionIndex=6 text={Constants.standaloneConclusion} connectionBoolean={secondStandaloneBoolean}/></div>
+    <div class="section"><Standalone sectionIndex=7 text={Constants.standaloneNotes} connectionBoolean={standaloneNotes}/></div>
 </div>
 
 <style>
