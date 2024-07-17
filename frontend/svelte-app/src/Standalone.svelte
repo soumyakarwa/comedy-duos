@@ -22,10 +22,9 @@
             [svgWidth, svgHeight] = setSvgDimensions(parentDiv.id, svg);
             const top = svgHeight * 0.1; 
 
-            if (descriptionDiv) {
-                descriptionDivHeight = descriptionDiv.getBoundingClientRect().height; 
-                console.log(connectionBoolean.index, descriptionDivHeight); 
-            }
+            descriptionDivHeight = document.getElementById(`standalone-description-${connectionBoolean.index}`).offsetHeight; 
+            console.log(connectionBoolean.index, descriptionDivHeight); 
+            
             
             // Create the bottom thumb pin
             const bottomPinYPosition = top + descriptionDivHeight;
@@ -39,14 +38,14 @@
                         if (!connectingLine) {
                             connectingLine = true;
                             if(connectionBoolean.top){
-                                createThumbPin(svg, standaloneTopPinPos);
+                                // createThumbPin(svg, standaloneTopPinPos);
                                 connectionBoolean.lineTop.forEach((line) => {
                                 createLine(svg, [svgWidth * line[0], svgHeight * line[1]], standaloneTopPinPos, 0);
                                 });                
                             }
                             if(connectionBoolean.bottom){
                                 setTimeout(() => {
-                                    createThumbPin(svg, standaloneBottomPinPos); 
+                                    // createThumbPin(svg, standaloneBottomPinPos); 
                                     connectionBoolean.lineBottom.forEach((line) => {
                                     createLine(svg, standaloneBottomPinPos, [svgWidth * line[0], svgHeight * line[1]], 0);
                                     });   
@@ -67,12 +66,12 @@
 
 <section class="standalone-section webpage-section" id={`standalone-${connectionBoolean.index}`}>
     <div class="desc divBorder" id={`standalone-description-${connectionBoolean.index}`}>
-        {#if !connectionBoolean.top}
+        <!-- {#if !connectionBoolean.top} -->
             <img id={`standalone-top-pin-${connectionBoolean.index}`} src="/assets/pins/pin.svg" alt="thumb pin" class="standalone-pin thumb-pin"/>
-        {/if}
-        {#if !connectionBoolean.bottom}
+        <!-- {/if} -->
+        <!-- {#if !connectionBoolean.bottom} -->
             <img id={`standalone-bottom-pin-${connectionBoolean.index}`} src="/assets/pins/pin.svg" alt="thumb pin" class="standalone-bottom-pin thumb-pin"/>
-        {/if}
+        <!-- {/if} -->
         <div bind:this={standaloneText} class="standalone-text" id={`standalone-text-${connectionBoolean.index}`}>
             {@html text[0]}
             <br>
@@ -121,7 +120,7 @@
     .standalone-svg {
         position: absolute; 
         display: block;
-        z-index: 1;
+        z-index: -1;
     }
 
     .standalone-pin {
