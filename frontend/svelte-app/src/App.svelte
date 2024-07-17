@@ -19,6 +19,8 @@
 		left: 0;
 		width: 100%;
 		stroke: var(--white);
+		height: 100vh; 
+		object-fit: cover;
 		stroke-width: 5; 
 		z-index: -1; /* Ensure it is behind other content */
 	}

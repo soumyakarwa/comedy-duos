@@ -120,7 +120,7 @@ body {
   border: 1px solid var(--grey);
 }
 
-#standalone-description-1 {
+/* #standalone-description-1 {
   height: 65vh;
 }
 
@@ -134,7 +134,7 @@ body {
 
 #standalone-description-4 {
   height: 57vh;
-}
+} */
 
 .link {
   text-decoration: none;

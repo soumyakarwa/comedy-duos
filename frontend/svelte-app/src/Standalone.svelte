@@ -23,7 +23,8 @@
             const top = svgHeight * 0.1; 
 
             if (descriptionDiv) {
-                descriptionDivHeight = descriptionDiv.offsetHeight;
+                descriptionDivHeight = descriptionDiv.getBoundingClientRect().height; 
+                console.log(connectionBoolean.index, descriptionDivHeight); 
             }
             
             // Create the bottom thumb pin
@@ -113,7 +114,7 @@
 
     .standalone-text {
         padding: var(--margin);
-        height: fit-content; 
+        /* height: fit-content;  */
         font-size: var(--body-font-size); 
     }
 
