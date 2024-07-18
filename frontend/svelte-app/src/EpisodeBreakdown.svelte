@@ -3,16 +3,16 @@
     import * as d3 from 'd3';
     import { writable } from 'svelte/store';
     import * as Constants from "./Constants.js"; 
-    import {setSvgDimensions, createLine} from "./Util.js"; 
+    import {setSvgDimensions, createLine, addOrUpdateLine} from "./Util.js"; 
 
     // SVG ELEMENTS
     let episodeSvg, chartDiv, contentDiv, overlaySvg; 
     let baseRect; 
     let heatMap; 
     let episodeRectText = [
-        {rect: null, texts: null, images: null},
-        {rect: null, texts: null, images: null},
-        {rect: null, texts: null, images: null}
+        {rect: null, texts: null, images: null, names: null},
+        {rect: null, texts: null, images: null, names: null},
+        {rect: null, texts: null, images: null, names: null}
     ]    
     const showDescriptions = writable(false);
     let specificEpisodeGroup; 
@@ -27,7 +27,6 @@
     export let episodeData;
     export let specificDataPoint;
     export let currentStep; 
-    export let sectionIndex; 
     
     let rectYPos = 0; 
     let episodeDescriptions = []; 
@@ -35,72 +34,13 @@
     let characterHighlights = []; 
     let previousStep = -1; 
 
-    $: if (specificDataPoint){
-        episodeDescriptions[0] = setSentenceHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
-        episodeDescriptions[1] = setSentenceHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
-        episodeDescriptions[2] = setSentenceHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
+    let leftPin = {ellipse: null, pos: null}; 
+    let rightPin = {ellipse: null, pos: null}; 
 
-        const svgSelection = d3.select(episodeSvg);
-        const baseRectSelection = d3.select(baseRect);
+    let topLeft = {line: null, startingPos: null, endingPos: null};
+    let topRight = {line: null, startingPos: null, endingPos: null};
 
-        specificEpisodeGroup = svgSelection.append('g'); 
-        specificEpisodeGroup.node().appendChild(baseRectSelection.node());
-
-        const seasons = Array.from(new Set(episodeData.map(d => d.Season)));
-        const episodes = Array.from(new Set(episodeData.map(d => d.Episode)));
-
-        xScale = d3.scaleBand()
-            .domain(seasons)
-            .range([0, 0.45*window.innerWidth])
-            .padding(0.1);
-
-        yScale = d3.scaleBand()
-            .domain(episodes)
-            .range([0, 0.6*window.innerHeight])
-            .padding(0.1);
-
-        rectWidth = 0.3*window.innerWidth; 
-        rectYPosIncrement = rectWidth/3; 
-    };
-
-    onMount(async () => {
-        const svg = d3.select(overlaySvg);
-        
-        [svgWidth, svgHeight] = setSvgDimensions("episode-breakdown-section", svg);
-
-        const top = svgHeight * 0.05; 
-        const contentDiv = document.querySelector('.content');
-        const contentDivWidth =contentDiv.offsetWidth;
-        const leftContent = svgWidth*0.2; 
-        
-        const chartDiv = document.getElementById("col1");
-        const chartDivWidth = chartDiv.offsetWidth;
-        const rightChart = svgWidth*0.53; 
-
-        const leftPinPosition = [leftContent+contentDivWidth/2, top]; 
-        const rightPinPosition = [rightChart+chartDivWidth/2, top]; 
-
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    if (!connectingLine) {
-                        connectingLine = true;
-                        createLine(svg, [svgWidth * 0.375, 0], leftPinPosition, Constants.maxLineDelay/3);
-                        createLine(svg, [svgWidth * 0.625, 0], rightPinPosition,Constants.maxLineDelay/3);
-                    }
-                }
-            });
-        }, {
-            threshold: 0.5 // Adjust this threshold as needed
-        });
-        
-        observer.observe(episodeSection);
-
-       
-
-    });    
-
-    /**
+        /**
      * Setting initial sentence highlight spans in current step = 2
      * @param description
      * @param analysis
@@ -306,7 +246,7 @@
         images.push(image);
         });
 
-        return {rect, texts, images}; 
+        return {rect, texts, images, characterNames}; 
     }
 
     /**
@@ -407,6 +347,140 @@
         });
     }
 
+    function resizeRect(element, index){
+        const rowHeight = rectWidth / 3;
+        const imageRadius = rowHeight / 4;
+        const characterSpacing = imageRadius/2;
+
+        element.rect
+            .transition()
+            .attr('x', 0)
+            .attr('y', (index * rectYPosIncrement))
+            .attr('width', rectWidth)
+            .attr('height', rowHeight);
+
+        const totalCharactersWidth = element.names * (imageRadius * 2 + characterSpacing) - characterSpacing;
+        const startX = (rectWidth - totalCharactersWidth) / 2;
+
+        element.images.forEach((image, index) => {
+            const imageX = startX + index * (imageRadius * 2 + characterSpacing) + imageRadius;
+            const imageY = (index * rectYPosIncrement) + rowHeight / 2.5;
+
+            image
+                .transition()
+                .attr('x', imageX - imageRadius)
+                .attr('y', imageY - imageRadius)
+                .attr('width', imageRadius * 2)
+                .attr('height', imageRadius * 2);
+
+            element.texts[index]
+                .transition()
+                .duration(Constants.transitionTime)
+                .attr('x', imageX)
+                .attr('y', imageY+ imageRadius + 15);
+        }); 
+    }
+
+    $: if (specificDataPoint){
+        episodeDescriptions[0] = setSentenceHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
+        episodeDescriptions[1] = setSentenceHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
+        episodeDescriptions[2] = setSentenceHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Description Analysis`]);
+
+        const svgSelection = d3.select(episodeSvg);
+        const baseRectSelection = d3.select(baseRect);
+
+        specificEpisodeGroup = svgSelection.append('g'); 
+        specificEpisodeGroup.node().appendChild(baseRectSelection.node());
+
+        const seasons = Array.from(new Set(episodeData.map(d => d.Season)));
+        const episodes = Array.from(new Set(episodeData.map(d => d.Episode)));
+
+        xScale = d3.scaleBand()
+            .domain(seasons)
+            .range([0, 0.45*window.innerWidth])
+            .padding(0.1);
+
+        yScale = d3.scaleBand()
+            .domain(episodes)
+            .range([0, 0.6*window.innerHeight])
+            .padding(0.1);
+
+        rectWidth = 0.3*window.innerWidth; 
+        rectYPosIncrement = rectWidth/3; 
+    };
+
+    onMount(async () => {
+        const svg = d3.select(overlaySvg);
+        // [svgWidth, svgHeight] = setSvgDimensions("episode-breakdown-section", svg);
+        svgWidth = document.getElementById("episode-breakdown-section").getBoundingClientRect().width;
+        svgHeight = document.getElementById("episode-breakdown-section").getBoundingClientRect().height;
+
+        const top = svgHeight * 0.05; 
+        const contentDiv = document.querySelector('.content');
+        const contentDivWidth =contentDiv.offsetWidth;
+        const leftContent = svgWidth*0.2; 
+        
+        const chartDiv = document.getElementById("col1");
+        const chartDivWidth = chartDiv.offsetWidth;
+        const rightChart = svgWidth*0.53; 
+
+        leftPin.pos = [leftContent+contentDivWidth/2, top]; 
+        rightPin.pos = [rightChart+chartDivWidth/2, top]; 
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (!connectingLine) {
+                        connectingLine = true;
+                        addOrUpdateLine(svg, topLeft,[svgWidth * 0.375, 0], leftPin.pos); 
+                        addOrUpdateLine(svg, topRight,[svgWidth * 0.625, 0], rightPin.pos); 
+                    }
+                }
+            });
+        }, {
+            threshold: 0.5 // Adjust this threshold as needed
+        });
+        
+        observer.observe(episodeSection);
+
+        window.addEventListener('resize', () => {
+            svgWidth = document.getElementById("episode-breakdown-section").getBoundingClientRect().width;
+            svgHeight = document.getElementById("episode-breakdown-section").getBoundingClientRect().height;
+
+            const top = svgHeight * 0.05; 
+            const contentDiv = document.querySelector('.content');
+            const contentDivWidth =contentDiv.offsetWidth;
+            const leftContent = svgWidth*0.2; 
+            
+            const chartDiv = document.getElementById("col1");
+            const chartDivWidth = chartDiv.offsetWidth;
+            const rightChart = svgWidth*0.53; 
+
+            leftPin.pos = [leftContent+contentDivWidth/2, top]; 
+            rightPin.pos = [rightChart+chartDivWidth/2, top]; 
+
+            rectWidth = 0.25 * window.innerWidth;
+            rectYPosIncrement = rectWidth / 3;
+            
+            episodeSvg.setAttribute("width", rectWidth);
+            episodeSvg.setAttribute("height", rectWidth);
+            episodeSvg.setAttribute("viewBox", `0 0 ${rectWidth} ${rectWidth}`);
+
+            if(connectingLine){
+                addOrUpdateLine(svg, topLeft,[svgWidth * 0.375, 0], leftPin.pos); 
+                addOrUpdateLine(svg, topRight,[svgWidth * 0.625, 0], rightPin.pos); 
+            }
+
+            console.log(episodeRectText); 
+            episodeRectText.forEach((entry, i) => {
+                console.log(entry.rect); 
+                if(entry.rect){
+                    resizeRect(entry, i); 
+                }
+            }); 
+
+        }); 
+    });    
 
     $: (() => {
         // scrolling down
@@ -567,6 +641,11 @@
         position: relative; 
     }
 
+    #overlaySvg-episodeBreakdown {
+        width: 100%; 
+        height: 100%; 
+    }
+
     .chart {
         width: fit-content;
         height: fit-content;
@@ -630,4 +709,9 @@
     .episodeDescriptions.active {
         opacity: 1;
     }
+
+    /* svg{
+        width: 100%; 
+        height: 100%;
+    } */
 </style>

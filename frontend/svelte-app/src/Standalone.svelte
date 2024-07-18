@@ -6,7 +6,6 @@
 
     export let text;
     export let connectionBoolean; 
-    export let sectionIndex; 
 
     let standaloneSvg, standaloneText; 
     let svgWidth, svgHeight; 
@@ -41,8 +40,7 @@
         let parentDiv = descriptionDiv.parentElement;
 
         let elementOffsetTop = descriptionDiv.offsetTop;
-        let elementOffsetLeft = descriptionDiv.offsetLeft;
-        console.log(elementOffsetTop, elementOffsetLeft);         
+        let elementOffsetLeft = descriptionDiv.offsetLeft;   
 
         setTimeout(() => {
             if (connectionBoolean.top || connectionBoolean.bottom) {

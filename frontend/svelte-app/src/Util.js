@@ -2,7 +2,7 @@
 import * as Constants from "./Constants.js";
 import * as d3 from "d3";
 
-export function createThumbPin(svg, pos) {
+export function createThumbPin(svg, pos, color) {
   const ellipse = svg
     .append("ellipse")
     // .attr("class", "thumb-pin")
@@ -10,7 +10,7 @@ export function createThumbPin(svg, pos) {
     .attr("ry", Constants.ellipseSize)
     .attr("cx", pos[0])
     .attr("cy", pos[1])
-    .attr("fill", Constants.yellowColor)
+    .attr("fill", color)
     .attr("opacity", 0);
 
   ellipse.transition().duration(Constants.transitionTime).attr("opacity", 1);
@@ -57,9 +57,13 @@ export function addOrUpdateLine(svg, lineData, startPos, endPos) {
   lineData.endingPos = endPos;
 }
 
-export function addOrUpdateThumbPin(svg, thumbPin) {
+export function addOrUpdateThumbPin(
+  svg,
+  thumbPin,
+  color = Constants.yellowColor
+) {
   if (!thumbPin.ellipse) {
-    thumbPin.ellipse = createThumbPin(svg, thumbPin.pos);
+    thumbPin.ellipse = createThumbPin(svg, thumbPin.pos, color);
   } else {
     // updateThumbPinPosition(caseImageData.topPins.ellipse, caseImageData.topPins.pos);
     thumbPin.ellipse

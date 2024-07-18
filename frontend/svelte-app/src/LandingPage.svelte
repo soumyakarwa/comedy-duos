@@ -7,7 +7,6 @@
   let landingPageSvg;
   let svgWidth, svgHeight; 
   let initialSetup = true;
-  export let sectionIndex;
 
   let caseImageData = {
     img: null,

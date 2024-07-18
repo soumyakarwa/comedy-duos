@@ -6,11 +6,13 @@
 
   let textBox, charactersSvg, characterSection;
   let svgWidth, svgHeight, svg; 
-  let pinTop, pinRight, pinLeft, pinBottom; 
+  let pinTop = {ellipse: null, pos: [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]}; 
+  let pinRight = {ellipse: null, pos: [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]}; 
+  let pinLeft = {ellipse: null, pos: [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]}; 
+  let pinBottom = {ellipse: null, pos: [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]}; 
   let raymond, jake, amy, terry, rosa, gina, charles; 
   let textBoxBottom, textBoxLeft, textBoxRight; 
   
-  export let sectionIndex; 
   export let currentTextIndex; 
   
   let connectingLine = false; 
@@ -49,10 +51,11 @@
     textBoxLeft = 0.5 - Constants.characterTextBoxWidth/2; 
     textBoxRight = 0.5 + Constants.characterTextBoxWidth/2; 
 
-    pinTop = {ellipse: null, pos: [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]}; 
-    pinRight = {ellipse: null, pos: [svgWidth*textBoxRight, svgHeight*0.2]}; 
-    pinLeft = {ellipse: null, pos: [svgWidth*textBoxLeft, svgHeight*0.22]};
-    pinBottom = {ellipse: null, pos: [svgWidth*0.5, svgHeight*textBoxBottom]}; 
+    pinTop.pos = [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]; 
+    pinRight.pos = [svgWidth*textBoxRight, svgHeight*0.2]; 
+    pinLeft.pos = [svgWidth*textBoxLeft, svgHeight*0.22];
+    pinBottom.pos = [svgWidth*0.5, svgHeight*textBoxBottom]; 
+
     
     characterGifs = {
       raymond: {
@@ -116,16 +119,14 @@
     characters = setCharacterPins(svgWidth, svgHeight, textBoxBottom, textBoxLeft, textBoxRight); 
 
     addOrUpdateThumbPin(svg, pinTop);
+    addOrUpdateThumbPin(svg, pinLeft); 
+    addOrUpdateThumbPin(svg, pinRight); 
+    addOrUpdateThumbPin(svg, pinBottom); 
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           if (!connectingLine) {
             addOrUpdateLine(svg, topLine, [svgWidth*0.5, 0], pinTop.pos); 
-            setTimeout(() => {
-              addOrUpdateThumbPin(svg, pinLeft); 
-              addOrUpdateThumbPin(svg, pinRight); 
-              addOrUpdateThumbPin(svg, pinBottom); 
-            }, Constants.maxLineDelay*2)
             connectingLine = true;
           }
         }
@@ -160,7 +161,6 @@
       characters.forEach((character) => {
         let charElement = document.getElementById(character.id); 
         if(charElement.style.opacity == 1){
-          console.log(character); 
           addOrUpdateThumbPin(svg, character.pin); 
           addOrUpdateLine(svg, character.characterLine, character.originPin.pos, character.pin.pos);  
         }
@@ -168,9 +168,6 @@
 
     });
     
-    return () => {
-      observer.disconnect();
-    };
   });
 
   $: {
