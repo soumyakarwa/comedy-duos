@@ -1,13 +1,14 @@
 <script>
   import { onMount } from "svelte";
   import * as d3 from 'd3';
-  import { setSvgDimensions, createThumbPin, createLine} from "./Util.js";
+  import { setSvgDimensions, createThumbPin, createLine, addOrUpdateLine, addOrUpdateThumbPin} from "./Util.js";
   import * as Constants from "./Constants.js"
 
   let textBox, charactersSvg, characterSection;
   let svgWidth, svgHeight, svg; 
   let pinTop, pinRight, pinLeft, pinBottom; 
   let raymond, jake, amy, terry, rosa, gina, charles; 
+  let textBoxBottom, textBoxLeft, textBoxRight; 
   
   export let sectionIndex; 
   export let currentTextIndex; 
@@ -16,95 +17,111 @@
   let characterGifs; 
   let characters = [];
 
+  function setCharacterPins(svgWidth, svgHeight, textBoxBottom, textBoxLeft, textBoxRight){
+    characterGifs.raymond.pin.pos = [svgWidth * (textBoxRight+0.2), svgHeight*0.24]; 
+    characterGifs.jake.pin.pos = [svgWidth * (textBoxLeft-0.2), svgHeight*0.24]; 
+    characterGifs.amy.pin.pos = [svgWidth * (textBoxLeft-0.2), svgHeight*0.65]; 
+    characterGifs.terry.pin.pos = [svgWidth * (textBoxLeft), svgHeight*0.5]; 
+    characterGifs.gina.pin.pos = [svgWidth * 0.52, svgHeight*0.68];
+    characterGifs.charles.pin.pos = [svgWidth * (textBoxRight+0.2), svgHeight*0.65];
+    characterGifs.rosa.pin.pos = [svgWidth * (textBoxRight), svgHeight*0.48];
+    return Object.values(characterGifs); 
+  }
+
+
+  function addCharacterDiv(element, svg, characterPin, originPin){
+      setTimeout(() => { 
+        if (element) {element.style.opacity = 1;}
+      }, Constants.maxLineDelay/3);
+      setTimeout(() => {
+        // createThumbPin(svg, characterPin)
+        addOrUpdateThumbPin(svg, characterPin); 
+        // createLine(svg, originPin, characterPin, 0)
+      }, Constants.maxLineDelay/3);
+  }
+
   onMount(() => {
     svg = d3.select(charactersSvg);
-    [svgWidth, svgHeight] = setSvgDimensions("characters", svg);
     
-    const textBoxBottom = Constants.characterTextBoxY + Constants.characterTextBoxHeight; 
-    const textBoxLeft = 0.5 - Constants.characterTextBoxWidth/2; 
-    const textBoxRight = 0.5 + Constants.characterTextBoxWidth/2; 
+    svgWidth = document.getElementById("characters").getBoundingClientRect().width;
+    svgHeight = document.getElementById("characters").getBoundingClientRect().height;
+    
+    textBoxBottom = Constants.characterTextBoxY + Constants.characterTextBoxHeight; 
+    textBoxLeft = 0.5 - Constants.characterTextBoxWidth/2; 
+    textBoxRight = 0.5 + Constants.characterTextBoxWidth/2; 
 
-    pinTop = [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]; 
-    pinRight = [svgWidth*textBoxRight, svgHeight*0.2]; 
-    pinLeft = [svgWidth*textBoxLeft, svgHeight*0.22];
-    pinBottom = [svgWidth*0.5, svgHeight*textBoxBottom]; 
+    pinTop = {ellipse: null, pos: [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]}; 
+    pinRight = {ellipse: null, pos: [svgWidth*textBoxRight, svgHeight*0.2]}; 
+    pinLeft = {ellipse: null, pos: [svgWidth*textBoxLeft, svgHeight*0.22]};
+    pinBottom = {ellipse: null, pos: [svgWidth*0.5, svgHeight*textBoxBottom]}; 
+    
     characterGifs = {
     raymond: {
       name: "Captain Raymond Holt", 
       id:"raymond", 
       var: raymond, 
-      pin: [0, 0], 
+      pin: {ellipse: null, pos: [0, 0]}, 
       originPin: pinRight
     },
     jake: {
       name: "Detective Jake Peralta", 
       id:"jake", 
       var: jake,
-      pin: [0, 0],
+      pin: {ellipse: null, pos: [0, 0]}, 
       originPin: pinLeft
     },
     amy: {
       name: "Detective Amy Santiago",
       id:"amy",
       var: amy, 
-      pin: [0, 0], 
+      pin: {ellipse: null, pos: [0, 0]}, 
       originPin: pinLeft
     },
     terry: {
       name: "Sergeant Terry Jeffords", 
       id:"terry", 
       var: terry, 
-      pin: [0, 0],
+      pin: {ellipse: null, pos: [0, 0]}, 
       originPin: pinBottom
     }, 
     gina: {
       name: "Gina Linetti", 
       id:"gina", 
       var: gina, 
-      pin: [0, 0], 
+      pin: {ellipse: null, pos: [0, 0]}, 
       originPin: pinBottom
     }, 
     charles: {
       name: "Detective Charles Boyle", 
       id:"charles", 
       var: charles, 
-      pin: [0, 0],
+      pin: {ellipse: null, pos: [0, 0]}, 
       originPin: pinRight
     }, 
     rosa: {
       name: "Detective Rosa Diaz", 
       id:"rosa", 
       var: rosa, 
-      pin: [0, 0], 
+      pin: {ellipse: null, pos: [0, 0]}, 
       originPin: pinBottom
     }
     }; 
 
-    characterGifs.raymond.pin = [svgWidth * (textBoxRight+0.2), svgHeight*0.24]; 
-    characterGifs.jake.pin = [svgWidth * (textBoxLeft-0.2), svgHeight*0.24]; 
-    characterGifs.amy.pin = [svgWidth * (textBoxLeft-0.2), svgHeight*0.65]; 
-    characterGifs.terry.pin = [svgWidth * (textBoxLeft), svgHeight*0.5]; 
-    characterGifs.gina.pin = [svgWidth * 0.52, svgHeight*0.68];
-    characterGifs.charles.pin = [svgWidth * (textBoxRight+0.2), svgHeight*0.65];
-    characterGifs.rosa.pin = [svgWidth * (textBoxRight), svgHeight*0.48];
-    characters = Object.values(characterGifs); 
+    characters = setCharacterPins(svgWidth, svgHeight, textBoxBottom, textBoxLeft, textBoxRight); 
 
-    createThumbPin(svg, pinTop);     
+    // createThumbPin(svg, pinTop);     
+    addOrUpdateThumbPin(svg, pinTop);
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           if (!connectingLine) {
-            createLine(svg, [svgWidth*0.5, 0], pinTop, 0); 
+            // createLine(svg, [svgWidth*0.5, 0], pinTop, 0); 
             setTimeout(() => {
-              createThumbPin(svg, pinLeft); 
-              createThumbPin(svg, pinRight); 
-              createThumbPin(svg, pinBottom); 
+              addOrUpdateThumbPin(svg, pinLeft); 
+              addOrUpdateThumbPin(svg, pinRight); 
+              addOrUpdateThumbPin(svg, pinBottom); 
             }, Constants.maxLineDelay*2)
-            // let raymondElement = document.getElementById('raymond');
             connectingLine = true;
-            // setTimeout(() => {
-            //   addCharacterDiv(raymondElement, svg, characterGifs.raymond.pin, pinRight); 
-            // }, Constants.maxLineDelay);
           }
         }
       });
@@ -113,22 +130,35 @@
     });
 
     observer.observe(textBox);
+
+    window.addEventListener('resize', () => {
+      svgWidth = document.getElementById("characters").getBoundingClientRect().width;
+      svgHeight = document.getElementById("characters").getBoundingClientRect().height;
+
+      pinTop.pos = [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]; 
+      pinRight.pos = [svgWidth*textBoxRight, svgHeight*0.2]; 
+      pinLeft.pos = [svgWidth*textBoxLeft, svgHeight*0.22];
+      pinBottom.pos = [svgWidth*0.5, svgHeight*textBoxBottom]; 
+
+      addOrUpdateThumbPin(svg, pinTop); 
+      addOrUpdateThumbPin(svg, pinLeft); 
+      addOrUpdateThumbPin(svg, pinRight); 
+      addOrUpdateThumbPin(svg, pinBottom);
+
+      characters = setCharacterPins(svgWidth, svgHeight, textBoxBottom, textBoxLeft, textBoxRight);
+
+      characters.forEach((character) => {
+        if(document.getElementById(character.id).style.opacity == 1){
+          addOrUpdateThumbPin(svg, character.pin); 
+        }
+      })
+
+    });
     
     return () => {
       observer.disconnect();
     };
   });
-
-  function addCharacterDiv(element, svg, characterPin, originPin){
-      setTimeout(() => { 
-        if (element) {element.style.opacity = 1;}}, 
-        Constants.maxLineDelay/3);
-      // setTimeout(() => {createThumbPin(svg, characterPin)}, Constants.maxLineDelay);
-      setTimeout(() => {
-        createThumbPin(svg, characterPin)
-        createLine(svg, originPin, characterPin, 0)}, 
-        Constants.maxLineDelay/3);
-  }
 
   $: {
     if (characters.length > 0 && typeof currentTextIndex === 'number' && currentTextIndex > 0 && currentTextIndex < characters.length+1) {
@@ -254,5 +284,7 @@
   .characters-section svg{
     position: relative; 
     z-index: 1; 
+    width: 100%; 
+    height: 100%; 
   }
 </style>

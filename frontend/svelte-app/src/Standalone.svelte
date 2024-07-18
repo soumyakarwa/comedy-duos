@@ -91,34 +91,31 @@
         }, 100); // Adjust the delay as needed
 
         window.addEventListener('resize', () => {
-            
-                svgWidth = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().width;
-                svgHeight = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().height;
+            svgWidth = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().width;
+            svgHeight = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().height;
 
-                // Ensure the descriptionDiv bounding box is updated
-                descriptionDiv = document.getElementById(`standalone-description-${connectionBoolean.index}`); 
+            // Ensure the descriptionDiv bounding box is updated
+            descriptionDiv = document.getElementById(`standalone-description-${connectionBoolean.index}`); 
 
-                // Update thumb pin positions
-                setThumbPinPositions(svgWidth, descriptionDiv);
+            // Update thumb pin positions
+            setThumbPinPositions(svgWidth, descriptionDiv);
 
-                // Redraw the lines
-                if (connectingLine) {
-                    if (connectionBoolean.top) {
-                        connectionBoolean.lineTop?.forEach((l, i) => {
-                            addOrUpdateLine(svg, topLines[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
-                        });        
-                    }       
-                    if (connectionBoolean.bottom) { 
-                        connectionBoolean.lineBottom?.forEach((l, i) => {
-                            addOrUpdateLine(svg, bottomLines[i], bottomPin, [svgWidth * l[0], svgHeight * l[1]]);                               
-                        });   
-                    } 
-                }
+            // If lines are already drawn, redraw the lines
+            if (connectingLine) {
+                if (connectionBoolean.top) {
+                    connectionBoolean.lineTop?.forEach((l, i) => {
+                        addOrUpdateLine(svg, topLines[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
+                    });        
+                }       
+                if (connectionBoolean.bottom) { 
+                    connectionBoolean.lineBottom?.forEach((l, i) => {
+                        addOrUpdateLine(svg, bottomLines[i], bottomPin, [svgWidth * l[0], svgHeight * l[1]]);                               
+                    });   
+                } 
+            }
         });
 
     }); 
-
-  
 </script>
 
 
