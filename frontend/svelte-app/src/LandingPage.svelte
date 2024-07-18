@@ -2,13 +2,12 @@
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
   import * as Constants from "./Constants.js";
-  import {createLine, createThumbPin, setSvgDimensions} from "./Util.js"
+  import {addOrUpdateLine, addOrUpdateThumbPin} from "./Util.js"
   
   let landingPageSvg;
   let svgWidth, svgHeight; 
   let initialSetup = true;
   export let sectionIndex;
-  let caseImg, detectiveImg, arrowKeyImg, titleImg;  
 
   let caseImageData = {
     img: null,
@@ -111,7 +110,6 @@
   }
 
   function setup(svg, svgWidth, svgHeight) {
-
     setPosition(svg, svgWidth, svgHeight);
     addImages(svg); 
     
@@ -130,6 +128,7 @@
     .attr("y", detectiveImgData.y)
     .attr("height", detectiveImgData.height); 
 
+    // IMMEDIATE UPDATE FOR THUMB PINS AND LINES IF THE PAGE IS BEING RESIZED
     if (initialSetup) {
     setTimeout(() => {
       arrowImgData.img
@@ -175,7 +174,7 @@
       }, Constants.maxLineDelay / 2);
     }, Constants.maxLineDelay * 3);
 
-      initialSetup = false; // Set the flag to false after the initial setup
+      initialSetup = false; 
     } else {
       arrowImgData.img
         .attr("x", arrowImgData.x)
@@ -197,39 +196,10 @@
     }
   }
 
-  function addOrUpdateThumbPin(svg, thumbPin){
-    if(!thumbPin.ellipse){
-      thumbPin.ellipse = createThumbPin(svg, thumbPin.pos); 
-    }
-    else {
-      // updateThumbPinPosition(caseImageData.topPins.ellipse, caseImageData.topPins.pos); 
-      thumbPin
-      .ellipse
-      .transition()
-      .duration(Constants.transitionTime)
-      .attr("cx", thumbPin.pos[0])
-      .attr("cy", thumbPin.pos[1]);
-    }
-  }
-
-  function addOrUpdateLine(svg, lineData, startPos, endPos) {
-  if (!lineData.line) {
-    lineData.line = createLine(svg, startPos, endPos, 0);
-  } else {
-    lineData.line
-      .transition()
-      .duration(Constants.transitionTime)
-      .attr("x1", startPos[0])
-      .attr("y1", startPos[1])
-      .attr("x2", endPos[0])
-      .attr("y2", endPos[1]);
-  }
-}
-
+  
   onMount(async () => {
     const svg = d3.select(landingPageSvg);
     
-    // [svgWidth, svgHeight] = setSvgDimensions("landing", svg); 
     svgWidth = document.getElementById('landing').getBoundingClientRect().width; 
     svgHeight = document.getElementById('landing').getBoundingClientRect().height; 
 
@@ -247,7 +217,6 @@
 <div class="landing-page-container" id="landing">
   <svg bind:this={landingPageSvg}></svg>
 </div>
-
 
 <style>
   .landing-page-container {

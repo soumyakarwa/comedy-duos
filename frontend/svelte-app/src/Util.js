@@ -41,6 +41,35 @@ export function createLine(svg, pos1, pos2, delay) {
   return line;
 }
 
+export function addOrUpdateLine(svg, lineData, startPos, endPos) {
+  if (!lineData.line) {
+    lineData.line = createLine(svg, startPos, endPos, 0);
+  } else {
+    lineData.line
+      .transition()
+      .duration(Constants.transitionTime)
+      .attr("x1", startPos[0])
+      .attr("y1", startPos[1])
+      .attr("x2", endPos[0])
+      .attr("y2", endPos[1]);
+  }
+  lineData.startingPos = startPos;
+  lineData.endingPos = endPos;
+}
+
+export function addOrUpdateThumbPin(svg, thumbPin) {
+  if (!thumbPin.ellipse) {
+    thumbPin.ellipse = createThumbPin(svg, thumbPin.pos);
+  } else {
+    // updateThumbPinPosition(caseImageData.topPins.ellipse, caseImageData.topPins.pos);
+    thumbPin.ellipse
+      .transition()
+      .duration(Constants.transitionTime)
+      .attr("cx", thumbPin.pos[0])
+      .attr("cy", thumbPin.pos[1]);
+  }
+}
+
 export function setSvgDimensions(id, svg) {
   const container = document.getElementById(id);
   let width = container.clientWidth;

@@ -25,9 +25,9 @@
     export let firstStandaloneBoolean = 
     {svg: null, index: 2, top: false, bottom: true, lineTop: [[0, 0]], lineBottom: [[0.375, 1], [0.625, 1]]}; 
     export let secondStandaloneBoolean = 
-    {svg: null, index: 3,top: false, bottom: false, lineTop: [[0, 0]], lineBottom: [[0, 0]]}; 
+    {svg: null, index: 3,top: false, bottom: false, lineTop: null, lineBottom: null}; 
     export let standaloneNotes = 
-    {svg: null, index: 4,top: false, bottom: false, lineTop: [[0, 0]], lineBottom: [[0, 0]]}; 
+    {svg: null, index: 4,top: false, bottom: false, lineTop: null, lineBottom: null}; 
 
     let container;
     let currentIndex = 0;

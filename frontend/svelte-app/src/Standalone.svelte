@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
-    import {createThumbPin, setSvgDimensions, createLine, resizeSVGs} from "./Util.js"; 
+    import {createThumbPin, setSvgDimensions, createLine, resizeSVGs, addOrUpdateLine} from "./Util.js"; 
     import * as Constants from "./Constants.js"
 
     export let text;
@@ -13,26 +13,39 @@
     let connectingLine = false; 
     let descriptionDiv; 
     let descriptionDivRect;
+    let svg; 
+
+    let lines = [];
+
+    let bottomPin = null; 
+    let topPin = null; 
+
+    function setThumbPinPositions(svgWidth, descriptionDivRect){
+        bottomPin = [svgWidth * 0.5, descriptionDivRect.y - sectionIndex*window.innerHeight + descriptionDivRect.height];
+        topPin = [svgWidth * 0.5, descriptionDivRect.y - sectionIndex*window.innerHeight]; 
+    }
 
     onMount(() => {
 
-        // resizeSVGs();
+        connectionBoolean.lineTop?.forEach((l) => {
+            lines.push({line: null, startingPos: null, endingPos: null}); 
+        });
 
-        // // Resize on window resize
-        // const handleResize = () => {
-        //     resizeSVGs();
-        // };
+        connectionBoolean.lineBottom?.forEach((l) => {
+            lines.push({line: null, startingPos: null, endingPos: null});
+        });
+
+        descriptionDiv = document.getElementById(`standalone-description-${connectionBoolean.index}`); 
+                
 
         setTimeout(() => {
             if (connectionBoolean.top || connectionBoolean.bottom) {
-                console.log(connectionBoolean.index); 
 
-                const svg = d3.select(connectionBoolean.svg);
-                const parentDiv = document.querySelector(`#standalone-${connectionBoolean.index}`);
+                svg = d3.select(connectionBoolean.svg);
                 
-                [svgWidth, svgHeight] = setSvgDimensions(parentDiv.id, svg); 
+                svgWidth = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().width; 
+                svgHeight = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().height;   
             
-                descriptionDiv = document.getElementById(`standalone-description-${connectionBoolean.index}`); 
                 
                 if (descriptionDiv) {
                     descriptionDivRect = descriptionDiv.getBoundingClientRect();
@@ -40,28 +53,25 @@
                     console.log(`Element with ID standalone-description-${connectionBoolean.index} not found.`);
                 }
 
-                // Create the bottom thumb pin
-                const standaloneBottomPinPos = [svgWidth * 0.5, descriptionDivRect.y - sectionIndex*window.innerHeight + descriptionDivRect.height];
-                const standaloneTopPinPos = [svgWidth * 0.5, descriptionDivRect.y - sectionIndex*window.innerHeight]; 
+                setThumbPinPositions(svgWidth, descriptionDiv.getBoundingClientRect()); 
 
                 // Observer for standalone text
                 const observer = new IntersectionObserver(entries => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             if (!connectingLine) {
+                                let index = 0;
                                 connectingLine = true;
-                                if(connectionBoolean.top){
-                                    connectionBoolean.lineTop.forEach((line) => {
-                                    createLine(svg, [svgWidth * line[0], svgHeight * line[1]], standaloneTopPinPos, 0);
-                                    });                
-                                }
-                                if(connectionBoolean.bottom){
-                                    setTimeout(() => {
-                                        connectionBoolean.lineBottom.forEach((line) => {
-                                        createLine(svg, standaloneBottomPinPos, [svgWidth * line[0], svgHeight * line[1]], 0);
+                                connectionBoolean.lineTop?.forEach((line) => {
+                                    addOrUpdateLine(svg, lines[index], [svgWidth * line[0], svgHeight * line[1]], topPin)
+                                    index++; 
+                                });                
+                                setTimeout(() => {
+                                    connectionBoolean.lineBottom?.forEach((line) => {
+                                        addOrUpdateLine(svg, lines[index], bottomPin, [svgWidth * line[0], svgHeight * line[1]]);
+                                        index++;                                             
                                         });   
-                                    }, Constants.maxLineDelay*3);   
-                                }
+                                }, Constants.maxLineDelay*3);   
                             }
                         }
                     });
@@ -71,15 +81,40 @@
                 
                 observer.observe(standaloneText);
             }
+            console.log(connectionBoolean.index, lines); 
         }, 100); // Adjust the delay as needed
 
-        // window.addEventListener('resize', handleResize);
+        window.addEventListener('resize', () => {
+            svgWidth = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().width;
+            svgHeight = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().height;
+
+            // Ensure the descriptionDiv bounding box is updated
+            descriptionDivRect = descriptionDiv.getBoundingClientRect();
+
+            // Update thumb pin positions
+            setThumbPinPositions(svgWidth, descriptionDivRect);
+
+            // Redraw the lines
+            let curr = 0; 
+            console.log(connectionBoolean.index, lines); 
+            if (connectionBoolean.top) {
+                connectionBoolean.lineTop.forEach((line) => {
+                    console.log(connectionBoolean, lines[curr]); 
+                    addOrUpdateLine(svg, lines[curr], lines[curr].startingPos, topPin);
+                    curr++;
+                });                
+            }
+            if (connectionBoolean.bottom) {
+                connectionBoolean.lineBottom.forEach((line) => {
+                    addOrUpdateLine(svg, lines[curr], bottomPin, lines[curr].endingPos);
+                    curr++;                                             
+                });
+            }
+        });
+
     }); 
 
-    // onDestroy(() => {
-    //         window.removeEventListener('resize', handleResize);
-    // });
-
+  
 </script>
 
 
@@ -149,6 +184,11 @@
     .standalone-bottom-pin {
         top: 99%;
         left: 50%; 
+    }
+
+    svg {
+        width: 100%; 
+        height: 100%; 
     }
 
 </style>
