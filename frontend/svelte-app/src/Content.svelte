@@ -23,7 +23,7 @@
     export let standaloneIntroduction = 
     {svg: null, index: 1,top: true, bottom: true, lineTop: [[0.455, 0]], lineBottom: [[0.5, 1]]}; 
     export let firstStandaloneBoolean = 
-    {svg: null, index: 2, top: false, bottom: true, lineTop: [[0, 0]], lineBottom: [[0.375, 1], [0.625, 1]]}; 
+    {svg: null, index: 2, top: false, bottom: true, lineTop: [[0.5, 0]], lineBottom: [[0.375, 1], [0.625, 1]]}; 
     export let secondStandaloneBoolean = 
     {svg: null, index: 3,top: false, bottom: false, lineTop: null, lineBottom: null}; 
     export let standaloneNotes = 

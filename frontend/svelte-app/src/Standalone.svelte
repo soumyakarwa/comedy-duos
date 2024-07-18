@@ -15,28 +15,34 @@
     let descriptionDivRect;
     let svg; 
 
-    let lines = [];
+    let topLines = [];
+    let bottomLines = [];
 
     let bottomPin = null; 
     let topPin = null; 
 
-    function setThumbPinPositions(svgWidth, descriptionDivRect){
-        bottomPin = [svgWidth * 0.5, descriptionDivRect.y - sectionIndex*window.innerHeight + descriptionDivRect.height];
-        topPin = [svgWidth * 0.5, descriptionDivRect.y - sectionIndex*window.innerHeight]; 
+    function setThumbPinPositions(svgWidth, descriptionDiv) {
+        topPin = [svgWidth * 0.5, descriptionDiv.offsetTop - descriptionDiv.getBoundingClientRect().height/2];
+        bottomPin = [svgWidth * 0.5, descriptionDiv.offsetTop + descriptionDiv.getBoundingClientRect().height/2];
     }
+
 
     onMount(() => {
 
         connectionBoolean.lineTop?.forEach((l) => {
-            lines.push({line: null, startingPos: null, endingPos: null}); 
+            topLines.push({line: null, startingPos: null, endingPos: null}); 
         });
 
         connectionBoolean.lineBottom?.forEach((l) => {
-            lines.push({line: null, startingPos: null, endingPos: null});
+            bottomLines.push({line: null, startingPos: null, endingPos: null});
         });
 
         descriptionDiv = document.getElementById(`standalone-description-${connectionBoolean.index}`); 
-                
+        let parentDiv = descriptionDiv.parentElement;
+
+        let elementOffsetTop = descriptionDiv.offsetTop;
+        let elementOffsetLeft = descriptionDiv.offsetLeft;
+        console.log(elementOffsetTop, elementOffsetLeft);         
 
         setTimeout(() => {
             if (connectionBoolean.top || connectionBoolean.bottom) {
@@ -53,25 +59,26 @@
                     console.log(`Element with ID standalone-description-${connectionBoolean.index} not found.`);
                 }
 
-                setThumbPinPositions(svgWidth, descriptionDiv.getBoundingClientRect()); 
+                setThumbPinPositions(svgWidth, descriptionDiv); 
 
                 // Observer for standalone text
                 const observer = new IntersectionObserver(entries => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             if (!connectingLine) {
-                                let index = 0;
                                 connectingLine = true;
-                                connectionBoolean.lineTop?.forEach((line) => {
-                                    addOrUpdateLine(svg, lines[index], [svgWidth * line[0], svgHeight * line[1]], topPin)
-                                    index++; 
-                                });                
-                                setTimeout(() => {
-                                    connectionBoolean.lineBottom?.forEach((line) => {
-                                        addOrUpdateLine(svg, lines[index], bottomPin, [svgWidth * line[0], svgHeight * line[1]]);
-                                        index++;                                             
+                                if (connectionBoolean.top) {
+                                    connectionBoolean.lineTop.forEach((l, i) => {
+                                        addOrUpdateLine(svg, topLines[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
+                                    });        
+                                }       
+                                if (connectionBoolean.bottom) { 
+                                    setTimeout(() => {
+                                        connectionBoolean.lineBottom.forEach((l, i) => {
+                                            addOrUpdateLine(svg, bottomLines[i], bottomPin, [svgWidth * l[0], svgHeight * l[1]]);                               
                                         });   
-                                }, Constants.maxLineDelay*3);   
+                                    }, Constants.maxLineDelay*3);  
+                                } 
                             }
                         }
                     });
@@ -81,35 +88,32 @@
                 
                 observer.observe(standaloneText);
             }
-            console.log(connectionBoolean.index, lines); 
         }, 100); // Adjust the delay as needed
 
         window.addEventListener('resize', () => {
-            svgWidth = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().width;
-            svgHeight = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().height;
+            
+                svgWidth = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().width;
+                svgHeight = document.getElementById(`standalone-${connectionBoolean.index}`).getBoundingClientRect().height;
 
-            // Ensure the descriptionDiv bounding box is updated
-            descriptionDivRect = descriptionDiv.getBoundingClientRect();
+                // Ensure the descriptionDiv bounding box is updated
+                descriptionDiv = document.getElementById(`standalone-description-${connectionBoolean.index}`); 
 
-            // Update thumb pin positions
-            setThumbPinPositions(svgWidth, descriptionDivRect);
+                // Update thumb pin positions
+                setThumbPinPositions(svgWidth, descriptionDiv);
 
-            // Redraw the lines
-            let curr = 0; 
-            console.log(connectionBoolean.index, lines); 
-            if (connectionBoolean.top) {
-                connectionBoolean.lineTop.forEach((line) => {
-                    console.log(connectionBoolean, lines[curr]); 
-                    addOrUpdateLine(svg, lines[curr], lines[curr].startingPos, topPin);
-                    curr++;
-                });                
-            }
-            if (connectionBoolean.bottom) {
-                connectionBoolean.lineBottom.forEach((line) => {
-                    addOrUpdateLine(svg, lines[curr], bottomPin, lines[curr].endingPos);
-                    curr++;                                             
-                });
-            }
+                // Redraw the lines
+                if (connectingLine) {
+                    if (connectionBoolean.top) {
+                        connectionBoolean.lineTop?.forEach((l, i) => {
+                            addOrUpdateLine(svg, topLines[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
+                        });        
+                    }       
+                    if (connectionBoolean.bottom) { 
+                        connectionBoolean.lineBottom?.forEach((l, i) => {
+                            addOrUpdateLine(svg, bottomLines[i], bottomPin, [svgWidth * l[0], svgHeight * l[1]]);                               
+                        });   
+                    } 
+                }
         });
 
     }); 
