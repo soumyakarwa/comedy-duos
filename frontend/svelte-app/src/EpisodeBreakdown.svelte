@@ -245,8 +245,8 @@
         texts.push(text);
         images.push(image);
         });
-
-        return {rect, texts, images, characterNames}; 
+        let names = characterNames; 
+        return {rect, texts, images, names}; 
     }
 
     /**
@@ -359,11 +359,11 @@
             .attr('width', rectWidth)
             .attr('height', rowHeight);
 
-        const totalCharactersWidth = element.names * (imageRadius * 2 + characterSpacing) - characterSpacing;
+        const totalCharactersWidth = element.names.length * (imageRadius * 2 + characterSpacing) - characterSpacing;
         const startX = (rectWidth - totalCharactersWidth) / 2;
 
-        element.images.forEach((image, index) => {
-            const imageX = startX + index * (imageRadius * 2 + characterSpacing) + imageRadius;
+        element.images.forEach((image, rowIndex) => {
+            const imageX = startX + rowIndex * (imageRadius * 2 + characterSpacing) + imageRadius;
             const imageY = (index * rectYPosIncrement) + rowHeight / 2.5;
 
             image
@@ -373,9 +373,8 @@
                 .attr('width', imageRadius * 2)
                 .attr('height', imageRadius * 2);
 
-            element.texts[index]
+            element.texts[rowIndex]
                 .transition()
-                .duration(Constants.transitionTime)
                 .attr('x', imageX)
                 .attr('y', imageY+ imageRadius + 15);
         }); 
@@ -405,7 +404,7 @@
             .range([0, 0.6*window.innerHeight])
             .padding(0.1);
 
-        rectWidth = 0.3*window.innerWidth; 
+        rectWidth = 0.25*window.innerWidth; 
         rectYPosIncrement = rectWidth/3; 
     };
 
@@ -459,8 +458,16 @@
             leftPin.pos = [leftContent+contentDivWidth/2, top]; 
             rightPin.pos = [rightChart+chartDivWidth/2, top]; 
 
+            let initialRectYPosIncrement = rectYPosIncrement;
+
             rectWidth = 0.25 * window.innerWidth;
-            rectYPosIncrement = rectWidth / 3;
+            const newRectYPosIncrement = rectWidth / 3; 
+        
+            let initialRectYPos = rectYPos; 
+            const changeInIncrement = newRectYPosIncrement - initialRectYPosIncrement;
+            rectYPos = initialRectYPos + changeInIncrement * (rectYPos / initialRectYPosIncrement);
+            
+            rectYPosIncrement = newRectYPosIncrement;
             
             episodeSvg.setAttribute("width", rectWidth);
             episodeSvg.setAttribute("height", rectWidth);
@@ -471,9 +478,7 @@
                 addOrUpdateLine(svg, topRight,[svgWidth * 0.625, 0], rightPin.pos); 
             }
 
-            console.log(episodeRectText); 
             episodeRectText.forEach((entry, i) => {
-                console.log(entry.rect); 
                 if(entry.rect){
                     resizeRect(entry, i); 
                 }
@@ -485,6 +490,7 @@
     $: (() => {
         // scrolling down
         if (currentStep > previousStep) {
+            console.log(currentStep); 
             if (currentStep == 0) {
                 showDescriptions.set(false);
             } else if (currentStep == 1) {
@@ -525,28 +531,9 @@
                 episodeRectText[2]= characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][0], rectYPos, 1);
                 rectYPos+=rectYPosIncrement; 
             }
-            // } else if (currentStep == 8){
-            //     showDescriptions.set(false);
-            //     if(heatMap) {
-            //         // console.log("heat map"); 
-            //         heatMap.classList.add('svg-container'); // Toggle a new class
-            //         heatMap.style.backgroundColor = 'yellow'; // Change background color
-
-            //         // const newWidth = 0.45*window.innerWidth; 
-            //         // const newHeight = 0.95*window.innerHeight
-
-            //         // specificEpisodeGroup.selectAll("rect")
-            //         //     .transition()
-            //         //     .duration(1000)
-            //         //     .attr("width", 0)
-            //         //     .attr("height", 0);
-
-            //         // setTimeout(() => {d3.select(episodeSvg).attr("width", newWidth).attr("height", newHeight).attr("viewBox", `0 0 ${newWidth} ${newHeight}`)}, 1000); 
-                                
-            //     }
-            // }
         // scrolling up
         } else if (currentStep < previousStep) {
+            console.log(currentStep); 
             if (currentStep == 0) {
                 showDescriptions.set(false);
                 reset(); 
@@ -574,9 +561,6 @@
                 characterPairingHighlight(specificDataPoint[`Streamlined Characters`][0], episodeRectText[2])
                 rectYPos -= rectYPosIncrement;
             }
-            // } else if (currentStep == 7) {
-            //     showDescriptions.set(true);
-            // }
         }
         previousStep = currentStep;
 
