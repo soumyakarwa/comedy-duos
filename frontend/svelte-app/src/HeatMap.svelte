@@ -2,6 +2,7 @@
   import * as d3 from 'd3';
   import * as Constants from "./Constants.js"; 
   import {remToPixels} from "./Constants.js"; 
+  import { onMount } from 'svelte';
 
   const characterRatingDict = {};
   let sortedCharacterRatingArray; 
@@ -12,8 +13,8 @@
   export let index; 
   
   let heatMapSvg;
-  const svgWidth = 0.9 * window.innerWidth;
-  const svgHeight = 0.9 * window.innerHeight;
+  let svgWidth = 0.9 * window.innerWidth;
+  let svgHeight = 0.9 * window.innerHeight;
   
   /**
    * svg: heatmap svg
@@ -33,6 +34,12 @@
    * ratings: sortedCharacterArray for just pair and average cummulative frequency
    */
   let svg, g, originalXScale, originalYScale, legend, chartWidth, chartHeight, frequencyXScale, frequencyYScale, topPairs, frequencies, pairToColor, ratingXScale, ratingYScale, ratings; 
+
+  let xaxis = null; 
+  let yaxis = null; 
+  let xaxisLabel = null; 
+  let yaxisLabel = null; 
+  let baseSquares; 
   
   let xAxisXYPos, xAxisWidth, xAxisTranslatePos, xAxisLabelXYPos;
   let yAxisXYPos, yAxisHeight, yAxisTranslatePos, yAxisLabelTranslatePos;
@@ -47,7 +54,9 @@
   };
 
   $: if(episodeData.length) {
+
     svg = d3.select(heatMapSvg);
+
     chartWidth = svgWidth - margin.left - margin.right;
     chartHeight = svgHeight - margin.top - margin.bottom;
     
@@ -66,15 +75,6 @@
       g = svg.append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     }
-    
-    // g
-    // .append("rect")
-    // .attr("x", 0)
-    // .attr("y", 0)
-    // .attr("width", chartWidth)
-    // .attr("height", chartHeight)
-    // .attr("fill", Constants.greenColor)
-    // .style("stroke", Constants.yellowColor); 
 
     // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
     originalXScale = d3.scaleBand()
@@ -82,39 +82,58 @@
       .range([xAxisXYPos[0], xAxisXYPos[1]])
       .padding(0.1);
 
+    if(originalYScale){
+      console.log(`before ${originalYScale(2)}`); 
+    }
     // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
     originalYScale = d3.scaleBand()
       .domain(episodeData.map(d => d.Season))
       .range([yAxisHeight, 0])
       .padding(0.1);
+  
+    console.log(`after ${originalYScale(2)}`);
 
-    g.append('g')
-      .attr('class', 'axis axis-x')
+    if(!xaxis){
+      xaxis =  g
+      .append('g')
+      .attr('class', 'axis axis-x'); 
+    }
+    xaxis
       .attr('transform', `translate(${xAxisTranslatePos[0]},${xAxisTranslatePos[1]})`)
       .call(d3.axisTop(originalXScale))
       .call(g => g.select(".domain").remove()) 
       .call(g => g.selectAll(".tick line").remove()); 
     
-    g.append("text")
-      .attr("class", "x-axis-label")
-      .attr("text-anchor", "middle")
+    if(!xaxisLabel){  
+      xaxisLabel = g.append("text")
+        .attr("class", "x-axis-label")
+        .attr("text-anchor", "middle"); 
+    }
+    xaxisLabel  
+      .transition()  
       .attr("x", xAxisLabelXYPos[0])
       .attr("y", xAxisLabelXYPos[1])
       .text("Episode");
 
-    g.append('g')
-      .attr('class', 'axis axis-y')
+    if(!yaxis){
+      yaxis = g.append('g')
+        .attr('class', 'axis axis-y'); 
+    }
+    yaxis
       .attr('transform', `translate(${yAxisTranslatePos[0]},${yAxisTranslatePos[1]})`)
       .call(d3.axisLeft(originalYScale))
       .call(g => g.select(".domain").remove()) 
       .call(g => g.selectAll(".tick line").remove());
 
-    g.append("text")
-      .attr("class", "y-axis-label")
-      .attr("text-anchor", "middle")
+    if(!yaxisLabel){    
+      yaxisLabel = g.append("text")
+        .attr("class", "y-axis-label")
+        .attr("text-anchor", "middle"); 
+    }
+    yaxisLabel  
+      .transition()  
       .attr("transform", `translate(${yAxisLabelTranslatePos[0]},${yAxisLabelTranslatePos[1]}) rotate(-90)`)
       .text("Season");
-
 
     episodeData.forEach(item => {
       const characters = item['Streamlined Characters'];
@@ -329,11 +348,14 @@
       .remove(); 
 
     // ADDING BASE SQUARES FOR EACH EPISODE
-    const squares = g.append('g')
+    if(!baseSquares){
+      baseSquares = g.append('g')
       .selectAll('.square')
       .data(episodeData)
       .enter().append('rect')
       .attr('class', 'square')
+    }
+    baseSquares
       .attr('x', d => calculateHeatMapX(d))
       .attr('y', d => calculateHeatMapY(d))
       .attr('width', originalXScale.bandwidth())
@@ -341,7 +363,7 @@
       .style('fill', 'none')
       .style('opacity', 0);
       
-    squares.each(function(d, i) {
+    baseSquares.each(function(d, i) {
       const rect = d3.select(this);
       const numRows = d["Streamlined Characters"].length;
       const rowHeight = originalXScale.bandwidth() / numRows;
@@ -519,7 +541,7 @@
       .remove();
 
     // Update x-axis
-    g.select('.axis-x')
+    xaxis
         .transition()
         .duration(Constants.transitionTime)
         .call(d3.axisBottom(frequencyXScale))
@@ -528,13 +550,13 @@
     
     // renderXAxisWithImages(); 
     
-    const axisGroup = g.select('.axis-x');
+    // const axisGroup = g.select('.axis-x');
     
     // Remove existing labels if any
-    axisGroup.selectAll('text').remove();
+    xaxis.selectAll('text').remove();
 
     // Append image elements as labels
-    axisGroup.selectAll('image')
+    xaxis.selectAll('image')
         .data(topPairs)
         .enter()
         .append('image')
@@ -551,21 +573,21 @@
         
 
         // Update x-axis label
-     g.select(".x-axis-label")
+     xaxisLabel
         .transition()
         .duration(Constants.transitionTime)
         // .attr("y", chartHeight + xAxisLabelBase +15)
         .text("Top Character Pairs");
 
     // Update y-axis with transition
-    g.select('.axis-y')
+    yaxis
         .transition()
         .duration(Constants.transitionTime)
         .call(d3.axisLeft(frequencyYScale))
         .call(g => g.selectAll(".tick line").remove());
      
     // Update y-axis label
-    g.select(".y-axis-label")
+   yaxisLabel
         .transition()
         .duration(Constants.transitionTime)
         // .attr("transform", `translate(${-margin.left/2-5},${chartHeight/2}) rotate(-90)`)
@@ -723,7 +745,6 @@
   // Call the updateHeatMap function based on the index value
   $: {
     if(g) {
-      console.log(index); 
       if (index == 1) {
         showSpecificSquare();
       } else if (index == 2) {
@@ -741,6 +762,15 @@
       }
     }
   }
+
+  onMount(() => {
+
+    window.addEventListener('resize', () => {
+      svgWidth = 0.9 * window.innerWidth;
+      svgHeight = 0.9 * window.innerHeight;
+      console.log(yAxisHeight);
+    }); 
+  }); 
 
 </script>
 

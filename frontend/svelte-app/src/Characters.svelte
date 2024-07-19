@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import * as d3 from 'd3';
-  import { setSvgDimensions, createThumbPin, createLine, addOrUpdateLine, addOrUpdateThumbPin} from "./Util.js";
+  import { addOrUpdateLine, addOrUpdateThumbPin} from "./Util.js";
   import * as Constants from "./Constants.js"
 
   let textBox, charactersSvg, characterSection;

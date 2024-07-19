@@ -3,7 +3,7 @@
     import * as d3 from 'd3';
     import { writable } from 'svelte/store';
     import * as Constants from "./Constants.js"; 
-    import {setSvgDimensions, createLine, addOrUpdateLine} from "./Util.js"; 
+    import {addOrUpdateLine} from "./Util.js"; 
 
     // SVG ELEMENTS
     let episodeSvg, chartDiv, contentDiv, overlaySvg; 
@@ -490,7 +490,6 @@
     $: (() => {
         // scrolling down
         if (currentStep > previousStep) {
-            console.log(currentStep); 
             if (currentStep == 0) {
                 showDescriptions.set(false);
             } else if (currentStep == 1) {
@@ -533,7 +532,6 @@
             }
         // scrolling up
         } else if (currentStep < previousStep) {
-            console.log(currentStep); 
             if (currentStep == 0) {
                 showDescriptions.set(false);
                 reset(); 
