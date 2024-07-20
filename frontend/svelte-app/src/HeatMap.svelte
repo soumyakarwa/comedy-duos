@@ -82,16 +82,11 @@
       .range([xAxisXYPos[0], xAxisXYPos[1]])
       .padding(0.1);
 
-    if(originalYScale){
-      console.log(`before ${originalYScale(2)}`); 
-    }
     // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
     originalYScale = d3.scaleBand()
       .domain(episodeData.map(d => d.Season))
       .range([yAxisHeight, 0])
       .padding(0.1);
-  
-    console.log(`after ${originalYScale(2)}`);
 
     if(!xaxis){
       xaxis =  g
@@ -153,7 +148,8 @@
     });
 
     // Convert characterRatingDict to an array of objects for easier sorting and processing
-    sortedCharacterRatingArray = Object.keys(characterRatingDict).map(key => {
+    if(!sortedCharacterRatingArray){
+      sortedCharacterRatingArray = Object.keys(characterRatingDict).map(key => {
         const [frequency, cumulativeWeightedRating, totalVotes, totalRating] = characterRatingDict[key];
         const averageCumulativeRating = totalVotes > 0 ? cumulativeWeightedRating / totalVotes : 0;
         const averageRating = frequency > 0 ? totalRating / frequency : 0;
@@ -165,11 +161,12 @@
             totalVotes,
             ratingDifference: averageCumulativeRating - averageRating
         };
-    }).sort((a, b) => b.frequency - a.frequency); 
-    topPairs = sortedCharacterRatingArray.slice(0, 10).map(d => pairToString(d.pair));
-    frequencies = sortedCharacterRatingArray.slice(0, 10).map(d => d.frequency);
-    ratings = sortedCharacterRatingArray.slice(0, 10).map(d => d.averageCumulativeRating);
-
+        }).sort((a, b) => b.frequency - a.frequency); 
+        topPairs = sortedCharacterRatingArray.slice(0, 10).map(d => pairToString(d.pair));
+        frequencies = sortedCharacterRatingArray.slice(0, 10).map(d => d.frequency);
+        ratings = sortedCharacterRatingArray.slice(0, 10).map(d => d.averageCumulativeRating);
+      }
+    
     frequencyXScale = d3.scaleBand()
         .domain(topPairs)
         .range([xAxisXYPos[0], xAxisXYPos[1]])
@@ -187,7 +184,7 @@
 
     ratingXScale = frequencyXScale;
 
-    // Create yScale for frequencies
+    // Create yScale for ratings
     ratingYScale = d3.scaleLinear()
         .domain([7, 9])
         .range([yAxisHeight, 0]); 
@@ -548,10 +545,6 @@
         .attr('transform', `translate(0,${yAxisHeight})`)
         .call(g => g.selectAll(".tick line").remove()); 
     
-    // renderXAxisWithImages(); 
-    
-    // const axisGroup = g.select('.axis-x');
-    
     // Remove existing labels if any
     xaxis.selectAll('text').remove();
 
@@ -768,7 +761,13 @@
     window.addEventListener('resize', () => {
       svgWidth = 0.9 * window.innerWidth;
       svgHeight = 0.9 * window.innerHeight;
-      console.log(yAxisHeight);
+
+      xaxis.selectAll('image')
+        .transition()
+        .attr('x', d => frequencyXScale(d) + frequencyXScale.bandwidth()/4)
+        .attr('y', 4)
+        .attr('width', frequencyXScale.bandwidth()/2);         
+
     }); 
   }); 
 
