@@ -414,7 +414,7 @@
         svgWidth = document.getElementById("episode-breakdown-section").getBoundingClientRect().width;
         svgHeight = document.getElementById("episode-breakdown-section").getBoundingClientRect().height;
 
-        const top = svgHeight * 0.05; 
+        const top = svgHeight * 0.03; 
         const contentDiv = document.querySelector('.content');
         const contentDivWidth =contentDiv.offsetWidth;
         const leftContent = svgWidth*0.2; 
@@ -521,13 +521,13 @@
                     console.log('Step 3: Data not loaded yet');
                 }
             } else if (currentStep == 5){
-                episodeRectText[0] = characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][2], rectYPos, 0);
+                episodeRectText[0] = characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][0], rectYPos, 0);
                 rectYPos+=rectYPosIncrement; 
             } else if (currentStep == 6){
-                episodeRectText[1] = characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][1], rectYPos, 2);
+                episodeRectText[1] = characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][1], rectYPos, 1);
                 rectYPos+=rectYPosIncrement; 
             } else if (currentStep == 7){
-                episodeRectText[2]= characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][0], rectYPos, 1);
+                episodeRectText[2]= characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][2], rectYPos, 2);
                 rectYPos+=rectYPosIncrement; 
             }
         // scrolling up
@@ -550,13 +550,13 @@
                     highlightDescription3();
                 }, 0);
             } else if (currentStep == 4) {
-                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][2], episodeRectText[0])
+                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][0], episodeRectText[0])
                 rectYPos -= rectYPosIncrement;
             } else if (currentStep == 5) {
                 characterPairingHighlight(specificDataPoint[`Streamlined Characters`][1], episodeRectText[1])
                 rectYPos -= rectYPosIncrement;
             } else if (currentStep == 6) {
-                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][0], episodeRectText[2])
+                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][2], episodeRectText[2])
                 rectYPos -= rectYPosIncrement;
             }
         }
@@ -632,7 +632,7 @@
         width: fit-content;
         height: fit-content;
         position: absolute;  
-        top: 5vh;
+        top: 3vh;
         left: 53vw; 
         display: flex; 
         flex-direction: row;
@@ -660,7 +660,7 @@
         background-color: var(--white);
         position: absolute;  
         font-size: var(--body-font-size);
-        top: 5vh;
+        top: 3vh;
         left: 20vw; 
         z-index: 0; 
     }
