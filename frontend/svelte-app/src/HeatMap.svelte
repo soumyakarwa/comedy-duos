@@ -148,20 +148,18 @@
       .call(d3.axisTop(originalXScale))
       .call(g => g.select(".domain").remove()) 
       .call(g => g.selectAll(".tick line").remove()); 
-      
-      
-    xaxisLabel  
-        .transition()  
-        .attr("x", xAxisLabelXYPos[0])
-        .attr("y", xAxisLabelXYPos[1])
-        .text("Episode");
-    
+
     yaxis
       .attr('transform', `translate(${yAxisTranslatePos[0]},${yAxisTranslatePos[1]})`)
       .call(d3.axisLeft(originalYScale))
       .call(g => g.select(".domain").remove()) 
       .call(g => g.selectAll(".tick line").remove());
 
+    xaxisLabel  
+        .transition()  
+        .attr("x", xAxisLabelXYPos[0])
+        .attr("y", xAxisLabelXYPos[1])
+        .text("Episode");
       
     yaxisLabel  
       .transition()  
@@ -461,15 +459,7 @@
       .style('opacity', 0)
       .remove();
 
-    xaxis
-      .call(d3.axisTop(originalXScale))
-      .call(g => g.select(".domain").remove()) 
-      .call(g => g.selectAll(".tick line").remove());  
-
-    yaxis
-      .call(d3.axisLeft(originalYScale))
-      .call(g => g.select(".domain").remove()) 
-      .call(g => g.selectAll(".tick line").remove());
+    heatMapAxes();
 
     const currentDomain = xaxis.selectAll('.tick').data();
 
@@ -624,7 +614,8 @@
      xaxisLabel
         .transition()
         .duration(Constants.transitionTime)
-        // .attr("y", chartHeight + xAxisLabelBase +15)
+        .attr("x", xAxisLabelXYPos[0])
+        .attr("y", xAxisLabelXYPos[1])
         .text("Top Character Pairs");
 
     // Update y-axis with transition
@@ -719,6 +710,10 @@
     g.selectAll('.frequency-bar')
       .transition()
       .duration(Constants.transitionTime)
+      .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth()/4)
+      .attr('y', d => frequencyYScale(d.frequency))
+      .attr('width', frequencyXScale.bandwidth()/2)
+      .attr('height', d => yAxisHeight - frequencyYScale(d.frequency))
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
       });
@@ -726,6 +721,8 @@
     g.selectAll('.frequency-label')
       .transition()
       .duration(Constants.transitionTime)
+      .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth() / 2)
+      .attr('y', d => frequencyYScale(d.frequency) - 5) 
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
     });
@@ -771,6 +768,7 @@
         .duration(Constants.transitionTime)
         .attr('x', d => ratingXScale(pairToString(d.pair)) + ratingXScale.bandwidth()/4)
         .attr('y', d => ratingYScale(d.averageCumulativeRating))
+        .attr('width', ratingXScale.bandwidth()/2)
         .attr('height', d => yAxisHeight - ratingYScale(d.averageCumulativeRating))
         .style('opacity', 1); 
         // .on('end', function(d, i) { 
@@ -810,6 +808,10 @@
     g.selectAll('.frequency-bar')
       .transition()
       .duration(Constants.transitionTime)
+      .attr('x', d => ratingXScale(pairToString(d.pair)) + ratingXScale.bandwidth()/4)
+      .attr('y', d => ratingYScale(d.averageCumulativeRating))
+      .attr('width', ratingXScale.bandwidth()/2)
+      .attr('height', d => yAxisHeight - ratingYScale(d.averageCumulativeRating))
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
       });
@@ -817,6 +819,8 @@
     g.selectAll('.frequency-label')
       .transition()
       .duration(Constants.transitionTime)
+      .attr('x', d => ratingXScale(pairToString(d.pair)) + ratingXScale.bandwidth()/2)
+      .attr('y', d => ratingYScale(d.averageCumulativeRating) - 5)
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
       });
