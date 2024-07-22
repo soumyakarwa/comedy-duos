@@ -53,8 +53,7 @@
     left: pageMarginInPixels*2 
   };
 
-  $: if(episodeData.length) {
-
+  $: if(episodeData.length & index == 0) {
     svg = d3.select(heatMapSvg);
 
     chartWidth = svgWidth - margin.left - margin.right;
@@ -68,67 +67,13 @@
     yAxisTranslatePos = [pageMarginInPixels*2, 0]; 
     yAxisXYPos = [pageMarginInPixels*2, chartHeight-5]; 
     yAxisHeight = yAxisXYPos[1] - yAxisXYPos[0]; 
-    yAxisLabelTranslatePos = [0, margin.bottom + yAxisHeight/2]; 
+    yAxisLabelTranslatePos = [0, pageMarginInPixels*2]; 
 
     g = svg.select('g');
     if (g.empty()) {
       g = svg.append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
     }
-
-    // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
-    originalXScale = d3.scaleBand()
-      .domain(episodeData.map(d => d.Episode))
-      .range([xAxisXYPos[0], xAxisXYPos[1]])
-      .padding(0.1);
-
-    // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
-    originalYScale = d3.scaleBand()
-      .domain(episodeData.map(d => d.Season))
-      .range([yAxisHeight, 0])
-      .padding(0.1);
-
-    if(!xaxis){
-      xaxis =  g
-      .append('g')
-      .attr('class', 'axis axis-x'); 
-    }
-    xaxis
-      .attr('transform', `translate(${xAxisTranslatePos[0]},${xAxisTranslatePos[1]})`)
-      .call(d3.axisTop(originalXScale))
-      .call(g => g.select(".domain").remove()) 
-      .call(g => g.selectAll(".tick line").remove()); 
-    
-    if(!xaxisLabel){  
-      xaxisLabel = g.append("text")
-        .attr("class", "x-axis-label")
-        .attr("text-anchor", "middle"); 
-    }
-    xaxisLabel  
-      .transition()  
-      .attr("x", xAxisLabelXYPos[0])
-      .attr("y", xAxisLabelXYPos[1])
-      .text("Episode");
-
-    if(!yaxis){
-      yaxis = g.append('g')
-        .attr('class', 'axis axis-y'); 
-    }
-    yaxis
-      .attr('transform', `translate(${yAxisTranslatePos[0]},${yAxisTranslatePos[1]})`)
-      .call(d3.axisLeft(originalYScale))
-      .call(g => g.select(".domain").remove()) 
-      .call(g => g.selectAll(".tick line").remove());
-
-    if(!yaxisLabel){    
-      yaxisLabel = g.append("text")
-        .attr("class", "y-axis-label")
-        .attr("text-anchor", "middle"); 
-    }
-    yaxisLabel  
-      .transition()  
-      .attr("transform", `translate(${yAxisLabelTranslatePos[0]},${yAxisLabelTranslatePos[1]}) rotate(-90)`)
-      .text("Season");
 
     episodeData.forEach(item => {
       const characters = item['Streamlined Characters'];
@@ -165,10 +110,82 @@
         topPairs = sortedCharacterRatingArray.slice(0, 10).map(d => pairToString(d.pair));
         frequencies = sortedCharacterRatingArray.slice(0, 10).map(d => d.frequency);
         ratings = sortedCharacterRatingArray.slice(0, 10).map(d => d.averageCumulativeRating);
-      }
+    }
+  
+
+    pairToColor = new Map();
+    topPairs.forEach((pair, index) => {
+        pairToColor.set(pair, Constants.heatMapColors[index]);
+    });
+
+
+    setScales(topPairs); 
+
+    if(!xaxis){
+      xaxis =  g
+      .append('g')
+      .attr('class', 'axis axis-x'); 
+    }
+
+    if(!xaxisLabel){  
+      xaxisLabel = g.append("text")
+        .attr("class", "x-axis-label")
+        .attr("text-anchor", "middle"); 
+    }
+
+    if(!yaxis){
+      yaxis = g.append('g')
+        .attr('class', 'axis axis-y'); 
+    }
+
+    if(!yaxisLabel){    
+      yaxisLabel = g.append("text")
+        .attr("class", "y-axis-label")
+    }
     
+    xaxis
+      .attr('transform', `translate(${xAxisTranslatePos[0]},${xAxisTranslatePos[1]})`)
+      .call(d3.axisTop(originalXScale))
+      .call(g => g.select(".domain").remove()) 
+      .call(g => g.selectAll(".tick line").remove()); 
+      
+      
+    xaxisLabel  
+        .transition()  
+        .attr("x", xAxisLabelXYPos[0])
+        .attr("y", xAxisLabelXYPos[1])
+        .text("Episode");
+    
+    yaxis
+      .attr('transform', `translate(${yAxisTranslatePos[0]},${yAxisTranslatePos[1]})`)
+      .call(d3.axisLeft(originalYScale))
+      .call(g => g.select(".domain").remove()) 
+      .call(g => g.selectAll(".tick line").remove());
+
+      
+    yaxisLabel  
+      .transition()  
+      .attr("x", yAxisLabelTranslatePos[0])
+      .attr("y", yAxisLabelTranslatePos[1] - originalXScale.bandwidth())
+      .text("Season");   
+
+  };
+
+  function setScales(pairs){
+    // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
+    originalXScale = d3.scaleBand()
+      .domain(episodeData.map(d => d.Episode))
+      .range([xAxisXYPos[0], xAxisXYPos[1]])
+      .padding(0.1);
+
+    // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
+    originalYScale = d3.scaleBand()
+      .domain(episodeData.map(d => d.Season))
+      .range([yAxisHeight, 0])
+      .padding(0.1);
+
     frequencyXScale = d3.scaleBand()
-        .domain(topPairs)
+        .domain(pairs)
         .range([xAxisXYPos[0], xAxisXYPos[1]])
         .padding(0.1);
 
@@ -177,19 +194,13 @@
         .domain([0, 45])
         .range([yAxisHeight, 0]); 
 
-    pairToColor = new Map();
-    topPairs.forEach((pair, index) => {
-        pairToColor.set(pair, Constants.heatMapColors[index]);
-    });
-
     ratingXScale = frequencyXScale;
 
     // Create yScale for ratings
     ratingYScale = d3.scaleLinear()
         .domain([7, 9])
         .range([yAxisHeight, 0]); 
-
-  };
+  }
 
   /**
    * Reverts axes to original heat map axes
@@ -344,6 +355,14 @@
       .attr('width', 0)
       .remove(); 
 
+    g.selectAll('.frequency-bar')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 0)
+      .attr('y', yAxisHeight) 
+      .attr('height', 0)
+      .remove();
+
     // ADDING BASE SQUARES FOR EACH EPISODE
     if(!baseSquares){
       baseSquares = g.append('g')
@@ -404,13 +423,18 @@
       .attr('height', 0)
       .remove();
 
+    g.selectAll('.row-group')
+      .selectAll('rect')
+      .transition()
+      .style('opacity', 1)
+
     g.selectAll('.frequency-label')
       .transition()
       .duration(Constants.transitionTime)
       .style('opacity', 0)
       .remove();
 
-    g.select('.axis-x')
+    xaxis
       .selectAll('image')
       .transition()
       .duration(Constants.transitionTime)
@@ -513,6 +537,7 @@
   function createStackedBarChart(){
 
     g.selectAll('.row-group')
+      .selectAll('rect')
       .transition()
       .duration(Constants.transitionTime)
       .style('opacity', 1); 
@@ -583,8 +608,7 @@
    yaxisLabel
         .transition()
         .duration(Constants.transitionTime)
-        // .attr("transform", `translate(${-margin.left/2-5},${chartHeight/2}) rotate(-90)`)
-        .text("Frequency"); 
+        .text("Number of Appearances"); 
 
     // Move the remaining rects to the appropriate position in the new scale
       g.selectAll('.row-group')
@@ -643,14 +667,17 @@
    */
   function highlightHighestFrequencyBar(){
     const winningPair = pairToString(sortedCharacterRatingArray.slice(0, 10).reduce((max, obj) => (obj.frequency > max.frequency ? obj : max)).pair)
-    console.log(winningPair); 
 
     g.selectAll('.row-group')
+      .selectAll('rect')
+      .transition()
+      .attr('x', d => frequencyXScale(pairToString(d.char)) + frequencyXScale.bandwidth()/4)
       .style('opacity', 0); 
 
     g.selectAll('.frequency-bar')
       .transition()
       .duration(Constants.transitionTime)
+      .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth()/4)
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
       });
@@ -658,12 +685,12 @@
     g.selectAll('.frequency-label')
       .transition()
       .duration(Constants.transitionTime)
+      .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth() / 2)
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
     });
 
   }
-
 
   /**
    * Helper function when index == 6
@@ -680,14 +707,14 @@
       .style('opacity', 1); 
 
     // Update y-axis with transition
-    g.select('.axis-y')
+    yaxis
         .transition()
         .duration(Constants.transitionTime)
         .call(d3.axisLeft(ratingYScale))
         .call(g => g.selectAll(".tick line").remove());
      
     // Update y-axis label
-    g.select(".y-axis-label")
+    yaxisLabel
         .transition()
         .duration(Constants.transitionTime)
         .text("Average Rating"); 
@@ -695,6 +722,7 @@
     g.selectAll('.frequency-bar')
         .transition()
         .duration(Constants.transitionTime)
+        .attr('x', d => ratingXScale(pairToString(d.pair)) + ratingXScale.bandwidth()/4)
         .attr('y', d => ratingYScale(d.averageCumulativeRating))
         .attr('height', d => yAxisHeight - ratingYScale(d.averageCumulativeRating))
         .style('opacity', 1); 
@@ -702,7 +730,7 @@
     g.selectAll('.frequency-label')
       .transition()
       .duration(Constants.transitionTime*2)
-      // .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth() / 2)
+      .attr('x', d => ratingXScale(pairToString(d.pair)) + ratingXScale.bandwidth()/2)
       .attr('y', d => ratingYScale(d.averageCumulativeRating) - 5)
       .text(d => d.averageCumulativeRating.toFixed(2))
       .style('opacity', 1); 
@@ -722,6 +750,8 @@
     g.selectAll('.frequency-bar')
       .transition()
       .duration(Constants.transitionTime)
+      .attr('x', d => ratingXScale(pairToString(d.pair)) + ratingXScale.bandwidth()/4)
+      .attr('y', d => ratingYScale(d.averageCumulativeRating))
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
       });
@@ -729,6 +759,8 @@
     g.selectAll('.frequency-label')
       .transition()
       .duration(Constants.transitionTime)
+      .attr('x', d => ratingXScale(pairToString(d.pair)) + ratingXScale.bandwidth()/2)
+      .attr('y', d => ratingYScale(d.averageCumulativeRating) - 5)
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
       });
@@ -738,6 +770,7 @@
   // Call the updateHeatMap function based on the index value
   $: {
     if(g) {
+      console.log(index); 
       if (index == 1) {
         showSpecificSquare();
       } else if (index == 2) {
@@ -759,15 +792,59 @@
   onMount(() => {
 
     window.addEventListener('resize', () => {
+      console.log("window is being resized")
       svgWidth = 0.9 * window.innerWidth;
       svgHeight = 0.9 * window.innerHeight;
+
+      chartWidth = svgWidth - margin.left - margin.right;
+      chartHeight = svgHeight - margin.top - margin.bottom;
+      
+      xAxisTranslatePos = [0, chartHeight - pageMarginInPixels]; 
+      xAxisXYPos = [pageMarginInPixels*2, chartWidth]; 
+      xAxisWidth = xAxisXYPos[1] - xAxisXYPos[0];
+      xAxisLabelXYPos = [margin.left + xAxisWidth / 2, chartHeight+7]; 
+
+      yAxisTranslatePos = [pageMarginInPixels*2, 0]; 
+      yAxisXYPos = [pageMarginInPixels*2, chartHeight-5]; 
+      yAxisHeight = yAxisXYPos[1] - yAxisXYPos[0]; 
+      yAxisLabelTranslatePos = [0, pageMarginInPixels*2];
+
+      setScales(topPairs); 
+      
+      xaxisLabel  
+          .transition()  
+          .attr("x", xAxisLabelXYPos[0])
+          .attr("y", xAxisLabelXYPos[1])
+      
+      yaxisLabel  
+        .transition()  
+        .attr("x", yAxisLabelTranslatePos[0])
+        .attr("y", yAxisLabelTranslatePos[1] - originalXScale.bandwidth())
 
       xaxis.selectAll('image')
         .transition()
         .attr('x', d => frequencyXScale(d) + frequencyXScale.bandwidth()/4)
         .attr('y', 4)
-        .attr('width', frequencyXScale.bandwidth()/2);         
+        .attr('width', frequencyXScale.bandwidth()/2); 
+        
+      if (index == 1) {
+        showSpecificSquare();
+      } else if (index == 2) {
+        showAllSquares();
+      } else if (index == 3) {
+        updateSquaresForTopPairs();
+      } else if (index == 4) {
+        createStackedBarChart();
+      } else if (index == 5){
+        highlightHighestFrequencyBar(); 
+      } else if (index == 6) {
+        createRatingBarChart();
+      } else if (index == 7) {
+        highlightWinningBar();
+      }
 
+      
+        
     }); 
   }); 
 
