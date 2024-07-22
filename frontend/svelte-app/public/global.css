@@ -120,21 +120,14 @@ body {
   border: 1px solid var(--grey);
 }
 
-/* #standalone-description-1 {
-  height: 65vh;
+.square {
+  display: inline-block;
+  width: var(--label-font-size);
+  height: var(--label-font-size);
+  background-color: transparent;
+  vertical-align: text-top;
+  border: 1px solid black;
 }
-
-#standalone-description-2 {
-  height: 80vh;
-}
-
-#standalone-description-3 {
-  height: 75vh;
-}
-
-#standalone-description-4 {
-  height: 57vh;
-} */
 
 .link {
   text-decoration: none;

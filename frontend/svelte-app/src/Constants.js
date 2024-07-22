@@ -101,11 +101,11 @@ export const lightGreenColor = getCSSVariable("--light-green");
 export const lightOrangeColor = getCSSVariable("--light-orange");
 
 export const colors = [
-  blueColor,
-  greenColor,
-  purpleColor,
-  yellowColor,
-  orangeColor,
+  lightBlueColor,
+  lightGreenColor,
+  lightPurpleColor,
+  lightYellowColor,
+  lightOrangeColor,
 ];
 
 export const heatMapColors = [
@@ -158,35 +158,36 @@ export const characterSectionText = [
 ];
 
 export const standaloneText1 = [
-  `To identify Brooklyn Nine-Nine's most iconic duo, I conducted a language analysis of all episode descriptions to find out which characters have been grouped together. Some of the more obvious ones are Jake and Captain Holt or Jake and Amy, but there have been top-rated episodes with Charles and Amy paired together or even Terry and Rosa! The question is, how many episodes are these character duos paired together in, and how popular was the episode?`,
-  `I used a dataset of IMDb ratings and votes for all 153 episodes, which also included other information like title, airdate, season number, episode number, official description, etc. Additionally, I scraped episode descriptions from other sources to improve the accuracy of the analysis. Using the Natural Language Toolkit and OpenAI API, I broke every description down into different plot points and, consequently, different character groups.`,
-  `Subsequently, I counted the number of episodes and calculated the average rating for all identified character duos. That was a lot of words, but let me break down my analysis with an example–Season 3, Episode 6, "Into the Woods."`,
+  `To identify Brooklyn Nine-Nine's most iconic duo, I conducted a language analysis of each episode’s episode description to find out which characters have been grouped together. Some of the more obvious ones are Jake and Captain Holt or Jake and Amy, but there have been top-rated episodes with Charles and Amy paired together or even Terry and Rosa! The question is, how many episodes are these character duos paired together in, and how popular was the episode?`,
+  `<span class="italic">Methodology</span>`,
+  `I used a dataset of IMDb ratings and votes for all 153 episodes, which also included information like title, airdate, season number, episode number, official description, etc. I scraped two more episode descriptions datasets from Wikipedia and WikiFandom to improve the accuracy of the analysis. Using the Natural Language Toolkit and OpenAI API, I broke every description down into different plot points and, consequently, different character groups.`,
+  `Then, I counted the number of episodes and calculated the average IMDb episode rating for all identified character duos. That was a lot of words, but let me break down my analysis with an example–Season 3, Episode 4, "The Oolong Slayer."`,
 ];
 
 export const episodeBreakdownText = [
-  `Consider this square to represent Season 3, Episode 6, "Into the Woods."`,
-  `Using three descriptions provided more insight into the episode and strengthened the language analysis by allowing for comparison in case of an error.`,
-  `Using the Natural Language Toolkit, I broke down each description into sentences to identify different plot points.`,
-  `Then, using the OpenAI API, I further broke down complicated sentences into independent clauses.`,
-  `Next, I checked these plot points against the list of characters to identify all distinct character groups.`,
-  `Then, I compared the three descriptions to ensure a character group existed independently in each. For instance, all three descriptions contain a distinct group of Charles, Jake, and Terry.`,
-  `Here's where it gets interesting. Description 1 is one long sentence, but Description 3 is more comprehensible and divided. I used Description 3 to correspond and break up larger character groups in Descriptions 1 and 2, which helped confirm another pair in the episode–Captain Holt & Rosa.`,
-  `Last but not least, we have the unlikely duo of Amy and Gina! Using this method, I identified the groupings in "Into the Woods" and subsequently for all 153 episodes.`,
+  `Consider this square <span class="square"></span> to represent character groups from Season 3, Episode 4, "The Oolong Slayer."`,
+  `I used three different episode descriptions (Official, Wiki Fandom and Wikipedia respectively) to strengthen the language analysis by allowing for comparison in case of an error.`,
+  `Using the Natural Language Toolkit, I broke down each description into sentences to identify different plot points. By comparing the three descriptions, we know that Jake & Captain Holt are secretly working a case together.`,
+  `Then, using the OpenAI API, I further broke down complicated sentences into independent clauses, like in Description 3.`,
+  `Next, I checked the identified plot points (highlighted) against the list of characters to identify all distinct character groups.`,
+  `Then, I compared the three descriptions to ensure a character group existed independently in each. For instance, all three descriptions contain a distinct plot point describing Jake and Captain Holt’s secret case!`,
+  `Here's where it gets interesting. I compared all the descriptions to correspond and break up larger character groups. Comparing the plot points and sentence structure of Desciption 1 and 3 against 2 helped confirm another pair: Rosa, Amy while they were planning The Vulture’s party (ew)!`,
+  `Last but not least, we have Charles and Terry! Using this method, I identified the groupings in "The Oolong Slayer" and subsequently for all 153 episodes.`,
 ];
 
 export const heatMapSectionText = [
   ``,
-  `As concluded from the previous section, Season 3, Episode 6, "Into the Woods" had three distinct character groups.`,
-  `After analyzing all episodes, I found that each had up to five distinct character pairings.`,
+  `As concluded from the previous section, Season 3, Episode 4, "The Oolong Slayer" had three distinct character groups. `,
+  `After analyzing all episodes, I found that each one had up to five distinct character pairings.`,
   `To streamline the analysis, I filtered the dataset for the top 10 most frequently occurring character duos.`,
   `Now, one way to measure a character duo's popularity is by counting how often they appear together in the series, that is, frequency.`,
   `In the bar chart below, it's clear that the most frequently appearing character duo is none other than Jake & Amy. However, is this the only way to measure popularity?`,
-  `Another, perhaps more accurate, way to measure a duo's popularity is to calculate the average rating of each episode they appeared in, accounting for the number of votes that episode received, which would give us the average cumulative rating.`,
-  `And there we have it! Despite having less screen time, the most iconic duo of Brooklyn Nine-Nine is Captain Holt & Jake! They've appeared together 36 times, with over 97,737 votes and an average episode rating of 8.47. The viewers have spoken! Sorry, Amy, it seems like you lost this one!`,
+  `Another, perhaps more accurate, way to measure a duo's popularity is to calculate the average rating of each episode they appeared in, accounting for the number of votes that episode received, which would give us the cumulative average rating.`,
+  `And there we have it! Despite having less screen time, the most iconic duo of Brooklyn Nine-Nine is Captain Holt & Jake! They've appeared together 36 times, with over 97,737 votes and an average episode rating of 8.47/10. The viewers have spoken! Sorry, Amy, it seems like you lost this one!`,
 ];
 
 export const standaloneConclusion = [
-  `After a meticulous analysis of 153 episodes, taking into account both the frequency of appearances and episode ratings, it is clear that the most iconic duo of Brooklyn Nine-Nine are Captain Holt and Detective Jake Peralta. Despite their contrasting personalities and initial friction, their relationship evolves into one of mutual respect, camaraderie, and heartfelt moments that resonate deeply with the audience. Their 36 appearances together, with an impressive average rating of 8.47, solidify their status as the viewers' favorite pair.`,
+  `After a meticulous analysis of 153 episodes, taking into account both the frequency of appearances and episode ratings, it is clear that the most iconic duo of Brooklyn Nine-Nine are Captain Holt and Detective Jake Peralta. Despite their contrasting personalities and initial friction, their relationship evolves into one of mutual respect, camaraderie, and heartfelt moments that resonate deeply with the audience. Their 36 appearances together, with an impressive average IMDb rating of 8.47, solidify their status as the viewers' favorite pair.`,
   `Brooklyn Nine-Nine not only provides laughs but also explores themes of friendship, loyalty, and growth, reminding us that no matter how different we may seem, we can always find common ground and support each other. As the Precinct's adventures continue to entertain and inspire, Captain Holt and Jake's iconic duo stands as a testament to the show's brilliance and the power of unlikely friendships.`,
   `So, here's to the many more hilarious and touching moments from the 99th Precinct and to Captain Holt and Jake—Brooklyn Nine-Nine's most iconic duo!`,
 ];
