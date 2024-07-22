@@ -56,7 +56,7 @@
 			const response = await fetch("/data/brooklynNineNineCharactersStreamlined.json");
 			const text = await response.text();
 			episodeData = JSON.parse(text);
-			specificDataPoint = episodeData.find(d => d.Title === "The Funeral");
+			specificDataPoint = episodeData.find(d => d.Title === "The Oolong Slayer");
 		} catch (error) {
 			console.error("Error loading data:", error);
 		}
