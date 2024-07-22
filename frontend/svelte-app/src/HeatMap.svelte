@@ -216,7 +216,7 @@
         
         
     // Update y-axis with transition
-    g.select('.axis-y')
+    yaxis
         .transition()
         .duration(Constants.transitionTime)
         .call(d3.axisLeft(originalYScale))
@@ -224,7 +224,7 @@
         .call(g => g.selectAll(".tick line").remove());
 
     // Update x-axis label
-    g.select(".x-axis-label")
+    xaxisLabel
         .transition()
         .duration(Constants.transitionTime)
         .attr("x", xAxisLabelXYPos[0])
@@ -232,7 +232,7 @@
         .text("Episode");
 
     // Update y-axis label
-    g.select(".y-axis-label")
+    yaxisLabel
         .transition()
         .duration(Constants.transitionTime)
         .text("Season");
@@ -293,6 +293,16 @@
       .style('opacity', 0)
       .attr('width', 0)
       .remove(); 
+
+    xaxis
+        .call(d3.axisTop(originalXScale))
+        .call(g => g.select(".domain").remove()) 
+        .call(g => g.selectAll(".tick line").remove());  
+
+    yaxis
+      .call(d3.axisLeft(originalYScale))
+      .call(g => g.select(".domain").remove()) 
+      .call(g => g.selectAll(".tick line").remove());
 
     // ADDING ONLY THE SQUARE CORRESPONDING TO SEASON 3, EPISODE 6
     const specificRect = g.append('rect')
@@ -363,6 +373,16 @@
       .attr('height', 0)
       .remove();
 
+    xaxis
+      .call(d3.axisTop(originalXScale))
+      .call(g => g.select(".domain").remove()) 
+      .call(g => g.selectAll(".tick line").remove()); 
+
+    yaxis
+      .call(d3.axisLeft(originalYScale))
+      .call(g => g.select(".domain").remove()) 
+      .call(g => g.selectAll(".tick line").remove());
+
     // ADDING BASE SQUARES FOR EACH EPISODE
     if(!baseSquares){
       baseSquares = g.append('g')
@@ -378,7 +398,7 @@
       .attr('height', originalXScale.bandwidth())
       .style('fill', 'none')
       .style('opacity', 0);
-      
+    
     baseSquares.each(function(d, i) {
       const rect = d3.select(this);
       const numRows = d["Streamlined Characters"].length;
@@ -441,7 +461,17 @@
       .style('opacity', 0)
       .remove();
 
-    const currentDomain = g.select('.axis-x').selectAll('.tick').data();
+    xaxis
+      .call(d3.axisTop(originalXScale))
+      .call(g => g.select(".domain").remove()) 
+      .call(g => g.selectAll(".tick line").remove());  
+
+    yaxis
+      .call(d3.axisLeft(originalYScale))
+      .call(g => g.select(".domain").remove()) 
+      .call(g => g.selectAll(".tick line").remove());
+
+    const currentDomain = xaxis.selectAll('.tick').data();
 
     // Compare current domain with new domain
     if (JSON.stringify(currentDomain) === JSON.stringify(frequencyXScale.domain())) {
@@ -668,16 +698,27 @@
   function highlightHighestFrequencyBar(){
     const winningPair = pairToString(sortedCharacterRatingArray.slice(0, 10).reduce((max, obj) => (obj.frequency > max.frequency ? obj : max)).pair)
 
+    xaxis
+        .transition()
+        .duration(Constants.transitionTime)
+        .call(d3.axisBottom(frequencyXScale))
+        .attr('transform', `translate(0,${yAxisHeight})`)
+        .call(g => g.selectAll(".tick line").remove()); 
+
+    yaxis
+      .transition()
+      .duration(Constants.transitionTime)
+      .call(d3.axisLeft(frequencyYScale))
+      .call(g => g.selectAll(".tick line").remove());
+
     g.selectAll('.row-group')
       .selectAll('rect')
       .transition()
-      .attr('x', d => frequencyXScale(pairToString(d.char)) + frequencyXScale.bandwidth()/4)
       .style('opacity', 0); 
 
     g.selectAll('.frequency-bar')
       .transition()
       .duration(Constants.transitionTime)
-      .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth()/4)
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
       });
@@ -685,7 +726,6 @@
     g.selectAll('.frequency-label')
       .transition()
       .duration(Constants.transitionTime)
-      .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth() / 2)
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
     });
@@ -705,6 +745,13 @@
       .transition()
       .duration(Constants.transitionTime)
       .style('opacity', 1); 
+
+    xaxis
+      .transition()
+      .duration(Constants.transitionTime)
+      .call(d3.axisBottom(ratingXScale))
+      .attr('transform', `translate(0,${yAxisHeight})`)
+      .call(g => g.selectAll(".tick line").remove()); 
 
     // Update y-axis with transition
     yaxis
@@ -744,14 +791,25 @@
     const winningPair = pairToString(sortedCharacterRatingArray.slice(0, 10).reduce((max, obj) => (obj.averageCumulativeRating > max.averageCumulativeRating ? obj : max)).pair); 
     // Adjust this to match the exact format used in your data
 
+    xaxis
+      .transition()
+      .duration(Constants.transitionTime)
+      .call(d3.axisBottom(ratingXScale))
+      .attr('transform', `translate(0,${yAxisHeight})`)
+      .call(g => g.selectAll(".tick line").remove()); 
+
+    yaxis
+      .transition()
+      .duration(Constants.transitionTime)
+      .call(d3.axisLeft(ratingYScale))
+      .call(g => g.selectAll(".tick line").remove());
+
     g.selectAll('.row-group')
       .style('opacity', 0); 
 
     g.selectAll('.frequency-bar')
       .transition()
       .duration(Constants.transitionTime)
-      .attr('x', d => ratingXScale(pairToString(d.pair)) + ratingXScale.bandwidth()/4)
-      .attr('y', d => ratingYScale(d.averageCumulativeRating))
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
       });
@@ -759,8 +817,6 @@
     g.selectAll('.frequency-label')
       .transition()
       .duration(Constants.transitionTime)
-      .attr('x', d => ratingXScale(pairToString(d.pair)) + ratingXScale.bandwidth()/2)
-      .attr('y', d => ratingYScale(d.averageCumulativeRating) - 5)
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
       });
@@ -792,7 +848,6 @@
   onMount(() => {
 
     window.addEventListener('resize', () => {
-      console.log("window is being resized")
       svgWidth = 0.9 * window.innerWidth;
       svgHeight = 0.9 * window.innerHeight;
 
@@ -809,7 +864,13 @@
       yAxisHeight = yAxisXYPos[1] - yAxisXYPos[0]; 
       yAxisLabelTranslatePos = [0, pageMarginInPixels*2];
 
-      setScales(topPairs); 
+      xaxis
+        .transition()
+        .attr('transform', `translate(${xAxisTranslatePos[0]},${xAxisTranslatePos[1]})`); 
+      
+      yaxis
+        .transition()
+        .attr('transform', `translate(${yAxisTranslatePos[0]},${yAxisTranslatePos[1]})`); 
       
       xaxisLabel  
           .transition()  
@@ -826,6 +887,8 @@
         .attr('x', d => frequencyXScale(d) + frequencyXScale.bandwidth()/4)
         .attr('y', 4)
         .attr('width', frequencyXScale.bandwidth()/2); 
+
+      setScales(topPairs); 
         
       if (index == 1) {
         showSpecificSquare();
