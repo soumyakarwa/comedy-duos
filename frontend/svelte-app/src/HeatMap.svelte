@@ -259,6 +259,7 @@
   function calculateHeatMapY(data){
     return originalYScale(data.Season) + originalYScale.bandwidth() / 2 - originalXScale.bandwidth() / 2
   }
+  
 
   /**
    * Helper function when index == 1
@@ -271,6 +272,13 @@
       .style('opacity', 0)
       .attr('width', 0)
       .remove(); 
+
+    g.selectAll('.row-group').on('click', null); 
+    g.selectAll('.character-image')
+    .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 0)
+      .remove()
 
     g.selectAll('.legend')
       .transition()
@@ -335,6 +343,10 @@
    * Helper function when index == 2
    */
   function showAllSquares() {
+
+    const transitionTime = Constants.transitionTime;
+    const hoverIncrease = 4;
+
     // REMOVING ALL PREVIOUSLY ADDED 
     g.selectAll('.specific-square')
       .transition()
@@ -425,7 +437,161 @@
         .attrTween("width", function () {
           return d3.interpolate(0, originalXScale.bandwidth());
         });
-    });
+
+      // group
+      //   .on('mouseover', function(event, data) {
+      //     const scaledRectWidth = originalXScale.bandwidth() * hoverIncrease; 
+      //     const scaledRowHeight = rowHeight * hoverIncrease;
+          
+      //     const newXPos = (d) => {
+      //       return calculateHeatMapX(d) - (originalXScale.bandwidth() * (hoverIncrease - 1)) / 2
+      //     }
+      //     const newYPos = (d, i) => {
+      //       return calculateHeatMapY(d) + (i * scaledRowHeight) - (rowHeight * (hoverIncrease - 1)) / 2
+      //     }
+
+      //     const hoverGroup = d3.select(this); 
+      //     hoverGroup
+      //       .raise()
+      //       .style('cursor', 'pointer') 
+      //       .selectAll('rect')
+      //       .transition()
+      //       .duration(transitionTime / 2)
+      //       .attr('width', scaledRectWidth)
+      //       .attr('height', (d, i) => scaledRowHeight)
+      //       .attr('x', d => newXPos(d))
+      //       .attr('y', (d, i) => newYPos(d, i))
+      //       .on('end', function(d, i) {
+      //         addCharacters(); 
+      //       });
+
+      //     function addCharacters() {
+      //       hoverGroup.selectAll('rect').each(function(charData, index) {
+      //       const characterNames = charData.char;            
+      //       const imageRadius =  scaledRowHeight/ (characterNames.length + 1);
+      //       const characterSpacing = imageRadius / 2;
+      //       const totalCharactersWidth = characterNames.length * (imageRadius * 2 + characterSpacing) - characterSpacing;
+      //       const startX = calculateHeatMapX(d) + (originalXScale.bandwidth() - totalCharactersWidth) / 2;
+
+      //         characterNames.forEach((name, index) => {
+      //           const imageX = startX + index * (imageRadius * 2 + characterSpacing) + imageRadius;
+      //           const imageY = calculateHeatMapY(d) + (charData.index * rowHeight * hoverIncrease) + rowHeight / 2.5;
+
+      //           hoverGroup.append('image')
+      //               .attr('x', imageX - imageRadius)
+      //               .attr('y', imageY - imageRadius)
+      //               .attr('width', imageRadius * 2)
+      //               .attr('height', imageRadius * 2)
+      //               .attr("opacity", 0)
+      //               .attr('xlink:href', `assets/yellow-background/${name}.png`)
+      //               .attr('class', 'character-image')
+      //               .transition()
+      //               .duration(Constants.transitionTime)
+      //               .attr("opacity", 1);                   
+      //         });
+      //       }); 
+      //     }
+          
+      //     // console.log(temp);
+      //   })
+      //   .on('mouseout', function(event, d) {
+      //     d3.select(this)
+      //       .style('cursor', 'default')
+      //       .selectAll('rect').transition()
+      //       .duration(transitionTime / 2)
+      //       .attr('width', originalXScale.bandwidth())
+      //       .attr('height', rowHeight)
+      //       .attr('x', calculateHeatMapX(d))
+      //       .attr('y', (d, i) => calculateHeatMapY(d) + (i * rowHeight));
+
+      //       d3.select(this).selectAll('.character-image').remove();
+      //       d3.select(this).selectAll('.character-text').remove();
+      //   });
+
+      let isClicked = false;
+
+      group.on('click', function(event, data) {
+        const hoverGroup = d3.select(this);
+        const characterGroups = data['Streamlined Characters']; 
+        if (!isClicked) {
+          const scaledRectWidth = originalXScale.bandwidth() * hoverIncrease;
+          const scaledRowHeight = rowHeight * hoverIncrease;
+
+          const newXPos = (d) => {
+            return calculateHeatMapX(d) - (originalXScale.bandwidth() * (hoverIncrease - 1)) / 2;
+          };
+          const newYPos = (d, i) => {
+            return calculateHeatMapY(d) + (i * scaledRowHeight) - (rowHeight * (hoverIncrease - 1)) / 2;
+          };
+
+          hoverGroup
+            .raise()
+            .style('cursor', 'pointer')
+            .selectAll('rect')
+            .transition()
+            .duration(transitionTime / 2)
+            .attr('width', scaledRectWidth)
+            .attr('height', (d, i) => scaledRowHeight)
+            .attr('x', d => newXPos(d))
+            .attr('y', (d, i) => newYPos(d, i))
+            .on('end', function(d, i) {
+              addCharacters();
+            });
+
+          function addCharacters() {
+            hoverGroup.selectAll('rect').each(function(charData, index) {
+              const characterNames = charData.char;
+
+              let imageRadius;
+              if (characterGroups.length === 1) {
+                  imageRadius = scaledRectWidth / (characterNames.length + 3);
+              } else {
+                  imageRadius = scaledRowHeight / (characterNames.length + 1);
+              }
+
+              const characterSpacing = imageRadius / 2;
+              const totalCharactersWidth = characterNames.length * (imageRadius * 2 + characterSpacing) - characterSpacing;
+              const startX = calculateHeatMapX(d) + (originalXScale.bandwidth() - totalCharactersWidth) / 2;
+
+              characterNames.forEach((name, index) => {
+                const imageX = startX + index * (imageRadius * 2 + characterSpacing) + imageRadius;
+                const imageY = calculateHeatMapY(d) + (charData.index * rowHeight * hoverIncrease) + rowHeight / 2.5;
+
+                hoverGroup.append('image')
+                  .attr('x', imageX - imageRadius)
+                  .attr('y', imageY - imageRadius)
+                  .attr('width', imageRadius * 2)
+                  .attr('height', imageRadius * 2)
+                  .attr("opacity", 0)
+                  .attr('xlink:href', `assets/yellow-background/${name}.png`)
+                  .attr('class', 'character-image')
+                  .transition()
+                  .duration(Constants.transitionTime)
+                  .attr("opacity", 1);
+              });
+            });
+          }
+        } else {
+          // Second click - Apply the mouseout functionality
+          hoverGroup
+            .style('cursor', 'default')
+            .selectAll('rect')
+            .transition()
+            .duration(transitionTime / 2)
+            .attr('width', originalXScale.bandwidth())
+            .attr('height', rowHeight)
+            .attr('x', calculateHeatMapX(d))
+            .attr('y', (d, i) => calculateHeatMapY(d) + (i * rowHeight));
+
+          hoverGroup.selectAll('.character-image').remove();
+          hoverGroup.selectAll('.character-text').remove();
+        }
+
+        // Toggle the state
+        isClicked = !isClicked;
+
+      });
+    }); 
   }
 
   /**
@@ -433,6 +599,13 @@
    *
    */
   function updateSquaresForTopPairs() {
+    g.selectAll('.row-group').on('click', null); 
+    g.selectAll('.character-image')
+      .transition()
+      .duration(Constants.transitionTime)
+      .style('opacity', 0)
+      .remove()
+
     g.selectAll('.frequency-bar')
       .transition()
       .duration(Constants.transitionTime)
@@ -445,6 +618,7 @@
       .selectAll('rect')
       .transition()
       .style('opacity', 1)
+      
 
     g.selectAll('.frequency-label')
       .transition()
@@ -830,13 +1004,15 @@
   // Call the updateHeatMap function based on the index value
   $: {
     if(g) {
-      console.log(index); 
       if (index == 1) {
         showSpecificSquare();
+        document.getElementById("instruction").style.opacity = 0;
       } else if (index == 2) {
         showAllSquares();
+        document.getElementById("instruction").style.opacity = 1; 
       } else if (index == 3) {
         updateSquaresForTopPairs();
+        document.getElementById("instruction").style.opacity = 0; 
       } else if (index == 4) {
         createStackedBarChart();
       } else if (index == 5){
@@ -929,6 +1105,10 @@
         <img id="heatmap-content-pin" src="/assets/pins/orange-pin.svg" alt="thumb pin" class="thumb-pin"/>
         {@html Constants.heatMapSectionText[index]}
       </div>
+      <div id="instruction">
+        <img id="instruction-pin" src="/assets/pins/orange-pin.svg" alt="thumb pin" class="thumb-pin"/>
+        Click on an episode to know more, or arrow-right to move ahead!
+      </div>
 </section>
   
 <style>
@@ -980,7 +1160,26 @@
       left: 25vw; 
     }
 
+    #instruction {
+      z-index: 10; 
+      position: absolute; 
+      background-color: var(--green); 
+      width: 15vw; 
+      padding: var(--margin); 
+      vertical-align: middle;
+      text-align: center;
+      top: 3vh; 
+      left: 53vw; 
+      opacity: 0;
+      transition: opacity var(--transition-time);
+    }
+
     #heatmap-content-pin{
+      top: -0.5rem; 
+      left: 50%; 
+    }
+
+    #instruction-pin{
       top: -0.5rem; 
       left: 50%; 
     }
