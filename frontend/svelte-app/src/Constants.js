@@ -138,9 +138,9 @@ export const heatMapColors = [
   yellowColor,
   orangeColor,
   lightBlueColor,
-  lightYellowColor,
-  lightPurpleColor,
   lightGreenColor,
+  lightPurpleColor,
+  lightYellowColor,
   lightOrangeColor,
 ];
 

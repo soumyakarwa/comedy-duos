@@ -208,19 +208,6 @@
     position: relative;
   }
 
-  .character-containers {
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center;
-    align-items: center;
-    gap: calc(var(--margin)/2); 
-    background-color: var(--white); 
-    font-size: var(--label-font-size); 
-    width: fit-content;
-    padding: calc(var(--margin)/2); 
-    position: absolute; 
-  }
-
   #textBox {
     width: var(--text-box-width);
     height: var(--text-box-height); 

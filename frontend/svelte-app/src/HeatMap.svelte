@@ -7,6 +7,7 @@
   const characterRatingDict = {};
   let sortedCharacterRatingArray; 
   let heatMapSection; 
+  var img1, img2, img3, img4, img5, img6, img7, img8, img9; 
 
   export let episodeData;
   export let specificDataPoint; 
@@ -15,6 +16,17 @@
   let heatMapSvg;
   let svgWidth = 0.9 * window.innerWidth;
   let svgHeight = 0.9 * window.innerHeight;
+  let lastStepImages = [
+    { var: img1, id: 'img1', src: 'assets/finale/jakeholt-1.gif', alt: 'holt and jake joke 1' },
+    { var: img2, id: 'img2', src: 'assets/finale/jakeholt-5.gif', alt: 'holt and jake joke 2' },
+    { var: img3, id: 'img3', src: 'assets/finale/jakeholt-7.gif', alt: 'holt and jake joke 3' },
+    { var: img4, id: 'img4', src: 'assets/finale/jakeholt-9.gif', alt: 'holt and jake joke 4' },
+    { var: img5, id: 'img5', src: 'assets/finale/jakeholt-2.jpeg', alt: 'holt and jake joke 5' },
+    { var: img6, id: 'img6', src: 'assets/finale/jakeholt-3.jpeg', alt: 'holt and jake joke 6' },
+    { var: img7, id: 'img7', src: 'assets/finale/jakeholt-4.jpeg', alt: 'holt and jake joke 7' },
+    { var: img8, id: 'img8', src: 'assets/finale/jakeholt-6.jpeg', alt: 'holt and jake joke 8' },
+    { var: img9, id: 'img9', src: 'assets/finale/jakeholt-8.jpeg', alt: 'holt and jake joke 9' }
+  ];
   
   /**
    * svg: heatmap svg
@@ -274,6 +286,8 @@
       .remove(); 
 
     g.selectAll('.row-group').on('click', null); 
+    g.selectAll('.row-group').on('mouseover', null); 
+    g.selectAll('.row-group').on('mouseout', null); 
     g.selectAll('.character-image')
     .transition()
       .duration(Constants.transitionTime)
@@ -438,77 +452,17 @@
           return d3.interpolate(0, originalXScale.bandwidth());
         });
 
-      // group
-      //   .on('mouseover', function(event, data) {
-      //     const scaledRectWidth = originalXScale.bandwidth() * hoverIncrease; 
-      //     const scaledRowHeight = rowHeight * hoverIncrease;
-          
-      //     const newXPos = (d) => {
-      //       return calculateHeatMapX(d) - (originalXScale.bandwidth() * (hoverIncrease - 1)) / 2
-      //     }
-      //     const newYPos = (d, i) => {
-      //       return calculateHeatMapY(d) + (i * scaledRowHeight) - (rowHeight * (hoverIncrease - 1)) / 2
-      //     }
-
-      //     const hoverGroup = d3.select(this); 
-      //     hoverGroup
-      //       .raise()
-      //       .style('cursor', 'pointer') 
-      //       .selectAll('rect')
-      //       .transition()
-      //       .duration(transitionTime / 2)
-      //       .attr('width', scaledRectWidth)
-      //       .attr('height', (d, i) => scaledRowHeight)
-      //       .attr('x', d => newXPos(d))
-      //       .attr('y', (d, i) => newYPos(d, i))
-      //       .on('end', function(d, i) {
-      //         addCharacters(); 
-      //       });
-
-      //     function addCharacters() {
-      //       hoverGroup.selectAll('rect').each(function(charData, index) {
-      //       const characterNames = charData.char;            
-      //       const imageRadius =  scaledRowHeight/ (characterNames.length + 1);
-      //       const characterSpacing = imageRadius / 2;
-      //       const totalCharactersWidth = characterNames.length * (imageRadius * 2 + characterSpacing) - characterSpacing;
-      //       const startX = calculateHeatMapX(d) + (originalXScale.bandwidth() - totalCharactersWidth) / 2;
-
-      //         characterNames.forEach((name, index) => {
-      //           const imageX = startX + index * (imageRadius * 2 + characterSpacing) + imageRadius;
-      //           const imageY = calculateHeatMapY(d) + (charData.index * rowHeight * hoverIncrease) + rowHeight / 2.5;
-
-      //           hoverGroup.append('image')
-      //               .attr('x', imageX - imageRadius)
-      //               .attr('y', imageY - imageRadius)
-      //               .attr('width', imageRadius * 2)
-      //               .attr('height', imageRadius * 2)
-      //               .attr("opacity", 0)
-      //               .attr('xlink:href', `assets/yellow-background/${name}.png`)
-      //               .attr('class', 'character-image')
-      //               .transition()
-      //               .duration(Constants.transitionTime)
-      //               .attr("opacity", 1);                   
-      //         });
-      //       }); 
-      //     }
-          
-      //     // console.log(temp);
-      //   })
-      //   .on('mouseout', function(event, d) {
-      //     d3.select(this)
-      //       .style('cursor', 'default')
-      //       .selectAll('rect').transition()
-      //       .duration(transitionTime / 2)
-      //       .attr('width', originalXScale.bandwidth())
-      //       .attr('height', rowHeight)
-      //       .attr('x', calculateHeatMapX(d))
-      //       .attr('y', (d, i) => calculateHeatMapY(d) + (i * rowHeight));
-
-      //       d3.select(this).selectAll('.character-image').remove();
-      //       d3.select(this).selectAll('.character-text').remove();
-      //   });
-
       let isClicked = false;
+      
+      group
+      .on('mouseover', function() {
+        d3.select(this).style("cursor", "pointer");
+      });
+
+      group
+      .on('mouseout', function() {
+        d3.select(this).style("cursor", "default");
+      });
 
       group.on('click', function(event, data) {
         const hoverGroup = d3.select(this);
@@ -574,7 +528,7 @@
         } else {
           // Second click - Apply the mouseout functionality
           hoverGroup
-            .style('cursor', 'default')
+            // .style('cursor', 'default')
             .selectAll('rect')
             .transition()
             .duration(transitionTime / 2)
@@ -600,6 +554,8 @@
    */
   function updateSquaresForTopPairs() {
     g.selectAll('.row-group').on('click', null); 
+    g.selectAll('.row-group').on('mouseover', null); 
+    g.selectAll('.row-group').on('mouseout', null); 
     g.selectAll('.character-image')
       .transition()
       .duration(Constants.transitionTime)
@@ -1021,6 +977,11 @@
         createRatingBarChart();
       } else if (index == 7) {
         highlightWinningBar();
+        lastStepImages.forEach((img, index) => {
+          setTimeout(() => {
+            img.var.style.opacity = 1; 
+          }, index * Constants.transitionTime/3); 
+        })
       }
     }
   }
@@ -1109,9 +1070,21 @@
         <img id="instruction-pin" src="/assets/pins/orange-pin.svg" alt="thumb pin" class="thumb-pin"/>
         Click on an episode to know more, or arrow-right to move ahead!
       </div>
+      {#each lastStepImages as image, i}
+        <div bind:this={image.var} class="character-containers divBorder finaleImages" id={image.id}>
+          <img src="/assets/pins/orange-pin.svg" alt="thumb pin" class="thumb-pin"/>
+          <img src={image.src} alt={image.alt}/>
+        </div>
+      {/each}
 </section>
   
 <style>
+    .finaleImages {
+      z-index: 5; 
+      opacity: 0; 
+      transition: opacity var(--transition-time); 
+    }
+
     .heatmap-section{
       width: 100vw; 
       height: 100vh; 
@@ -1183,6 +1156,7 @@
       top: -0.5rem; 
       left: 50%; 
     }
+
 
 </style>
     

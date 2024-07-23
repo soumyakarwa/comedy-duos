@@ -79,6 +79,19 @@ body {
   margin-bottom: calc(var(--margin) * 2);
 }
 
+.character-containers {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--margin) / 2);
+  background-color: var(--white);
+  font-size: var(--label-font-size);
+  width: fit-content;
+  padding: calc(var(--margin) / 2);
+  position: absolute;
+}
+
 .svg-container {
   width: 45vw;
   /* height: 90vh; */
@@ -168,6 +181,7 @@ body {
   width: var(--label-font-size);
   height: var(--label-font-size);
   transform: translateX(-50%);
+  top: -0.5rem;
 }
 
 @font-face {
