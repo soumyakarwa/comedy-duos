@@ -122,9 +122,10 @@ export const heatMapColors = [
 ];
 
 // MISC
-export const transitionTime = convertToMilliseconds(
-  getCSSVariable("--transition-time")
-);
+export const transitionTime = (function () {
+  const time = convertToMilliseconds(getCSSVariable("--transition-time"));
+  return time !== null && !isNaN(time) ? time : 750;
+})();
 export const titleFontSize = getCSSVariable("--title-font-size");
 export const labelFontSize = getCSSVariable("--label-font-size");
 export const margin = getCSSVariable("--margin");
