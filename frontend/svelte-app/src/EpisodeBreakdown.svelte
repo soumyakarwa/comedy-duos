@@ -282,6 +282,24 @@
         }
     }
 
+
+    function changeHighlightColor(elements, index, isHighlight) {
+        elements.forEach(element => {
+            if(isHighlight){
+                element.style.setProperty('--highlight-color', Constants.hexToRGBA(Constants.heatMapColors[index], 0.3));
+                element.style.setProperty('color', Constants.heatMapColors[index]);
+            }
+            else {
+                element.style.setProperty('--highlight-color', Constants.colors[index]);
+                element.style.setProperty('color', Constants.blackColor);
+            }
+            
+            // element.classList.add('highlight-animation');
+        });
+
+        highlightSentences(elements); 
+    }
+
     /**
      * Character specific unhiglight when drawing rect and scrolling down 
      * for currentStep = 6, currentStep = 7
@@ -301,10 +319,11 @@
         });
 
         if (elementsToUnhighlight.length > 0) {
-            unhighlightSentences(elementsToUnhighlight);
+            // unhighlightSentences(elementsToUnhighlight);
+            changeHighlightColor(elementsToUnhighlight, index, true)
         }
 
-        const arr = showDescriptions ? drawRect(0, y, characterList, Constants.colors[index]) : null;
+        const arr = showDescriptions ? drawRect(0, y, characterList, Constants.heatMapColors[index]) : null;
         return arr;
     }
 
@@ -314,8 +333,8 @@
      * @param characterList
      * @param epRectText
      */
-    function characterPairingHighlight(characterList, epRectText) {
-        const elements = document.querySelectorAll('.unhighlight');
+    function characterPairingHighlight(characterList, epRectText, index) {
+        const elements = document.querySelectorAll('.highlight, .unhighlight');
         const elementsToHighlight = [];
 
         elements.forEach(element => {
@@ -326,7 +345,8 @@
         });
 
         if (elementsToHighlight.length > 0) {
-            highlightSentences(elementsToHighlight);
+            // highlightSentences(elementsToHighlight);
+            changeHighlightColor(elementsToHighlight, index, false)
         }
 
         undrawRect(epRectText); 
@@ -551,13 +571,13 @@
                     highlightDescription3();
                 }, 0);
             } else if (currentStep == 4) {
-                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][0], episodeRectText[0])
+                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][0], episodeRectText[0], 0)
                 rectYPos -= rectYPosIncrement;
             } else if (currentStep == 5) {
-                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][1], episodeRectText[1])
+                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][1], episodeRectText[1], 1)
                 rectYPos -= rectYPosIncrement;
             } else if (currentStep == 6) {
-                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][2], episodeRectText[2])
+                characterPairingHighlight(specificDataPoint[`Streamlined Characters`][2], episodeRectText[2], 2)
                 rectYPos -= rectYPosIncrement;
             }
         }

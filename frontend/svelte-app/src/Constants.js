@@ -1,6 +1,29 @@
 // constants.js
 
 // PROCESSING FUNCTIONS
+
+/**
+ * Converts a hex color code to an RGB color code and adds a desired alpha value.
+ * @param {string} hex - The hex color code (e.g., '#ff5733' or 'ff5733').
+ * @param {number} alpha - The alpha value (between 0 and 1).
+ * @returns {string} The RGBA color code (e.g., 'rgba(255, 87, 51, 0.5)').
+ */
+export function hexToRGBA(hex, alpha) {
+  // Remove the leading '#' if it's present
+  hex = hex.replace(/^#/, "");
+
+  // Parse the hex color code
+  let r = parseInt(hex.substring(0, 2), 16);
+  let g = parseInt(hex.substring(2, 4), 16);
+  let b = parseInt(hex.substring(4, 6), 16);
+
+  // Ensure alpha is between 0 and 1
+  alpha = Math.min(1, Math.max(0, alpha));
+
+  // Return the RGBA color code
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 /**
  * Extracts CSS Root Variables
  * @param {*} variable
@@ -110,9 +133,9 @@ export const colors = [
 
 export const heatMapColors = [
   blueColor,
-  yellowColor,
-  purpleColor,
   greenColor,
+  purpleColor,
+  yellowColor,
   orangeColor,
   lightBlueColor,
   lightYellowColor,

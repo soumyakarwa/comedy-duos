@@ -321,7 +321,7 @@
         .attr('y', +specificRect.attr('y') + i * rowHeight)
         .attr('width', 0)
         .attr('height', rowHeight)
-        .style('fill', Constants.colors[i % Constants.colors.length])
+        .style('fill', Constants.heatMapColors[i])
         .transition()
         .duration(Constants.transitionTime)
         .delay(i * Constants.transitionTime / 2)
@@ -419,7 +419,7 @@
         .attr('y', d => calculateHeatMapY(d) + (d.index * rowHeight))
         .attr('width', 0)
         .attr('height', rowHeight)
-        .style('fill', d => Constants.colors[d.index % Constants.colors.length])
+        .style('fill', d => Constants.heatMapColors[d.index])
         .transition()
         .duration(Constants.transitionTime)
         .attrTween("width", function () {
