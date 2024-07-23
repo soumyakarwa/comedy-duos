@@ -446,7 +446,7 @@
             svgWidth = document.getElementById("episode-breakdown-section").getBoundingClientRect().width;
             svgHeight = document.getElementById("episode-breakdown-section").getBoundingClientRect().height;
 
-            const top = svgHeight * 0.05; 
+            const top = svgHeight * 0.03; 
             const contentDiv = document.querySelector('.content');
             const contentDivWidth =contentDiv.offsetWidth;
             const leftContent = svgWidth*0.2; 
@@ -490,6 +490,7 @@
     $: (() => {
         // scrolling down
         if (currentStep > previousStep) {
+            console.log(`scrolling down, ${currentStep}`); 
             if (currentStep == 0) {
                 showDescriptions.set(false);
             } else if (currentStep == 1) {
