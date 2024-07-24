@@ -23,6 +23,7 @@
     let episodeSection; 
     let svgWidth, svgHeight; 
     let connectingLine = false; 
+    let oolongSlayerGif; 
 
     export let episodeData;
     export let specificDataPoint;
@@ -515,6 +516,7 @@
                 showDescriptions.set(false);
             } else if (currentStep == 1) {
                 showDescriptions.set(true);
+                oolongSlayerGif.style.opacity = 0; 
             } else if (currentStep == 2) {
                 highlightDescription1();
                 highlightDescription2(); 
@@ -556,6 +558,7 @@
             if (currentStep == 0) {
                 showDescriptions.set(false);
                 reset(); 
+                oolongSlayerGif.style.opacity = 1; 
             } else if (currentStep == 1) {
                 unhighlightDescription1();
                 unhighlightDescription2();
@@ -597,11 +600,23 @@
     <div class="chart divBorder" bind:this={chartDiv}>
         <img id="chart-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
         <div id="col1"> 
-            <div bind:this={heatMap}>
-                <svg bind:this={episodeSvg} width={rectWidth} height={rectWidth} viewbox="0 0 {rectWidth} {rectWidth}">
-                    <rect bind:this={baseRect} x={0} y={0} width={rectWidth} height={rectWidth} fill="none" stroke="black" stroke-width="2"></rect>
-                </svg>
+            <div class="container">
+                <div bind:this={oolongSlayerGif} id="oolongSlayerGif" class="overlay">
+                    <img width={0.95*rectWidth} src="assets/oolongSlayer.gif" alt="oolong slayer episode gif"/>
+                    <div id="oolong-slayer-content">
+                        <div class="italic">Season 3, Episode 4</div>
+                        <div>The Oolong Slayer</div>
+                        <br>
+                        <div>8.5/10</div>
+                    </div>
+                </div>
+                <div bind:this={heatMap} class="base">
+                    <svg bind:this={episodeSvg} width={rectWidth} height={rectWidth} viewBox="0 0 {rectWidth} {rectWidth}">
+                        <rect bind:this={baseRect} x={0} y={0} width={rectWidth} height={rectWidth} fill="none" stroke="black" stroke-width="2"></rect>
+                    </svg>
+                </div>
             </div>
+            
             <div id="officialDescription" class="episodeDescriptions" class:active={$showDescriptions}>
                 <span class="italic">Description 1</span>
                 <br>
@@ -642,6 +657,34 @@
         height: 100vh; 
         width: 100vw; 
         position: relative; 
+    }
+
+    .container {
+        position: relative;
+        width: fit-content;
+        height: fit-content;
+    }
+
+    .base {
+        position: relative;
+        z-index: 1;
+    }
+
+    #oolongSlayerGif {
+        position: absolute;
+        top: 2.5%;
+        left: 2.5%; 
+        z-index: 2;
+        pointer-events: none;
+        transition: opacity var(--transition-time);
+    }
+
+    #oolongSlayerGif img{
+        margin-bottom: var(--margin); 
+    }
+
+    #oolong-slayer-content {
+        text-align: center;
     }
 
     #overlaySvg-episodeBreakdown {
