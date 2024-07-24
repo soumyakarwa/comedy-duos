@@ -187,12 +187,11 @@
             addCharacterDiv(char.var, svg, char);
           }, index * Constants.transitionTime/2); 
           
-          
-          char.var.addEventListener('mouseenter', () => {
+          char.var.addEventListener('mouseenter', () => { 
             char.var.style.cursor = "pointer"; 
             document.getElementById('charText').innerHTML = char.text;
           });
-
+          
           // Add mouse leave event listener to revert text
           char.var.addEventListener('mouseleave', () => {
             char.var.style.cursor = "default"; 
@@ -204,7 +203,7 @@
         }
       })
     }
-  }
+  } 
 
 </script>
 
