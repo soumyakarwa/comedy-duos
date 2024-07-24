@@ -213,7 +213,7 @@ export const heatMapSectionText = [
 ];
 
 export const standaloneConclusion = [
-  `After a meticulous analysis of 153 episodes, taking into account both the frequency of appearances and episode ratings, it is clear that the most iconic duo of Brooklyn Nine-Nine are Captain Holt and Detective Jake Peralta. Despite their contrasting personalities and initial friction, their relationship evolves into one of mutual respect, camaraderie, and heartfelt moments that resonate deeply with the audience. Their 36 appearances together, with an impressive average IMDb rating of 8.47, solidify their status as the viewers' favorite pair.`,
+  // `After a meticulous analysis of 153 episodes, taking into account both the frequency of appearances and episode ratings, it is clear that the most iconic duo of Brooklyn Nine-Nine are Captain Holt and Detective Jake Peralta. Despite their contrasting personalities and initial friction, their relationship evolves into one of mutual respect, camaraderie, and heartfelt moments that resonate deeply with the audience. Their 36 appearances together, with an impressive average IMDb rating of 8.47, solidify their status as the viewers' favorite pair.`,
   `Brooklyn Nine-Nine not only provides laughs but also explores themes of friendship, loyalty, and growth, reminding us that no matter how different we may seem, we can always find common ground and support each other. As the Precinct's adventures continue to entertain and inspire, Captain Holt and Jake's iconic duo stands as a testament to the show's brilliance and the power of unlikely friendships.`,
   `So, here's to the many more hilarious and touching moments from the 99th Precinct and to Captain Holt and Jake—Brooklyn Nine-Nine's most iconic duo!`,
 ];

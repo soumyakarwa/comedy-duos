@@ -37,8 +37,8 @@
         if (element) {element.style.opacity = 1;}
       }, Constants.maxLineDelay/3);
       setTimeout(() => {
-        const charRect = character.var.getBoundingClientRect();
-        addOrUpdateLine(svg, character.characterLine, character.originPin.pos, [charRect.x + charRect.width/2, charRect.y]); 
+        addOrUpdateLine(svg, character.characterLine, character.originPin.pos, 
+        [character.var.offsetLeft + character.var.offsetWidth/2, character.var.offsetTop]); 
       }, Constants.maxLineDelay/3);
   }
 
@@ -164,12 +164,12 @@
         addOrUpdateLine(svg, topLine, [svgWidth*0.5, 0], pinTop.pos); 
       }
 
-      characters = setCharacterPins(svgWidth, svgHeight, textBoxBottom, textBoxLeft, textBoxRight);
+      // characters = setCharacterPins(svgWidth, svgHeight, textBoxBottom, textBoxLeft, textBoxRight);
 
       characters.forEach((character) => {
         if(character.var.style.opacity == 1){
-          const charRect = character.var.getBoundingClientRect();
-          addOrUpdateLine(svg, character.characterLine, character.originPin.pos, [charRect.x + charRect.width/2, charRect.y]); 
+          addOrUpdateLine(svg, character.characterLine, character.originPin.pos, 
+          [character.var.offsetLeft + character.var.offsetWidth/2, character.var.offsetTop]); 
         }
       })
 
