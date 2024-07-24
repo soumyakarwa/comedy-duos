@@ -607,7 +607,7 @@
                         <div class="italic">Season 3, Episode 4</div>
                         <div>The Oolong Slayer</div>
                         <br>
-                        <div>8.5/10</div>
+                        <div>⭐ 8.5/10</div>
                     </div>
                 </div>
                 <div bind:this={heatMap} class="base">
@@ -657,6 +657,12 @@
         height: 100vh; 
         width: 100vw; 
         position: relative; 
+    }
+
+    .star-icon {
+        width: var(--body-font-size); /* Adjust the size as needed */
+        height: auto;
+        margin-right: 4px; /* Adjust spacing as needed */
     }
 
     .container {
