@@ -56,32 +56,65 @@
   }
 
   function setPosition(svg, svgWidth, svgHeight){
-    caseImageData.height = svgHeight * 0.07;
-    caseImageData.x = svgWidth * 0.02;
-    caseImageData.y =  svgHeight * 0.045;
-    caseImageData.topPins.pos = [caseImageData.x*6, caseImageData.y]; 
-    caseImageData.bottomPins.pos = [caseImageData.x*7.5, caseImageData.y  + caseImageData.height]; 
+    if(svgWidth < 1025) {
+      caseImageData.height = svgHeight * 0.05;
+      caseImageData.width = 459/102 * caseImageData.height;
+      caseImageData.x = (svgWidth - caseImageData.width)/2;
+      caseImageData.y =  svgHeight * 0.045;
+      caseImageData.topPins.pos = [svgWidth * 0.5, caseImageData.y]; 
+      caseImageData.bottomPins.pos = [svgWidth * 0.5, caseImageData.y  + caseImageData.height]; 
 
-    detectiveImgData.height = svgHeight * 0.09;
-    detectiveImgData.x = svgWidth*0.88; 
-    detectiveImgData.y = svgHeight * 0.88; 
-    detectiveImgData.topPins.pos = [detectiveImgData.x + svgWidth*0.047, detectiveImgData.y];
+      detectiveImgData.height = svgHeight * 0.09;
+      detectiveImgData.width = detectiveImgData.height * 216/113;
+      detectiveImgData.x = svgWidth * 0.5;   
+      detectiveImgData.y = svgHeight * 0.75; 
+      detectiveImgData.topPins.pos = [detectiveImgData.x + detectiveImgData.width/2, detectiveImgData.y];
 
-    titleImgData.height = svgHeight * 0.46;
-    titleImgData.width = 1011/435 * titleImgData.height; 
-    titleImgData.x = svgWidth*0.215; 
-    titleImgData.y = svgHeight * 0.285; 
-    titleImgData.topPins[0].pos = [titleImgData.x + 0.3*titleImgData.width, titleImgData.y]; 
-    titleImgData.topPins[1].pos = [titleImgData.x+ titleImgData.width - 4, titleImgData.y];
-    titleImgData.bottomPins[0].pos = [titleImgData.x + 0.2*titleImgData.width, titleImgData.y + titleImgData.height]; 
-    titleImgData.bottomPins[1].pos = [titleImgData.x + titleImgData.width - 6, titleImgData.y + titleImgData.height]; 
+      titleImgData.width = svgWidth * 0.95; 
+      titleImgData.height = 435/1011 * titleImgData.width; 
+      titleImgData.x = (svgWidth - titleImgData.width)/2; 
+      titleImgData.y = svgHeight * 0.285; 
+      titleImgData.topPins[0].pos = [svgWidth * 0.25, titleImgData.y]; 
+      titleImgData.topPins[1].pos = [svgWidth * 0.75, titleImgData.y];
+      titleImgData.bottomPins[0].pos = [svgWidth * 0.37, titleImgData.y + titleImgData.height]; 
+      titleImgData.bottomPins[1].pos = [svgWidth * 0.58, titleImgData.y + titleImgData.height]; 
 
-    arrowImgData.height = titleImgData.height * 0.2; 
-    arrowImgData.width = arrowImgData.height*169/88.41; 
-    arrowImgData.x = titleImgData.x + titleImgData.width + 10; 
-    arrowImgData.y = titleImgData.y + titleImgData.height - arrowImgData.height; 
-    arrowImgData.topPins.pos = [arrowImgData.x + arrowImgData.width/2, arrowImgData.y];
+      arrowImgData.height = svgWidth* 0.1; 
+      arrowImgData.width = arrowImgData.height*169/88.41; 
+      arrowImgData.x = titleImgData.x + titleImgData.width - arrowImgData.width; 
+      arrowImgData.y = titleImgData.y + titleImgData.height + 10; 
+      arrowImgData.topPins.pos = [arrowImgData.x + arrowImgData.width/2, arrowImgData.y];
+    }
+    else {
+      caseImageData.height = svgHeight * 0.07;
+      caseImageData.x = svgWidth * 0.02;
+      caseImageData.y =  svgHeight * 0.045;
+      caseImageData.topPins.pos = [caseImageData.x*6, caseImageData.y]; 
+      caseImageData.bottomPins.pos = [caseImageData.x*7.5, caseImageData.y  + caseImageData.height]; 
 
+      detectiveImgData.height = svgHeight * 0.09;
+      detectiveImgData.width = detectiveImgData.height * 216/113;
+      detectiveImgData.x = svgWidth*0.88; 
+      detectiveImgData.y = svgHeight * 0.88; 
+      detectiveImgData.topPins.pos = [detectiveImgData.x + svgWidth*0.047, detectiveImgData.y];
+
+      titleImgData.height = svgHeight * 0.46;
+      titleImgData.width = 1011/435 * titleImgData.height; 
+      titleImgData.x = (svgWidth - titleImgData.width)/2; 
+      titleImgData.y = svgHeight * 0.285; 
+      titleImgData.topPins[0].pos = [titleImgData.x + 0.3*titleImgData.width, titleImgData.y]; 
+      titleImgData.topPins[1].pos = [titleImgData.x+ titleImgData.width - 4, titleImgData.y];
+      titleImgData.bottomPins[0].pos = [titleImgData.x + 0.2*titleImgData.width, titleImgData.y + titleImgData.height]; 
+      titleImgData.bottomPins[1].pos = [titleImgData.x + titleImgData.width - 6, titleImgData.y + titleImgData.height]; 
+
+      arrowImgData.height = titleImgData.height * 0.2; 
+      arrowImgData.width = arrowImgData.height*169/88.41; 
+      arrowImgData.x = titleImgData.x + titleImgData.width + 10; 
+      arrowImgData.y = titleImgData.y + titleImgData.height - arrowImgData.height; 
+      arrowImgData.topPins.pos = [arrowImgData.x + arrowImgData.width/2, arrowImgData.y];
+
+    }
+    
   }
 
   function addImages(svg){
