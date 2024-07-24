@@ -208,6 +208,7 @@ export const heatMapSectionText = [
   `In the bar chart below, it's clear that the most frequently appearing character duo is none other than Jake & Amy. However, is this the only way to measure popularity?`,
   `Another, perhaps more accurate, way to measure a duo's popularity is to calculate the average rating of each episode they appeared in, accounting for the number of votes that episode received, which would give us the cumulative average rating.`,
   `And there we have it! Despite having less screen time, the most iconic duo of Brooklyn Nine-Nine is Captain Holt & Jake! They've appeared together 36 times, with over 97,737 votes and an average episode rating of 8.47/10. The viewers have spoken! Sorry, Amy, it seems like you lost this one!`,
+  `Here's to Captain Holt & Jake!`,
 ];
 
 export const standaloneConclusion = [

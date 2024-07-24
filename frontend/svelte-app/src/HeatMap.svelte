@@ -212,6 +212,27 @@
         .range([yAxisHeight, 0]); 
   }
 
+  function showFinaleImages(){
+    lastStepImages.forEach((img, index) => {
+      img.var.style.zIndex = 5;
+      setTimeout(() => {
+        img.var.style.opacity = 1; 
+      }, index * Constants.transitionTime/2); 
+    });
+  }
+
+  function hideFinaleImages(){
+    lastStepImages.forEach((img, index) => {
+      img.var.style.opacity = 0; 
+    });
+    setTimeout(() => {
+      lastStepImages.forEach((img, index) => {
+      img.var.style.zIndex = 0; 
+    })
+    }, Constants.transitionTime);  
+    
+  }
+
   /**
    * Reverts axes to original heat map axes
    */
@@ -975,18 +996,11 @@
         highlightHighestFrequencyBar(); 
       } else if (index == 6) {
         createRatingBarChart();
-        lastStepImages.forEach((img, index) => {
-          img.var.style.opacity = 0; 
-          img.var.style.zIndex = 0; 
-        })
       } else if (index == 7) {
         highlightWinningBar();
-        lastStepImages.forEach((img, index) => {
-          img.var.style.zIndex = 5;
-          setTimeout(() => {
-            img.var.style.opacity = 1; 
-          }, index * Constants.transitionTime); 
-        })
+        hideFinaleImages(); 
+      } else if (index == 8) {
+        showFinaleImages(); 
       }
     }
   }
@@ -1050,6 +1064,9 @@
         createRatingBarChart();
       } else if (index == 7) {
         highlightWinningBar();
+        hideFinaleImages(); 
+      } else if (index == 8) {
+        showFinaleImages(); 
       }
 
       

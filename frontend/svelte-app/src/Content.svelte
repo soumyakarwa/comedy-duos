@@ -13,7 +13,7 @@
         { component: Characters, subSteps: Constants.characterSectionText.length-1},
         { component: Standalone, subSteps: 0},
         { component: EpisodeBreakdown, subSteps: Constants.episodeBreakdownText.length-1},
-        { component: HeatMap, subSteps: Constants.heatMapSectionText.length-1, index: 5},
+        { component: HeatMap, subSteps: Constants.heatMapSectionText.length-1},
         { component: Standalone, subSteps: 0},
         { component: Standalone, subSteps: 0}
     ];
