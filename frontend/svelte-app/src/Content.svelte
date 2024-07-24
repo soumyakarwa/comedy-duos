@@ -10,7 +10,7 @@
     const pageSections = [
         { component: LandingPage, subSteps: 0},
         { component: Standalone, subSteps: 0},
-        { component: Characters, subSteps: Constants.characterSectionText.length-1},
+        { component: Characters, subSteps: 1},
         { component: Standalone, subSteps: 0},
         { component: EpisodeBreakdown, subSteps: Constants.episodeBreakdownText.length-1},
         { component: HeatMap, subSteps: Constants.heatMapSectionText.length-1},

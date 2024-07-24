@@ -20,6 +20,7 @@
   let characters = [];
   let topLine = {line: null, startingPos: null, endingPos: null};
 
+  // svg thumb pins not in the dom
   function setCharacterPins(svgWidth, svgHeight, textBoxBottom, textBoxLeft, textBoxRight){
     characterGifs.raymond.pin.pos = [svgWidth * (textBoxRight+0.2), svgHeight*0.24]; 
     characterGifs.jake.pin.pos = [svgWidth * (textBoxLeft-0.2), svgHeight*0.24]; 
@@ -36,8 +37,8 @@
         if (element) {element.style.opacity = 1;}
       }, Constants.maxLineDelay/3);
       setTimeout(() => {
-        addOrUpdateThumbPin(svg, character.pin); 
-        addOrUpdateLine(svg, character.characterLine, character.originPin.pos, character.pin.pos); 
+        const charRect = character.var.getBoundingClientRect();
+        addOrUpdateLine(svg, character.characterLine, character.originPin.pos, [charRect.x + charRect.width/2, charRect.y]); 
       }, Constants.maxLineDelay/3);
   }
 
@@ -58,21 +59,23 @@
 
     
     characterGifs = {
+      charles: {
+        name: "Detective Charles Boyle", 
+        id:"charles", 
+        var: charles, 
+        pin: {ellipse: null, pos: [0, 0]}, 
+        originPin: pinRight,
+        characterLine: {line: null, startingPos: null, endingPos: null},
+        text: Constants.characterSectionText[7]
+      }, 
       raymond: {
         name: "Captain Raymond Holt", 
         id:"raymond", 
         var: raymond, 
         pin: {ellipse: null, pos: [0, 0]}, 
         originPin: pinRight, 
-        characterLine: {line: null, startingPos: null, endingPos: null}
-      },
-      jake: {
-        name: "Detective Jake Peralta", 
-        id:"jake", 
-        var: jake,
-        pin: {ellipse: null, pos: [0, 0]}, 
-        originPin: pinLeft, 
-        characterLine: {line: null, startingPos: null, endingPos: null}
+        characterLine: {line: null, startingPos: null, endingPos: null},
+        text: Constants.characterSectionText[2]
       },
       amy: {
         name: "Detective Amy Santiago",
@@ -80,7 +83,17 @@
         var: amy, 
         pin: {ellipse: null, pos: [0, 0]}, 
         originPin: pinLeft,
-        characterLine: {line: null, startingPos: null, endingPos: null}
+        characterLine: {line: null, startingPos: null, endingPos: null},
+        text: Constants.characterSectionText[4]
+      },
+      jake: {
+        name: "Detective Jake Peralta", 
+        id:"jake", 
+        var: jake,
+        pin: {ellipse: null, pos: [0, 0]}, 
+        originPin: pinLeft, 
+        characterLine: {line: null, startingPos: null, endingPos: null},
+        text: Constants.characterSectionText[3]
       },
       terry: {
         name: "Sergeant Terry Jeffords", 
@@ -88,7 +101,8 @@
         var: terry, 
         pin: {ellipse: null, pos: [0, 0]}, 
         originPin: pinBottom,
-        characterLine: {line: null, startingPos: null, endingPos: null}
+        characterLine: {line: null, startingPos: null, endingPos: null},
+        text: Constants.characterSectionText[5]
       }, 
       gina: {
         name: "Gina Linetti", 
@@ -96,15 +110,8 @@
         var: gina, 
         pin: {ellipse: null, pos: [0, 0]}, 
         originPin: pinBottom,
-        characterLine: {line: null, startingPos: null, endingPos: null}
-      }, 
-      charles: {
-        name: "Detective Charles Boyle", 
-        id:"charles", 
-        var: charles, 
-        pin: {ellipse: null, pos: [0, 0]}, 
-        originPin: pinRight,
-        characterLine: {line: null, startingPos: null, endingPos: null}
+        characterLine: {line: null, startingPos: null, endingPos: null},
+        text: Constants.characterSectionText[6], 
       }, 
       rosa: {
         name: "Detective Rosa Diaz", 
@@ -112,7 +119,8 @@
         var: rosa, 
         pin: {ellipse: null, pos: [0, 0]}, 
         originPin: pinBottom,
-        characterLine: {line: null, startingPos: null, endingPos: null}
+        characterLine: {line: null, startingPos: null, endingPos: null},
+        text: Constants.characterSectionText[8]
       }
     }; 
 
@@ -159,10 +167,9 @@
       characters = setCharacterPins(svgWidth, svgHeight, textBoxBottom, textBoxLeft, textBoxRight);
 
       characters.forEach((character) => {
-        let charElement = document.getElementById(character.id); 
-        if(charElement.style.opacity == 1){
-          addOrUpdateThumbPin(svg, character.pin); 
-          addOrUpdateLine(svg, character.characterLine, character.originPin.pos, character.pin.pos);  
+        if(character.var.style.opacity == 1){
+          const charRect = character.var.getBoundingClientRect();
+          addOrUpdateLine(svg, character.characterLine, character.originPin.pos, [charRect.x + charRect.width/2, charRect.y]); 
         }
       })
 
@@ -171,17 +178,31 @@
   });
 
   $: {
-    if (characters.length > 0 && typeof currentTextIndex === 'number' && currentTextIndex > 0 && currentTextIndex < characters.length+1) {
-      let char = characters[currentTextIndex-1];
-      let charElement = document.getElementById(char.id);
+    if (characters.length > 0 && currentTextIndex == 1){
+      characters.forEach((char, index) => {
+        if (char.var) {
+          char.var.style.visibility = 'visible';
+          
+          setTimeout(() => {
+            addCharacterDiv(char.var, svg, char);
+          }, index * Constants.transitionTime/2); 
+          
+          
+          char.var.addEventListener('mouseenter', () => {
+            char.var.style.cursor = "pointer"; 
+            document.getElementById('charText').innerHTML = char.text;
+          });
 
-      // Ensure the element exists before manipulating it
-      if (charElement) {
-        charElement.style.visibility = 'visible';
-        addCharacterDiv(charElement, svg, char);
-      } else {
-        console.error(`Element with ID ${char.id} not found.`);
-      }
+          // Add mouse leave event listener to revert text
+          char.var.addEventListener('mouseleave', () => {
+            char.var.style.cursor = "default"; 
+            document.getElementById('charText').innerHTML = Constants.characterSectionText[currentTextIndex];
+          });
+
+        } else {
+          console.error(`Element with ID ${char.id} not found.`);
+        }
+      })
     }
   }
 
@@ -194,6 +215,7 @@
   {#if characters}
     {#each characters as c}
       <div bind:this={c.var} id={c.id} class="character-containers divBorder">
+        <img src="/assets/pins/pin.svg" alt="thumb pin" class="character-pin"/>
         <img src="assets/gifs/{c.id}.gif" alt="{c.name} intro gif"/>
         <div>{c.name}</div>
       </div>
@@ -225,8 +247,20 @@
     font-size: var(--body-font-size); 
   }
 
+  .character-containers {
+    z-index: 2; 
+  }
+
   .character-containers img{
     max-width: 15vw; 
+  }
+
+  .character-pin {
+    position: absolute;
+    width: var(--label-font-size);
+    height: var(--label-font-size);
+    /* transform: translateX(-50%); */
+    top: -0.5rem;
   }
 
   #raymond {
