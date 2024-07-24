@@ -15,7 +15,6 @@ body {
   /* FONT SIZE */
   --title-font-size: 5.5rem;
   --body-font-size: 1.1rem;
-  /* --body-font-size: 1.3rem; */
   --label-font-size: 0.9rem;
 
   /* MISC */
@@ -49,7 +48,7 @@ body {
   --text-box-y: 6vh;
   --text-box-x: 32.5vw;
   --text-box-height: 28vh;
-  --text-box-width: 35vw;
+  --text-box-width: 35vmax;
 }
 
 body {
@@ -202,4 +201,14 @@ body {
 @font-face {
   font-family: "Impact";
   src: url("./fonts/Impact.ttf");
+}
+
+@media (max-width: 480px) {
+  :root {
+    --title-font-size: 4rem;
+    --body-font-size: 1rem;
+    --label-font-size: 0.8rem;
+
+    --margin: 1rem;
+  }
 }
