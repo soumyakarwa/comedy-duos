@@ -18,14 +18,14 @@
   let svgHeight = 0.9 * window.innerHeight;
   let lastStepImages = [
     { var: img1, id: 'img1', src: 'assets/finale/jakeholt-1.gif', alt: 'holt and jake joke 1' },
-    { var: img2, id: 'img2', src: 'assets/finale/jakeholt-5.gif', alt: 'holt and jake joke 2' },
-    { var: img3, id: 'img3', src: 'assets/finale/jakeholt-7.gif', alt: 'holt and jake joke 3' },
-    { var: img4, id: 'img4', src: 'assets/finale/jakeholt-9.gif', alt: 'holt and jake joke 4' },
-    { var: img5, id: 'img5', src: 'assets/finale/jakeholt-2.jpeg', alt: 'holt and jake joke 5' },
-    { var: img6, id: 'img6', src: 'assets/finale/jakeholt-3.jpeg', alt: 'holt and jake joke 6' },
-    { var: img7, id: 'img7', src: 'assets/finale/jakeholt-4.jpeg', alt: 'holt and jake joke 7' },
-    { var: img8, id: 'img8', src: 'assets/finale/jakeholt-6.jpeg', alt: 'holt and jake joke 8' },
-    { var: img9, id: 'img9', src: 'assets/finale/jakeholt-8.jpeg', alt: 'holt and jake joke 9' }
+    { var: img2, id: 'img2', src: 'assets/finale/jakeholt-2.jpeg', alt: 'holt and jake joke 2' },
+    { var: img3, id: 'img3', src: 'assets/finale/jakeholt-3.jpeg', alt: 'holt and jake joke 3' },
+    { var: img4, id: 'img4', src: 'assets/finale/jakeholt-4.jpeg', alt: 'holt and jake joke 4' },
+    { var: img5, id: 'img5', src: 'assets/finale/jakeholt-5.gif', alt: 'holt and jake joke 5' },
+    { var: img6, id: 'img6', src: 'assets/finale/jakeholt-6.jpeg', alt: 'holt and jake joke 6' },
+    { var: img7, id: 'img7', src: 'assets/finale/jakeholt-7.gif', alt: 'holt and jake joke 7' },
+    { var: img8, id: 'img8', src: 'assets/finale/jakeholt-8.jpeg', alt: 'holt and jake joke 8' },
+    { var: img9, id: 'img9', src: 'assets/finale/jakeholt-9.gif', alt: 'holt and jake joke 9' }
   ];
   
   /**
@@ -975,12 +975,17 @@
         highlightHighestFrequencyBar(); 
       } else if (index == 6) {
         createRatingBarChart();
+        lastStepImages.forEach((img, index) => {
+          img.var.style.opacity = 0; 
+          img.var.style.zIndex = 0; 
+        })
       } else if (index == 7) {
         highlightWinningBar();
         lastStepImages.forEach((img, index) => {
+          img.var.style.zIndex = 5;
           setTimeout(() => {
             img.var.style.opacity = 1; 
-          }, index * Constants.transitionTime/3); 
+          }, index * Constants.transitionTime); 
         })
       }
     }
@@ -1080,7 +1085,7 @@
   
 <style>
     .finaleImages {
-      z-index: 5; 
+      z-index: 0; 
       opacity: 0; 
       transition: opacity var(--transition-time); 
     }
@@ -1095,11 +1100,92 @@
     }
 
     .svg-container {
-      z-index: 0; 
+      z-index: 1; 
       width: fit-content; 
       height: fit-content; 
       position: absolute; 
       background-color: var(--white); 
+    }
+
+    #img1 {
+      top: 23vh; 
+      left: 30vw; 
+    }
+    
+    #img1  img:nth-of-type(2){
+      width: 27vw; 
+    }
+
+    #img2 {
+      top: 10vh; 
+      left: 70vw; 
+    }
+
+    #img2  img:nth-of-type(2){
+      width: 25vw; 
+    }
+
+    #img3 {
+      top: 2vh; 
+      left: 48vw; 
+    }
+
+    #img3  img:nth-of-type(2){
+      width: 25vw; 
+    }
+
+    #img4 {
+      top: 48vh; 
+      left: 70vw; 
+    }
+
+    #img4  img:nth-of-type(2){
+      width: 27vw; 
+    }
+
+    #img5 {
+      top: 4vh; 
+      left: 24vw; 
+    }
+
+    #img5  img:nth-of-type(2){
+      width: 25vw; 
+    }
+
+    #img6 {
+      top: 12vh; 
+      left: 5vw; 
+    }
+
+    #img6  img:nth-of-type(2){
+      width: 25vw; 
+    }
+
+    #img7 {
+      top: 60vh; 
+      left: 44vw; 
+    }
+
+    #img7  img:nth-of-type(2){
+      width: 30vw; 
+    }
+
+    #img8 {
+      top: 35vh; 
+      left: 8vw; 
+    }
+
+    #img8  img:nth-of-type(2){
+      width: 25vw; 
+    }
+
+    #img9 {
+      top: 65vh; 
+      left: 3vw; 
+    }
+
+    #img9  img:nth-of-type(2){
+      width: 27vw; 
     }
 
     #heatmap-pin1 {
@@ -1123,7 +1209,7 @@
     }
 
     .heatmap-content {
-      z-index: 10; 
+      z-index: 2; 
       position: absolute;  
       background-color: var(--yellow); 
       width: 25vw; 
@@ -1134,7 +1220,7 @@
     }
 
     #instruction {
-      z-index: 10; 
+      z-index: 2; 
       position: absolute; 
       background-color: var(--green); 
       width: 15vw; 
