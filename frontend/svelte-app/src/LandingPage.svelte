@@ -64,13 +64,13 @@
       caseImageData.topPins.pos = [svgWidth * 0.5, caseImageData.y]; 
       caseImageData.bottomPins.pos = [svgWidth * 0.5, caseImageData.y  + caseImageData.height]; 
 
-      detectiveImgData.height = svgHeight * 0.09;
+      detectiveImgData.height = svgHeight * 0.06;
       detectiveImgData.width = detectiveImgData.height * 216/113;
       detectiveImgData.x = svgWidth * 0.5;   
       detectiveImgData.y = svgHeight * 0.75; 
       detectiveImgData.topPins.pos = [detectiveImgData.x + detectiveImgData.width/2, detectiveImgData.y];
 
-      titleImgData.width = svgWidth * 0.95; 
+      titleImgData.width = svgWidth * 0.8; 
       titleImgData.height = 435/1011 * titleImgData.width; 
       titleImgData.x = (svgWidth - titleImgData.width)/2; 
       titleImgData.y = svgHeight * 0.285; 

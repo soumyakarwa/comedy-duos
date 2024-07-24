@@ -11,7 +11,7 @@
   let pinLeft = {ellipse: null, pos: [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]}; 
   let pinBottom = {ellipse: null, pos: [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]}; 
   let raymond, jake, amy, terry, rosa, gina, charles; 
-  let textBoxBottom, textBoxLeft, textBoxRight; 
+  let textBoxTop, textBoxBottom, textBoxLeft, textBoxRight, textBoxWidth, textBoxHeight; 
   
   export let currentTextIndex; 
   
@@ -45,17 +45,25 @@
   onMount(() => {
     svg = d3.select(charactersSvg);
     
-    svgWidth = document.getElementById("characters").getBoundingClientRect().width;
-    svgHeight = document.getElementById("characters").getBoundingClientRect().height;
-    
-    textBoxBottom = Constants.characterTextBoxY + Constants.characterTextBoxHeight; 
-    textBoxLeft = 0.5 - Constants.characterTextBoxWidth/2; 
-    textBoxRight = 0.5 + Constants.characterTextBoxWidth/2; 
+    svgWidth = characterSection.getBoundingClientRect().width;
+    svgHeight = characterSection.getBoundingClientRect().height;
 
-    pinTop.pos = [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]; 
-    pinRight.pos = [svgWidth*textBoxRight, svgHeight*0.2]; 
-    pinLeft.pos = [svgWidth*textBoxLeft, svgHeight*0.22];
-    pinBottom.pos = [svgWidth*0.5, svgHeight*textBoxBottom]; 
+    textBoxWidth = textBox.getBoundingClientRect().width;
+
+    textBox.style.left = `${(svgWidth - textBoxWidth)/2}px`;  
+    textBox.style.top = `${svgHeight * 0.03}px`;  
+  
+    textBoxTop = textBox.offsetTop; 
+    textBoxLeft = textBox.offsetLeft;   
+    textBoxHeight = textBox.getBoundingClientRect().height;
+    
+    textBoxBottom =  textBoxTop + textBoxHeight; 
+    textBoxRight = textBoxLeft + textBoxWidth;
+
+    pinTop.pos = [svgWidth*0.5,  textBoxTop]; 
+    pinRight.pos = [textBoxRight,  textBoxTop + textBoxHeight/2]; 
+    pinLeft.pos = [textBoxLeft,  textBoxTop+ textBoxHeight/2];
+    pinBottom.pos = [svgWidth*0.5, textBoxBottom]; 
 
     
     characterGifs = {
@@ -147,14 +155,26 @@
 
     // making it responsive
     window.addEventListener('resize', () => {
-      svgWidth = document.getElementById("characters").getBoundingClientRect().width;
-      svgHeight = document.getElementById("characters").getBoundingClientRect().height;
+      svgWidth = characterSection.getBoundingClientRect().width;
+      svgHeight = characterSection.getBoundingClientRect().height;
 
-      pinTop.pos = [svgWidth*0.5, svgHeight*Constants.characterTextBoxY]; 
-      pinRight.pos = [svgWidth*textBoxRight, svgHeight*0.2]; 
-      pinLeft.pos = [svgWidth*textBoxLeft, svgHeight*0.22];
-      pinBottom.pos = [svgWidth*0.5, svgHeight*textBoxBottom]; 
+      textBoxWidth = textBox.getBoundingClientRect().width;
 
+      textBox.style.left = `${(svgWidth - textBoxWidth)/2}px`;  
+      textBox.style.top = `${svgHeight * 0.03}px`;  
+    
+      textBoxTop = textBox.offsetTop; 
+      textBoxLeft = textBox.offsetLeft;   
+      textBoxHeight = textBox.getBoundingClientRect().height;
+      
+      textBoxBottom =  textBoxTop + textBoxHeight; 
+      textBoxRight = textBoxLeft + textBoxWidth;
+
+      pinTop.pos = [svgWidth*0.5,  textBoxTop]; 
+      pinRight.pos = [textBoxRight,  textBoxTop + textBoxHeight/2]; 
+      pinLeft.pos = [textBoxLeft,  textBoxTop+ textBoxHeight/2];
+      pinBottom.pos = [svgWidth*0.5, textBoxBottom]; 
+      
       addOrUpdateThumbPin(svg, pinTop); 
       addOrUpdateThumbPin(svg, pinLeft); 
       addOrUpdateThumbPin(svg, pinRight); 
@@ -235,8 +255,8 @@
     /* height: fit-content; */
     background-color: var(--white);
     position: absolute; 
-    top: var(--text-box-y); 
-    left: var(--text-box-x); 
+    /* top: var(--text-box-y); 
+    left: var(--text-box-x);  */
     z-index: 0; 
   }
 

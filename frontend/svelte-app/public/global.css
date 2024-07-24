@@ -45,8 +45,6 @@ body {
   --faded-white: rgba(246, 244, 245, 0.9);
 
   /* CHARACTERS SECTION */
-  --text-box-y: 6vh;
-  --text-box-x: 32.5vw;
   --text-box-height: 28vh;
   --text-box-width: 35vmax;
 }
@@ -210,5 +208,9 @@ body {
     --label-font-size: 0.8rem;
 
     --margin: 1rem;
+    --thumb-pin: 0.3rem;
+
+    /** TEXT BOX **/
+    --text-box-height: 33vh;
   }
 }
