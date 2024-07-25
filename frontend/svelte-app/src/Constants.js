@@ -152,8 +152,11 @@ export const transitionTime = (function () {
 export const titleFontSize = getCSSVariable("--title-font-size");
 export const labelFontSize = getCSSVariable("--label-font-size");
 export const margin = getCSSVariable("--margin");
-export const ellipseSize = remToPixels(getCSSVariable("--thumb-pin"));
 export const maxLineDelay = 750;
+
+// export const ellipseSize = remToPixels(getCSSVariable("--thumb-pin"));
+
+export const ellipseSize = 6;
 
 export const characterTextBoxX =
   parseFloat(getCSSVariable("--text-box-x")) / 100;

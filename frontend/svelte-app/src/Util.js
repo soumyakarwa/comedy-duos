@@ -1,6 +1,7 @@
 // util.js
 import * as Constants from "./Constants.js";
 import * as d3 from "d3";
+import { ellipseSize } from "/store";
 
 export function createThumbPin(svg, pos, color) {
   const ellipse = svg

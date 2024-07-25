@@ -32,7 +32,23 @@
     let container;
     let currentIndex = 0;
     let subIndexes = Array(pageSections.length).fill(0);
-    
+
+
+    function handleEllipseResize() {
+        const ellipses = document.querySelectorAll('ellipse');
+        if(window.innerWidth < 480){
+            ellipses.forEach(ellipse => {
+                ellipse.setAttribute('rx', 5);
+                ellipse.setAttribute('ry', 5);
+            });
+        }   
+        else {
+            ellipses.forEach(ellipse => {
+                ellipse.setAttribute('rx', 6);
+                ellipse.setAttribute('ry', 6);
+            });
+        }
+    }
 
 	function handleKeydown(event) {
         if (event.key === 'ArrowRight') {
@@ -62,9 +78,11 @@
 		}
 
         window.addEventListener('keydown', handleKeydown);
+        window.addEventListener('resize', handleEllipseResize);
 
 		return () => {
 			window.removeEventListener('keydown', handleKeydown);
+            window.removeEventListener('resize', handleEllipseResize);
 		};
 
 	});
