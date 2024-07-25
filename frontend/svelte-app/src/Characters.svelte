@@ -42,6 +42,13 @@
       }, Constants.maxLineDelay/3);
   }
 
+  function setCharacterOriginPin(svgWidth, pinBottom, pinLeft, pinRight){
+    characterGifs.raymond.originPin = (svgWidth > Constants.mobileSize) ? pinRight : pinBottom; 
+    characterGifs.jake.originPin = (svgWidth > Constants.mobileSize) ? pinLeft : pinBottom; 
+    characterGifs.amy.originPin = (svgWidth > Constants.mobileSize) ? pinLeft : pinBottom; 
+    characterGifs.charles.originPin = (svgWidth > Constants.mobileSize) ? pinRight : pinBottom; 
+  }
+
   onMount(() => {
     svg = d3.select(charactersSvg);
     
@@ -72,7 +79,7 @@
         id:"charles", 
         var: charles, 
         pin: {ellipse: null, pos: [0, 0]}, 
-        originPin: pinRight,
+        originPin: (svgWidth > Constants.mobileSize) ? pinRight : pinBottom,
         characterLine: {line: null, startingPos: null, endingPos: null},
         text: Constants.characterSectionText[7]
       }, 
@@ -81,7 +88,7 @@
         id:"raymond", 
         var: raymond, 
         pin: {ellipse: null, pos: [0, 0]}, 
-        originPin: pinRight, 
+        originPin: (svgWidth > Constants.mobileSize) ? pinRight : pinBottom,
         characterLine: {line: null, startingPos: null, endingPos: null},
         text: Constants.characterSectionText[2]
       },
@@ -90,7 +97,7 @@
         id:"amy",
         var: amy, 
         pin: {ellipse: null, pos: [0, 0]}, 
-        originPin: pinLeft,
+        originPin: (svgWidth > Constants.mobileSize) ? pinLeft : pinBottom,
         characterLine: {line: null, startingPos: null, endingPos: null},
         text: Constants.characterSectionText[4]
       },
@@ -99,7 +106,7 @@
         id:"jake", 
         var: jake,
         pin: {ellipse: null, pos: [0, 0]}, 
-        originPin: pinLeft, 
+        originPin: (svgWidth > Constants.mobileSize) ? pinLeft : pinBottom,
         characterLine: {line: null, startingPos: null, endingPos: null},
         text: Constants.characterSectionText[3]
       },
@@ -175,6 +182,7 @@
       pinLeft.pos = [textBoxLeft,  textBoxTop+ textBoxHeight/2];
       pinBottom.pos = [svgWidth*0.5, textBoxBottom]; 
       
+      setCharacterOriginPin(svgWidth, pinBottom, pinLeft, pinRight); 
       addOrUpdateThumbPin(svg, pinTop); 
       addOrUpdateThumbPin(svg, pinLeft); 
       addOrUpdateThumbPin(svg, pinRight); 
