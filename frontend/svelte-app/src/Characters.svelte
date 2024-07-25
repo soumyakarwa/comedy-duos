@@ -161,7 +161,7 @@
     observer.observe(textBox);
 
     // making it responsive
-    window.addEventListener('resize', () => {
+    window.addEventListener('resize', () => { 
       svgWidth = characterSection.getBoundingClientRect().width;
       svgHeight = characterSection.getBoundingClientRect().height;
 
@@ -276,10 +276,11 @@
 
   .character-containers {
     z-index: 2; 
+    max-width: 15vw; 
   }
 
   .character-containers img{
-    max-width: 15vw; 
+    width: 100%;
   }
 
   .character-pin {
@@ -345,4 +346,50 @@
     width: 100%; 
     height: 100%; 
   }
+
+  @media (max-width: 480px) {
+    .character-containers{
+      max-width: 25vw; 
+    }
+
+    #terry {
+      top: 51vh; 
+      left: 15vw;
+    }
+
+    #rosa {
+      top: 50vh; 
+      left: 60vw;
+    }
+
+    #raymond {
+      top: 30vh; 
+      left: 70vw;
+    }
+
+
+    #jake {
+      top: 30vh; 
+      left: 4vw;
+    }
+
+
+    #amy {
+      top: 70vh; 
+      left: 4vw;
+    }
+
+    #charles {
+      top: 65vh; 
+      left: 70vw;
+    }
+
+    #gina {
+      top: 80vh; 
+      left: 39vw; 
+    }
+
+
+  }  
+
 </style>

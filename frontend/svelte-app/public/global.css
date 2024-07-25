@@ -211,7 +211,7 @@ body {
     --thumb-pin: 0.3rem;
 
     /** TEXT BOX **/
-    --text-box-height: 33vh;
+    --text-box-height: 15vh;
     --text-box-width: 70vw;
   }
 }
@@ -219,5 +219,6 @@ body {
 @media (max-width: 480px) {
   :root {
     --text-box-width: 80vw;
+    --text-box-height: 25vh;
   }
 }
