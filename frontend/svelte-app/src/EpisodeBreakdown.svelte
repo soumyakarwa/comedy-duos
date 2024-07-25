@@ -477,12 +477,13 @@
 
             let initialRectYPosIncrement = rectYPosIncrement;
 
-            if(window.innerWidth < Constants.tabletSize){
-                rectWidth = gifContainer.offsetHeight; 
-            }
-            else {
-                // rectWidth = 0.25 * window.innerWidth;
-                rectWidth = gifContainer.offsetHeight; 
+            if(gifContainer){
+                if(window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize){
+                    rectWidth = 0.5 * gifContainer.getBoundingClientRect().width; 
+                }
+                else {
+                    rectWidth = gifContainer.getBoundingClientRect().width
+                }
             }
             
             const newRectYPosIncrement = rectWidth / 3; 
@@ -591,24 +592,13 @@
         previousStep = currentStep;
 
         if(gifContainer){
-            console.log(gifContainer.getBoundingClientRect()); 
-            rectWidth = gifContainer.getBoundingClientRect().width + 10; 
-            console.log(rectWidth); 
+            if(window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize){
+                rectWidth = 0.75 * gifContainer.getBoundingClientRect().width; 
+            }
+            else {
+                rectWidth = gifContainer.getBoundingClientRect().width
+            }
         }
-
-        // if(window.innerWidth < Constants.tabletSize){
-        //     console.log(gifContainer.getBoundingClientRect().width); 
-        //     rectWidth = 0.5 * window.innerWidth;
-        // }
-        // else {
-        //     rectWidth = 0.25 * window.innerWidth;
-        //     if(gifContainer){
-        //         console.log(gifContainer.offsetHeight);     
-        //     }
-            
-        //     // rectWidth = gifContainer.offsetHeight; 
-        // }
-            
         rectYPosIncrement = rectWidth/3; 
     })();
 </script>
@@ -632,7 +622,7 @@
                         <div>⭐ 8.5/10</div>
                     </div>
                 </div>
-                <div bind:this={heatMap} class="base">
+                <div bind:this={heatMap} width={rectWidth} class="base">
                     <svg bind:this={episodeSvg} width={rectWidth} height={rectWidth} viewBox="0 0 {rectWidth} {rectWidth}">
                         <rect bind:this={baseRect} x={0} y={0} width={rectWidth} height={rectWidth} fill="none" stroke="black" stroke-width="2"></rect>
                     </svg>
@@ -799,15 +789,22 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
+            /* padding-top:var(--margin);  */
         }
 
         #col1 {
             width: 80vw; 
+            margin-top: 0; 
         }
 
         .content{
             width: 80vw; 
-            height: 15vh; 
+            height: 17vh; 
+            /* height: 15vh;  */
+        }
+
+        .chart {
+            margin-top: 0; 
         }
 
         #oolongSlayerGif img{

@@ -204,7 +204,7 @@ body {
 @media (max-width: 768px) {
   :root {
     --title-font-size: 4rem;
-    --body-font-size: 1rem;
+    --body-font-size: 0.9rem;
     --label-font-size: 0.8rem;
 
     --margin: 0.7rem;
@@ -213,5 +213,11 @@ body {
     /** TEXT BOX **/
     --text-box-height: 33vh;
     --text-box-width: 70vw;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --text-box-width: 80vw;
   }
 }
