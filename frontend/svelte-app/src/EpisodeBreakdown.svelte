@@ -522,6 +522,7 @@
             } else if (currentStep == 1) {
                 showDescriptions.set(true);
                 oolongSlayerGif.style.opacity = 0; 
+                heatMap.style.opacity = 1; 
             } else if (currentStep == 2) {
                 highlightDescription1();
                 highlightDescription2(); 
@@ -564,6 +565,7 @@
                 showDescriptions.set(false);
                 reset(); 
                 oolongSlayerGif.style.opacity = 1; 
+                heatMap.style.opacity = 0; 
             } else if (currentStep == 1) {
                 unhighlightDescription1();
                 unhighlightDescription2();
@@ -622,7 +624,7 @@
                         <div>⭐ 8.5/10</div>
                     </div>
                 </div>
-                <div bind:this={heatMap} width={rectWidth} class="base">
+                <div bind:this={heatMap} class="base">
                     <svg bind:this={episodeSvg} width={rectWidth} height={rectWidth} viewBox="0 0 {rectWidth} {rectWidth}">
                         <rect bind:this={baseRect} x={0} y={0} width={rectWidth} height={rectWidth} fill="none" stroke="black" stroke-width="2"></rect>
                     </svg>
@@ -688,15 +690,19 @@
     .base {
         position: relative;
         z-index: 1;
+        opacity: 0; 
+        transition: opacity var(--transition-time);
     }
 
     #oolongSlayerGif {
         position: absolute;
-        top: 2.5%;
+        padding: calc(var(--margin)*0.5); 
+        top: 0;
         /* left: 2.5%;  */
         z-index: 2;
         pointer-events: none;
         transition: opacity var(--transition-time);
+        border: 1px solid black; 
     }
 
     #oolongSlayerGif img{
@@ -794,7 +800,7 @@
 
         #col1 {
             width: 80vw; 
-            margin-top: 0; 
+            /* margin-top: 0;  */
         }
 
         .content{
@@ -804,7 +810,7 @@
         }
 
         .chart {
-            margin-top: 0; 
+            /* margin-top: 0;  */
         }
 
         #oolongSlayerGif img{
