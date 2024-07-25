@@ -3,7 +3,7 @@
     import * as d3 from 'd3';
     import { writable } from 'svelte/store';
     import * as Constants from "./Constants.js"; 
-    import {addOrUpdateLine} from "./Util.js"; 
+    import {addOrUpdateLine, addOrUpdateThumbPin} from "./Util.js"; 
 
     // SVG ELEMENTS
     let episodeSvg, chartDiv, contentDiv, overlaySvg; 
@@ -18,12 +18,14 @@
     let specificEpisodeGroup; 
     let xScale; 
     let yScale; 
-    let rectWidth;
+    let rectWidth = 0;
     let rectYPosIncrement;
     let episodeSection; 
     let svgWidth, svgHeight; 
     let connectingLine = false; 
     let oolongSlayerGif; 
+    let contentDivWidth, chartDivWidth, chartTop, contentTop; 
+    let gifContainer; 
 
     export let episodeData;
     export let specificDataPoint;
@@ -432,26 +434,24 @@
     onMount(async () => {
         const svg = d3.select(overlaySvg);
         // [svgWidth, svgHeight] = setSvgDimensions("episode-breakdown-section", svg);
-        svgWidth = document.getElementById("episode-breakdown-section").getBoundingClientRect().width;
-        svgHeight = document.getElementById("episode-breakdown-section").getBoundingClientRect().height;
+        svgWidth = episodeSection.getBoundingClientRect().width;
+        svgHeight = episodeSection.getBoundingClientRect().height;
 
-        const top = svgHeight * 0.03; 
-        const contentDiv = document.querySelector('.content');
-        const contentDivWidth =contentDiv.offsetWidth;
-        const leftContent = svgWidth*0.2; 
-        
-        const chartDiv = document.getElementById("col1");
-        const chartDivWidth = chartDiv.offsetWidth;
-        const rightChart = svgWidth*0.53; 
+        contentTop = contentDiv.offsetTop; 
+        chartTop = chartDiv.offsetTop; 
+        contentDivWidth = contentDiv.offsetWidth;
+        chartDivWidth = chartDiv.offsetWidth;
 
-        leftPin.pos = [leftContent+contentDivWidth/2, top]; 
-        rightPin.pos = [rightChart+chartDivWidth/2, top]; 
+        leftPin.pos = [contentDiv.offsetLeft+contentDivWidth/2, contentTop]; 
+        rightPin.pos = [chartDiv.offsetLeft+chartDivWidth/2, chartTop]; 
 
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     if (!connectingLine) {
                         connectingLine = true;
+                        addOrUpdateThumbPin(svg, leftPin)
+                        addOrUpdateThumbPin(svg, rightPin)
                         addOrUpdateLine(svg, topLeft,[svgWidth * 0.375, 0], leftPin.pos); 
                         addOrUpdateLine(svg, topRight,[svgWidth * 0.625, 0], rightPin.pos); 
                     }
@@ -464,24 +464,27 @@
         observer.observe(episodeSection);
 
         window.addEventListener('resize', () => {
-            svgWidth = document.getElementById("episode-breakdown-section").getBoundingClientRect().width;
-            svgHeight = document.getElementById("episode-breakdown-section").getBoundingClientRect().height;
+            svgWidth = episodeSection.getBoundingClientRect().width;
+            svgHeight = episodeSection.getBoundingClientRect().height;
 
-            const top = svgHeight * 0.03; 
-            const contentDiv = document.querySelector('.content');
-            const contentDivWidth =contentDiv.offsetWidth;
-            const leftContent = svgWidth*0.2; 
-            
-            const chartDiv = document.getElementById("col1");
-            const chartDivWidth = chartDiv.offsetWidth;
-            const rightChart = svgWidth*0.53; 
+            contentTop = contentDiv.offsetTop; 
+            chartTop = chartDiv.offsetTop; 
+            contentDivWidth = contentDiv.offsetWidth;
+            chartDivWidth = chartDiv.offsetWidth;
 
-            leftPin.pos = [leftContent+contentDivWidth/2, top]; 
-            rightPin.pos = [rightChart+chartDivWidth/2, top]; 
+            leftPin.pos = [contentDiv.offsetLeft+contentDivWidth/2, contentTop]; 
+            rightPin.pos = [chartDiv.offsetLeft+chartDivWidth/2, chartTop]; 
 
             let initialRectYPosIncrement = rectYPosIncrement;
 
-            rectWidth = 0.25 * window.innerWidth;
+            if(window.innerWidth < Constants.tabletSize){
+                rectWidth = gifContainer.offsetHeight; 
+            }
+            else {
+                // rectWidth = 0.25 * window.innerWidth;
+                rectWidth = gifContainer.offsetHeight; 
+            }
+            
             const newRectYPosIncrement = rectWidth / 3; 
         
             let initialRectYPos = rectYPos; 
@@ -495,6 +498,8 @@
             episodeSvg.setAttribute("viewBox", `0 0 ${rectWidth} ${rectWidth}`);
 
             if(connectingLine){
+                addOrUpdateThumbPin(svg, leftPin)
+                addOrUpdateThumbPin(svg, rightPin)
                 addOrUpdateLine(svg, topLeft,[svgWidth * 0.375, 0], leftPin.pos); 
                 addOrUpdateLine(svg, topRight,[svgWidth * 0.625, 0], rightPin.pos); 
             }
@@ -511,7 +516,6 @@
     $: (() => {
         // scrolling down
         if (currentStep > previousStep) {
-            console.log(`scrolling down, ${currentStep}`); 
             if (currentStep == 0) {
                 showDescriptions.set(false);
             } else if (currentStep == 1) {
@@ -586,21 +590,39 @@
         }
         previousStep = currentStep;
 
-        rectWidth = 0.25*window.innerWidth; 
+        if(gifContainer){
+            console.log(gifContainer.getBoundingClientRect()); 
+            rectWidth = gifContainer.getBoundingClientRect().width + 10; 
+            console.log(rectWidth); 
+        }
+
+        // if(window.innerWidth < Constants.tabletSize){
+        //     console.log(gifContainer.getBoundingClientRect().width); 
+        //     rectWidth = 0.5 * window.innerWidth;
+        // }
+        // else {
+        //     rectWidth = 0.25 * window.innerWidth;
+        //     if(gifContainer){
+        //         console.log(gifContainer.offsetHeight);     
+        //     }
+            
+        //     // rectWidth = gifContainer.offsetHeight; 
+        // }
+            
         rectYPosIncrement = rectWidth/3; 
     })();
 </script>
 
 <section bind:this={episodeSection} class="episode-section" id="episode-breakdown-section">
     <div class="content divBorder" bind:this={contentDiv}>
-        <img id="episode-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
+        <!-- <img id="episode-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/> -->
         {@html Constants.episodeBreakdownText[currentStep]}
     </div>
 
     <div class="chart divBorder" bind:this={chartDiv}>
-        <img id="chart-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
+        <!-- <img id="chart-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/> -->
         <div id="col1"> 
-            <div class="container">
+            <div bind:this={gifContainer} class="container">
                 <div bind:this={oolongSlayerGif} id="oolongSlayerGif" class="overlay">
                     <img width={0.95*rectWidth} src="assets/oolongSlayer.gif" alt="oolong slayer episode gif"/>
                     <div id="oolong-slayer-content">
@@ -657,18 +679,20 @@
         height: 100vh; 
         width: 100vw; 
         position: relative; 
-    }
-
-    .star-icon {
-        width: var(--body-font-size); /* Adjust the size as needed */
-        height: auto;
-        margin-right: 4px; /* Adjust spacing as needed */
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        gap: calc(var(--margin)*2);
     }
 
     .container {
         position: relative;
-        width: fit-content;
+        width: 100%;
         height: fit-content;
+        display: flex; 
+        align-items: center;
+        justify-content: center;
     }
 
     .base {
@@ -679,7 +703,7 @@
     #oolongSlayerGif {
         position: absolute;
         top: 2.5%;
-        left: 2.5%; 
+        /* left: 2.5%;  */
         z-index: 2;
         pointer-events: none;
         transition: opacity var(--transition-time);
@@ -691,6 +715,7 @@
 
     #oolong-slayer-content {
         text-align: center;
+        font-size: var(--label-font-size);
     }
 
     #overlaySvg-episodeBreakdown {
@@ -701,9 +726,10 @@
     .chart {
         width: fit-content;
         height: fit-content;
-        position: absolute;  
+        margin-top: calc(var(--margin)*2); 
+        /* position: absolute;  
         top: 3vh;
-        left: 53vw; 
+        left: 53vw;  */
         display: flex; 
         flex-direction: row;
         align-items: center;
@@ -726,12 +752,13 @@
     .content {
         width: 25vw; 
         height: var(--text-box-height); 
+        margin-top: calc(var(--margin)*2); 
         padding: var(--margin); 
         background-color: var(--white);
-        position: absolute;  
+        /* position: absolute;   */
         font-size: var(--body-font-size);
-        top: 3vh;
-        left: 20vw; 
+        /* top: 3vh;
+        left: 20vw;  */
         z-index: 0; 
     }
 
@@ -766,4 +793,27 @@
         width: 100%; 
         height: 100%;
     } */
+
+    @media (max-width: 768px) {
+        .episode-section{
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        #col1 {
+            width: 80vw; 
+        }
+
+        .content{
+            width: 80vw; 
+            height: 15vh; 
+        }
+
+        #oolongSlayerGif img{
+            margin-bottom: 0; 
+        }
+
+    }
+
 </style>

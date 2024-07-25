@@ -201,16 +201,17 @@ body {
   src: url("./fonts/Impact.ttf");
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   :root {
     --title-font-size: 4rem;
     --body-font-size: 1rem;
     --label-font-size: 0.8rem;
 
-    --margin: 1rem;
+    --margin: 0.7rem;
     --thumb-pin: 0.3rem;
 
     /** TEXT BOX **/
     --text-box-height: 33vh;
+    --text-box-width: 70vw;
   }
 }
