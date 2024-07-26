@@ -12,6 +12,7 @@ body {
 }
 
 :root {
+  --body-font: "Old-Standard-TT";
   /* FONT SIZE */
   --title-font-size: 5.5rem;
   --body-font-size: 1.1rem;
@@ -46,7 +47,7 @@ body {
 
   /* CHARACTERS SECTION */
   --text-box-height: 28vh;
-  --text-box-width: 35vmax;
+  --text-box-width: 35vw;
 }
 
 body {

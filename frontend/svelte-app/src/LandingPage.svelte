@@ -64,12 +64,6 @@
       caseImageData.topPins.pos = [svgWidth * 0.5, caseImageData.y]; 
       caseImageData.bottomPins.pos = [svgWidth * 0.5, caseImageData.y  + caseImageData.height]; 
 
-      detectiveImgData.height = svgHeight * 0.06;
-      detectiveImgData.width = detectiveImgData.height * 216/113;
-      detectiveImgData.x = svgWidth * 0.5;   
-      detectiveImgData.y = svgHeight * 0.75; 
-      detectiveImgData.topPins.pos = [detectiveImgData.x + detectiveImgData.width/2, detectiveImgData.y];
-
       titleImgData.width = svgWidth * 0.8; 
       titleImgData.height = 435/1011 * titleImgData.width; 
       titleImgData.x = (svgWidth - titleImgData.width)/2; 
@@ -78,6 +72,12 @@
       titleImgData.topPins[1].pos = [svgWidth * 0.75, titleImgData.y];
       titleImgData.bottomPins[0].pos = [svgWidth * 0.37, titleImgData.y + titleImgData.height]; 
       titleImgData.bottomPins[1].pos = [svgWidth * 0.58, titleImgData.y + titleImgData.height]; 
+
+      detectiveImgData.height = svgHeight * 0.06;
+      detectiveImgData.width = detectiveImgData.height * 216/113;
+      detectiveImgData.x = titleImgData.x + titleImgData.width - detectiveImgData.width;   
+      detectiveImgData.y = svgHeight * 0.8; 
+      detectiveImgData.topPins.pos = [detectiveImgData.x + detectiveImgData.width/2, detectiveImgData.y];
 
       arrowImgData.height = svgWidth* 0.1; 
       arrowImgData.width = arrowImgData.height*169/88.41; 

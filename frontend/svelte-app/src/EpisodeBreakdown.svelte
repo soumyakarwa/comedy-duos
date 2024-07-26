@@ -747,7 +747,8 @@
 
     .content {
         width: 25vw; 
-        height: var(--text-box-height); 
+        height: 28vh; 
+        /* height: var(--text-box-height);  */
         margin-top: calc(var(--margin)*2); 
         padding: var(--margin); 
         background-color: var(--white);

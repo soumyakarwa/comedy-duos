@@ -155,10 +155,10 @@ export const margin = getCSSVariable("--margin");
 export const maxLineDelay = 750;
 
 // export const ellipseSize = remToPixels(getCSSVariable("--thumb-pin"));
-
-export const ellipseSize = 6;
 export const tabletSize = 768;
 export const mobileSize = 480;
+
+export const ellipseSize = window.innerWidth > tabletSize ? 6 : 5;
 
 export const characterTextBoxX =
   parseFloat(getCSSVariable("--text-box-x")) / 100;

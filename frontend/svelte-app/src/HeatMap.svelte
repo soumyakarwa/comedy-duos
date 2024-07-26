@@ -59,7 +59,7 @@
   
   const pageMarginInPixels = Constants.remToPixels(Constants.margin); 
   // margin from svgHeight, svgWidth to create chartSize
-  const margin = (window.innerWidth > Constants.tabletSize) ? { 
+  let margin = (window.innerWidth > Constants.tabletSize) ? { 
       top: pageMarginInPixels * 9, 
       right: pageMarginInPixels, 
       bottom: pageMarginInPixels, 
@@ -72,8 +72,6 @@
     }; 
 
   $: if(episodeData.length & index == 0) {
-    // margin = setMargins(pageMarginInPixels);
-    console.log(margin); 
     svg = d3.select(heatMapSvg);
 
     [chartWidth, chartHeight] = setChartDimnensions(svgWidth, svgHeight, margin); 
@@ -165,19 +163,19 @@
       .attr('transform', `translate(${yAxisTranslatePos[0]},${yAxisTranslatePos[1]})`)
       .call(d3.axisLeft(originalYScale))
       .call(g => g.select(".domain").remove()) 
-      .call(g => g.selectAll(".tick line").remove());
+      .call(g => g.selectAll(".tick line").remove()); 
 
     xaxisLabel  
         .transition()  
         .attr("x", xAxisLabelXYPos[0])
         .attr("y", xAxisLabelXYPos[1])
-        .text(xAxisLabelText);
-      
+        .text(xAxisLabelText); 
+
     yaxisLabel  
       .transition()  
       .attr("x", yAxisLabelTranslatePos[0])
       .attr("y", yAxisLabelTranslatePos[1] - calcSquareSize(originalXScale, originalYScale))
-      .text(yAxisLabelText);   
+      .text(yAxisLabelText); 
 
   };
 
@@ -248,7 +246,12 @@
   }
 
   const setXAxisInformation = (width, height, margin, chartMargin) => {
-    let translationCoordinates = [0, height - margin]; 
+    let translationCoordinates = [
+      0, 
+      window.innerWidth > Constants.tabletSize 
+        ? height - margin 
+        : height - margin/2// Adjust this value based on your requirements
+    ];
     let startingEndingCoordinates = [margin*2, width]; 
     let axisLength = startingEndingCoordinates[1] - startingEndingCoordinates[0];
     let axisLabelCoordinates = [chartMargin.left + axisLength / 2, height+7]; 
@@ -335,7 +338,7 @@
         .attr('transform', `translate(${xAxisTranslatePos[0]},${xAxisTranslatePos[1]})`)
         .call(d3.axisTop(originalXScale))
         .call(g => g.selectAll(".tick line").remove())
-        .call(g => g.select(".domain").remove());
+        .call(g => g.select(".domain").remove()); 
         
         
     // Update y-axis with transition
@@ -344,7 +347,7 @@
         .duration(Constants.transitionTime)
         .call(d3.axisLeft(originalYScale))
         .call(g => g.select(".domain").remove()) 
-        .call(g => g.selectAll(".tick line").remove());
+        .call(g => g.selectAll(".tick line").remove()); 
 
     // Update x-axis label
     xaxisLabel
@@ -352,13 +355,13 @@
         .duration(Constants.transitionTime)
         .attr("x", xAxisLabelXYPos[0])
         .attr("y", xAxisLabelXYPos[1])
-        .text(xAxisLabelText);
+        .text(xAxisLabelText)
 
     // Update y-axis label
     yaxisLabel
         .transition()
         .duration(Constants.transitionTime)
-        .text(yAxisLabelText);
+        .text(yAxisLabelText); 
   }
 
   /**
@@ -711,11 +714,11 @@
 
     const currentDomain = xaxis.selectAll('.tick').data();
 
-    // Compare current domain with new domain
-    if (JSON.stringify(currentDomain) === JSON.stringify(frequencyXScale.domain())) {
-        // Revert axes if the current domain matches the new xScale domain
-        heatMapAxes();
-    } 
+    // // Compare current domain with new domain
+    // if (JSON.stringify(currentDomain) === JSON.stringify(frequencyXScale.domain())) {
+    //     // Revert axes if the current domain matches the new xScale domain
+    //     heatMapAxes();
+    // } 
   
     g.selectAll('.row-group')
       .each(function(d, i) {
@@ -795,11 +798,13 @@
       .style('opacity', 0)
       .remove();
 
-    g.selectAll('.legend')
+    if(window.innerWidth > Constants.tabletSize){
+      g.selectAll('.legend')
       .transition()
       .duration(Constants.transitionTime)
       .style('opacity', 0)
       .remove();
+    }
 
     // Update x-axis
     xaxis
@@ -808,26 +813,27 @@
         .call(d3.axisBottom(frequencyXScale))
         .attr('transform', `translate(0,${yAxisHeight})`)
         .call(g => g.selectAll(".tick line").remove()); 
-    
-    // Remove existing labels if any
-    xaxis.selectAll('text').remove();
 
-    // Append image elements as labels
-    xaxis.selectAll('image')
-        .data(topPairs)
-        .enter()
-        .append('image')
-        .attr("opacity", 0)
-        .attr('x', d => frequencyXScale(d) + frequencyXScale.bandwidth()/4)
-        .attr('y', 4)
-        .attr('width', frequencyXScale.bandwidth()/2) 
-        // .attr('height', 36) 
-        .attr('xlink:href', d => `assets/legend/${d.replace(' & ', '-').toLowerCase()}.png`) // Path to the image
-        .attr('class', 'x-axis-label-image')
-        .transition()
-        .duration(Constants.transitionTime)
-        .attr("opacity", 1); // Assign a class for further styling if needed
-        
+    // Remove existing labels if an
+    xaxis.selectAll('text').remove();    
+    
+    if(window.innerWidth > Constants.tabletSize){
+      // Append image elements as labels
+      xaxis.selectAll('image')
+          .data(topPairs)
+          .enter()
+          .append('image')
+          .attr("opacity", 0)
+          .attr('x', d => frequencyXScale(d) + frequencyXScale.bandwidth()/4)
+          .attr('y', 4)
+          .attr('width', frequencyXScale.bandwidth()/2) 
+          // .attr('height', 36) 
+          .attr('xlink:href', d => `assets/legend/${d.replace(' & ', '-').toLowerCase()}.png`) // Path to the image
+          .attr('class', 'x-axis-label-image')
+          .transition()
+          .duration(Constants.transitionTime)
+          .attr("opacity", 1); // Assign a class for further styling if needed
+    }    
 
         // Update x-axis label
      xaxisLabel
@@ -1076,6 +1082,18 @@
   onMount(() => {
 
     window.addEventListener('resize', () => {
+      console.log("resized"); 
+      margin = (window.innerWidth > Constants.tabletSize) ? { 
+        top: pageMarginInPixels * 9, 
+        right: pageMarginInPixels, 
+        bottom: pageMarginInPixels, 
+        left: pageMarginInPixels * 2 
+      } : { 
+        top: pageMarginInPixels * 12  , 
+        right: pageMarginInPixels, 
+        bottom: pageMarginInPixels, 
+        left: pageMarginInPixels 
+      }; 
 
       
       [svgWidth, svgHeight] = setSvgDimensions(window.innerWidth, window.innerHeight); 
@@ -1110,6 +1128,12 @@
         .attr('x', d => frequencyXScale(d) + frequencyXScale.bandwidth()/4)
         .attr('y', 4)
         .attr('width', frequencyXScale.bandwidth()/2); 
+
+      // const isTabletOrLarger = window.innerWidth > Constants.tabletSize;
+
+      // // Number of columns and rows based on window width
+      // const columns = isTabletOrLarger ? 5 : 2;
+      // legend.attr('transform', `translate(${chartWidth - columns * calcSquareSize(originalXScale, originalYScale) * 2}, 0)`); 
 
       setScales(topPairs); 
         
@@ -1182,6 +1206,8 @@
       height: fit-content; 
       position: absolute; 
       background-color: var(--white); 
+      font-size: var(--label-font-size); 
+      font-family: var(--body-font); 
     }
 
     #img1 {
@@ -1322,7 +1348,7 @@
       left: 50%; 
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 480px) {
 
       .heatmap-content {
         width: 90%; 
