@@ -1,8 +1,7 @@
 <script>
   import * as d3 from 'd3';
   import * as Constants from "./Constants.js"; 
-  import {remToPixels} from "./Constants.js"; 
-  import { onMount } from 'svelte';
+  import { onMount } from 'svelte'; 
 
   const characterRatingDict = {};
   let sortedCharacterRatingArray; 
@@ -52,34 +51,36 @@
   let xaxisLabel = null; 
   let yaxisLabel = null; 
   let baseSquares; 
-  
-  let xAxisXYPos, xAxisWidth, xAxisTranslatePos, xAxisLabelXYPos;
+  let xAxisLabelText = window.innerWidth > Constants.tabletSize ? 'Episode' : 'Season';
+  let yAxisLabelText = window.innerWidth > Constants.tabletSize ? 'Season' : 'Episode';
+
+  let xAxisXYPos, xAxisLength, xAxisTranslatePos, xAxisLabelXYPos;
   let yAxisXYPos, yAxisHeight, yAxisTranslatePos, yAxisLabelTranslatePos;
   
-  const pageMarginInPixels = remToPixels(Constants.margin); 
+  const pageMarginInPixels = Constants.remToPixels(Constants.margin); 
   // margin from svgHeight, svgWidth to create chartSize
-  const margin = { 
-    top: pageMarginInPixels*9, 
-    right: pageMarginInPixels, 
-    bottom: pageMarginInPixels, 
-    left: pageMarginInPixels*2 
-  };
+  const margin = (window.innerWidth > Constants.tabletSize) ? { 
+      top: pageMarginInPixels * 9, 
+      right: pageMarginInPixels, 
+      bottom: pageMarginInPixels, 
+      left: pageMarginInPixels * 2 
+    } : { 
+      top: pageMarginInPixels * 12  , 
+      right: pageMarginInPixels, 
+      bottom: pageMarginInPixels, 
+      left: pageMarginInPixels 
+    }; 
 
   $: if(episodeData.length & index == 0) {
+    // margin = setMargins(pageMarginInPixels);
+    console.log(margin); 
     svg = d3.select(heatMapSvg);
 
-    chartWidth = svgWidth - margin.left - margin.right;
-    chartHeight = svgHeight - margin.top - margin.bottom;
-    
-    xAxisTranslatePos = [0, chartHeight - pageMarginInPixels]; 
-    xAxisXYPos = [pageMarginInPixels*2, chartWidth]; 
-    xAxisWidth = xAxisXYPos[1] - xAxisXYPos[0];
-    xAxisLabelXYPos = [margin.left + xAxisWidth / 2, chartHeight+7]; 
+    [chartWidth, chartHeight] = setChartDimnensions(svgWidth, svgHeight, margin); 
 
-    yAxisTranslatePos = [pageMarginInPixels*2, 0]; 
-    yAxisXYPos = [pageMarginInPixels*2, chartHeight-5]; 
-    yAxisHeight = yAxisXYPos[1] - yAxisXYPos[0]; 
-    yAxisLabelTranslatePos = [0, pageMarginInPixels*2]; 
+    [xAxisTranslatePos, xAxisXYPos, xAxisLength, xAxisLabelXYPos] = setXAxisInformation(chartWidth, chartHeight, pageMarginInPixels, margin); 
+
+    [yAxisTranslatePos, yAxisXYPos, yAxisHeight, yAxisLabelTranslatePos] = setYAxisInformation(chartWidth, chartHeight, pageMarginInPixels); 
 
     g = svg.select('g');
     if (g.empty()) {
@@ -130,7 +131,6 @@
         pairToColor.set(pair, Constants.heatMapColors[index]);
     });
 
-
     setScales(topPairs); 
 
     if(!xaxis){
@@ -171,43 +171,32 @@
         .transition()  
         .attr("x", xAxisLabelXYPos[0])
         .attr("y", xAxisLabelXYPos[1])
-        .text("Episode");
+        .text(xAxisLabelText);
       
     yaxisLabel  
       .transition()  
       .attr("x", yAxisLabelTranslatePos[0])
-      .attr("y", yAxisLabelTranslatePos[1] - originalXScale.bandwidth())
-      .text("Season");   
+      .attr("y", yAxisLabelTranslatePos[1] - calcSquareSize(originalXScale, originalYScale))
+      .text(yAxisLabelText);   
 
   };
 
   function setScales(pairs){
-    if(svgWidth > Constants.tabletSize){
-      // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
-      originalXScale = d3.scaleBand()
-      .domain(episodeData.map(d => d.Episode))
+    // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
+    originalXScale = d3.scaleBand()
+      .domain(window.innerWidth > Constants.tabletSize 
+              ? episodeData.map(d => d.Episode) 
+              : episodeData.map(d => d.Season))
       .range([xAxisXYPos[0], xAxisXYPos[1]])
       .padding(0.1);
 
-      // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
-      originalYScale = d3.scaleBand()
-        .domain(episodeData.map(d => d.Season))
-        .range([yAxisHeight, 0])
-        .padding(0.1);
-    }
-    else {
-      originalXScale = d3.scaleBand()
-      .domain(episodeData.map(d => d.Season))
-      .range([xAxisXYPos[0], xAxisXYPos[1]])
-      .padding(0.1);
-
-      // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
-      originalYScale = d3.scaleBand()
-        .domain(episodeData.map(d => d.Episode))
-        .range([yAxisHeight, 0])
-        .padding(0.1);
-
-    }
+    // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
+    originalYScale = d3.scaleBand()
+    .domain(window.innerWidth > Constants.tabletSize 
+              ? episodeData.map(d => d.Season) 
+              : episodeData.map(d => d.Episode))
+      .range([yAxisHeight, 0])
+      .padding(window.innerWidth > Constants.tabletSize ? 0.2 : 0.1); 
 
     frequencyXScale = d3.scaleBand()
         .domain(pairs)
@@ -248,11 +237,99 @@
     
   }
 
+  const setSvgDimensions = (width, height) => {
+    return [0.9*width, 0.9*height]; 
+  }
+
+  const setChartDimnensions = (width, height, m) => {
+    let chartWidth = width - m.left - m.right;
+    let chartHeight = height - m.top - m.bottom;
+    return [chartWidth, chartHeight]; 
+  }
+
+  const setXAxisInformation = (width, height, margin, chartMargin) => {
+    let translationCoordinates = [0, height - margin]; 
+    let startingEndingCoordinates = [margin*2, width]; 
+    let axisLength = startingEndingCoordinates[1] - startingEndingCoordinates[0];
+    let axisLabelCoordinates = [chartMargin.left + axisLength / 2, height+7]; 
+
+    return [translationCoordinates, startingEndingCoordinates, axisLength, axisLabelCoordinates]; 
+  }
+
+  const setYAxisInformation = (width, height, margin) => {
+    let translationCoordinates = [margin*2, 0]; 
+    let startingEndingCoordinates = [margin*2, height-5]; 
+    let axisLength = startingEndingCoordinates[1] - startingEndingCoordinates[0]; 
+    let axisLabelCoordinates = [0, height - axisLength - 2*Constants.remToPixels(Constants.labelFontSize)];
+
+    return [translationCoordinates, startingEndingCoordinates, axisLength, axisLabelCoordinates];     
+  }
+
+  const calcSquareSize = (xScale, yScale) => {
+    return window.innerWidth > Constants.tabletSize 
+      ? xScale.bandwidth() 
+      : yScale.bandwidth();
+  };
+
+  function createLegend(){
+    const isTabletOrLarger = window.innerWidth > Constants.tabletSize;
+
+      // Number of columns and rows based on window width
+      const columns = isTabletOrLarger ? 5 : 2;
+      const rows = isTabletOrLarger ? 2 : 5;
+
+      let legend = g.append('g')
+      .attr('class', 'legend')
+      .attr('transform', `translate(${chartWidth - columns * calcSquareSize(originalXScale, originalYScale) * 2}, 0)`)
+      .style('opacity', 0); // Adjust position as needed
+
+      let legendIndex = 0;
+      pairToColor.forEach((color, pair) => {
+        const pairText = pair.replace(' & ', '-').toLowerCase();
+        const pairImage = `assets/legend/${pairText}.png`; // Assuming you have saved the images with the pair names
+
+        const row = Math.floor(legendIndex / columns);
+        const col = legendIndex % columns;
+        const xOffset = calcSquareSize(originalXScale, originalYScale) / 4 + col * calcSquareSize(originalXScale, originalYScale) * 2; // Adjust spacing as needed
+        const yOffset = 10 + row * calcSquareSize(originalXScale, originalYScale); // Adjust spacing as needed
+
+        const legendItem = legend.append('g')
+          .attr('class', 'legend-item')
+          .attr('transform', `translate(${xOffset}, ${yOffset})`);
+
+        legendItem.append('image')
+          .attr('x', 0)
+          .attr('y', 0)
+          // .attr('width', calcSquareSize(originalXScale, originalYScale) * 1.5)
+          .attr('height', calcSquareSize(originalXScale, originalYScale) * 0.75)
+          .attr('xlink:href', pairImage);
+
+        legendIndex++;
+      });
+
+      return legend; 
+  }
+
+  const setMargins = (pageMarginInPixels) => {
+    let margin = (window.innerWidth > Constants.tabletSize) ? { 
+      top: pageMarginInPixels * 9, 
+      right: pageMarginInPixels, 
+      bottom: pageMarginInPixels, 
+      left: pageMarginInPixels * 2 
+    } : { 
+      top: pageMarginInPixels * 12  , 
+      right: pageMarginInPixels, 
+      bottom: pageMarginInPixels, 
+      left: pageMarginInPixels 
+    };
+    return margin; 
+  }
+  
   /**
    * Reverts axes to original heat map axes
    */
   function heatMapAxes(){
-    g.select('.axis-x')
+    xaxis
         .transition()
         .duration(Constants.transitionTime)
         .attr('transform', `translate(${xAxisTranslatePos[0]},${xAxisTranslatePos[1]})`)
@@ -275,13 +352,13 @@
         .duration(Constants.transitionTime)
         .attr("x", xAxisLabelXYPos[0])
         .attr("y", xAxisLabelXYPos[1])
-        .text("Episode");
+        .text(xAxisLabelText);
 
     // Update y-axis label
     yaxisLabel
         .transition()
         .duration(Constants.transitionTime)
-        .text("Season");
+        .text(yAxisLabelText);
   }
 
   /**
@@ -296,8 +373,10 @@
    * helper function to calculate x-position of a rect (with particular data)
    * @param data
    */
-  function calculateHeatMapX(data){
-    return originalXScale(data.Episode);
+   function calculateHeatMapX(data) {
+    return window.innerWidth > Constants.tabletSize 
+      ? originalXScale(data.Episode) 
+      : originalXScale(data.Season) + originalXScale.bandwidth()/2 - calcSquareSize(originalXScale, originalYScale) / 2; 
   }
 
   /**
@@ -305,7 +384,9 @@
    * @param data
    */
   function calculateHeatMapY(data){
-    return originalYScale(data.Season) + originalYScale.bandwidth() / 2 - originalXScale.bandwidth() / 2
+    return window.innerWidth > Constants.tabletSize
+    ? originalYScale(data.Season) + originalYScale.bandwidth() / 2 - calcSquareSize(originalXScale, originalYScale) / 2
+    : originalYScale(data.Episode) + originalYScale.bandwidth() / 2 - calcSquareSize(originalXScale, originalYScale) / 2 
   }
   
 
@@ -324,6 +405,7 @@
     g.selectAll('.row-group').on('click', null); 
     g.selectAll('.row-group').on('mouseover', null); 
     g.selectAll('.row-group').on('mouseout', null); 
+    
     g.selectAll('.character-image')
     .transition()
       .duration(Constants.transitionTime)
@@ -363,14 +445,14 @@
     // ADDING ONLY THE SQUARE CORRESPONDING TO SEASON 3, EPISODE 6
     const specificRect = g.append('rect')
       .attr('class', 'specific-square')
-      .attr('x', originalXScale(specificDataPoint.Episode))
-      .attr('y', originalYScale(specificDataPoint.Season) + originalYScale.bandwidth() / 2 - originalXScale.bandwidth() / 2)
-      .attr('width', originalXScale.bandwidth())
-      .attr('height', originalXScale.bandwidth())
+      .attr('x',calculateHeatMapX(specificDataPoint))
+      .attr('y', calculateHeatMapY(specificDataPoint))
+      .attr('width', calcSquareSize(originalXScale, originalYScale))
+      .attr('height', calcSquareSize(originalXScale, originalYScale))
       .style('fill', 'none'); 
 
     const numRows = specificDataPoint["Streamlined Characters"].length;
-    const rowHeight = originalXScale.bandwidth() / numRows;
+    const rowHeight = calcSquareSize(originalXScale, originalYScale) / numRows;
 
     for (let i = 0; i < numRows; i++) {
       g.append('rect')
@@ -384,7 +466,7 @@
         .duration(Constants.transitionTime)
         .delay(i * Constants.transitionTime / 2)
         .attrTween("width", function () {
-          return d3.interpolate(0, originalXScale.bandwidth());
+          return d3.interpolate(0, calcSquareSize(originalXScale, originalYScale));
         });
     }
   }
@@ -454,15 +536,15 @@
     baseSquares
       .attr('x', d => calculateHeatMapX(d))
       .attr('y', d => calculateHeatMapY(d))
-      .attr('width', originalXScale.bandwidth())
-      .attr('height', originalXScale.bandwidth())
+      .attr('width', calcSquareSize(originalXScale, originalYScale))
+      .attr('height', calcSquareSize(originalXScale, originalYScale))
       .style('fill', 'none')
       .style('opacity', 0);
     
     baseSquares.each(function(d, i) {
       const rect = d3.select(this);
       const numRows = d["Streamlined Characters"].length;
-      const rowHeight = originalXScale.bandwidth() / numRows;
+      const rowHeight = calcSquareSize(originalXScale, originalYScale) / numRows;
 
       const group = g.append('g')
         .attr('class', 'row-group')
@@ -485,7 +567,7 @@
         .transition()
         .duration(Constants.transitionTime)
         .attrTween("width", function () {
-          return d3.interpolate(0, originalXScale.bandwidth());
+          return d3.interpolate(0, calcSquareSize(originalXScale, originalYScale));
         });
 
       let isClicked = false;
@@ -504,11 +586,11 @@
         const hoverGroup = d3.select(this);
         const characterGroups = data['Streamlined Characters']; 
         if (!isClicked) {
-          const scaledRectWidth = originalXScale.bandwidth() * hoverIncrease;
+          const scaledRectWidth = calcSquareSize(originalXScale, originalYScale) * hoverIncrease;
           const scaledRowHeight = rowHeight * hoverIncrease;
 
           const newXPos = (d) => {
-            return calculateHeatMapX(d) - (originalXScale.bandwidth() * (hoverIncrease - 1)) / 2;
+            return calculateHeatMapX(d) - (calcSquareSize(originalXScale, originalYScale) * (hoverIncrease - 1)) / 2;
           };
           const newYPos = (d, i) => {
             return calculateHeatMapY(d) + (i * scaledRowHeight) - (rowHeight * (hoverIncrease - 1)) / 2;
@@ -541,7 +623,7 @@
 
               const characterSpacing = imageRadius / 2;
               const totalCharactersWidth = characterNames.length * (imageRadius * 2 + characterSpacing) - characterSpacing;
-              const startX = calculateHeatMapX(d) + (originalXScale.bandwidth() - totalCharactersWidth) / 2;
+              const startX = calculateHeatMapX(d) + (calcSquareSize(originalXScale, originalYScale) - totalCharactersWidth) / 2;
 
               characterNames.forEach((name, index) => {
                 const imageX = startX + index * (imageRadius * 2 + characterSpacing) + imageRadius;
@@ -568,7 +650,7 @@
             .selectAll('rect')
             .transition()
             .duration(transitionTime / 2)
-            .attr('width', originalXScale.bandwidth())
+            .attr('width', calcSquareSize(originalXScale, originalYScale))
             .attr('height', rowHeight)
             .attr('x', calculateHeatMapX(d))
             .attr('y', (d, i) => calculateHeatMapY(d) + (i * rowHeight));
@@ -664,9 +746,9 @@
           .delay(Constants.transitionTime/2)
           .duration(Constants.transitionTime)
           .attr('x', (d) => calculateHeatMapX(d))
-          .attr('y', (d, i, nodes) => calculateHeatMapY(d) + (i * originalXScale.bandwidth()) / nodes.length)
-          .attr('width', originalXScale.bandwidth())
-          .attr('height', (d, i, nodes) => originalXScale.bandwidth() / nodes.length)
+          .attr('y', (d, i, nodes) => calculateHeatMapY(d) + (i * calcSquareSize(originalXScale, originalYScale)) / nodes.length)
+          .attr('width', calcSquareSize(originalXScale, originalYScale))
+          .attr('height', (d, i, nodes) => calcSquareSize(originalXScale, originalYScale) / nodes.length)
           .style('fill', d => {
               const pair = d.char;
               return pairToColor.get(pairToString(pair)) || Constants.yellowColor;
@@ -680,37 +762,8 @@
       .attr('width', 0)
       .remove();
 
-    // Create legend
-    legend = g.append('g')
-      .attr('class', 'legend')
-      .attr('transform', `translate(${chartWidth - 5 * originalXScale.bandwidth()*2}, 0)`)
-      .style('opacity', 0);// Adjust position as needed
-
-    let legendIndex = 0;
-    pairToColor.forEach((color, pair) => {
-        const pairText = pair.replace(' & ', '-').toLowerCase();
-        const pairImage = `assets/legend/${pairText}.png`; // Assuming you have saved the images with the pair names
-
-        const row = Math.floor(legendIndex / 5);
-        const col = legendIndex % 5;
-        const xOffset = originalXScale.bandwidth()/4 + col * originalXScale.bandwidth()*2; // Adjust spacing as needed
-        const yOffset = 10 + row * originalXScale.bandwidth(); // Adjust spacing as needed
-
-        const legendItem = legend.append('g')
-            .attr('class', 'legend-item')
-            .attr('transform', `translate(${xOffset}, ${yOffset})`);
-
-        legendItem.append('image')
-            .attr('x', 0)
-            .attr('y', 0)
-            // .attr('width', originalXScale.bandwidth()*1.5)
-            .attr('height', originalXScale.bandwidth() * 0.75)
-            .attr('xlink:href', pairImage);
-
-        legendIndex++;
-    });
-
-
+    legend = createLegend();   
+      
     legend
       .transition()
       .duration(Constants.transitionTime)
@@ -1023,21 +1076,16 @@
   onMount(() => {
 
     window.addEventListener('resize', () => {
-      svgWidth = 0.9 * window.innerWidth;
-      svgHeight = 0.9 * window.innerHeight;
 
-      chartWidth = svgWidth - margin.left - margin.right;
-      chartHeight = svgHeight - margin.top - margin.bottom;
       
-      xAxisTranslatePos = [0, chartHeight - pageMarginInPixels]; 
-      xAxisXYPos = [pageMarginInPixels*2, chartWidth]; 
-      xAxisWidth = xAxisXYPos[1] - xAxisXYPos[0];
-      xAxisLabelXYPos = [margin.left + xAxisWidth / 2, chartHeight+7]; 
+      [svgWidth, svgHeight] = setSvgDimensions(window.innerWidth, window.innerHeight); 
 
-      yAxisTranslatePos = [pageMarginInPixels*2, 0]; 
-      yAxisXYPos = [pageMarginInPixels*2, chartHeight-5]; 
-      yAxisHeight = yAxisXYPos[1] - yAxisXYPos[0]; 
-      yAxisLabelTranslatePos = [0, pageMarginInPixels*2];
+      [chartWidth, chartHeight] = setChartDimnensions(svgWidth, svgHeight, margin); 
+    
+
+      [xAxisTranslatePos, xAxisXYPos, xAxisLength, xAxisLabelXYPos] = setXAxisInformation(chartWidth, chartHeight, pageMarginInPixels, margin); 
+
+      [yAxisTranslatePos, yAxisXYPos, yAxisHeight, yAxisLabelTranslatePos] = setYAxisInformation(chartWidth, chartHeight, pageMarginInPixels); 
 
       xaxis
         .transition()
@@ -1055,7 +1103,7 @@
       yaxisLabel  
         .transition()  
         .attr("x", yAxisLabelTranslatePos[0])
-        .attr("y", yAxisLabelTranslatePos[1] - originalXScale.bandwidth())
+        .attr("y", yAxisLabelTranslatePos[1] - calcSquareSize(originalXScale, originalYScale))
 
       xaxis.selectAll('image')
         .transition()
@@ -1082,10 +1130,7 @@
         hideFinaleImages(); 
       } else if (index == 8) {
         showFinaleImages(); 
-      }
-
-      
-        
+      } 
     }); 
   }); 
 
@@ -1246,9 +1291,10 @@
       background-color: var(--yellow); 
       width: 25vw; 
       padding: var(--margin); 
-      height: 16vh; 
+      /* height: 16vh;  */
       top: 3vh; 
       left: 25vw; 
+      font-size: var(--body-font-size); 
     }
 
     #instruction {
@@ -1263,6 +1309,7 @@
       left: 53vw; 
       opacity: 0;
       transition: opacity var(--transition-time);
+      font-size: var(--body-font-size); 
     }
 
     #heatmap-content-pin{
@@ -1275,6 +1322,19 @@
       left: 50%; 
     }
 
+    @media (max-width: 768px) {
+
+      .heatmap-content {
+        width: 90%; 
+        /* height: 10vh;  */
+        left: 2.5%; 
+      }
+
+      .instruction {
+        left: 57vw; 
+      }
+
+    }
 
 </style>
     
