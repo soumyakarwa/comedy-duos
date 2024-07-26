@@ -182,17 +182,32 @@
   };
 
   function setScales(pairs){
-    // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
-    originalXScale = d3.scaleBand()
+    if(svgWidth > Constants.tabletSize){
+      // EPISODES INCREASES FROM 0 TO MAX EPISODES, LEFT TO RIGHT  
+      originalXScale = d3.scaleBand()
       .domain(episodeData.map(d => d.Episode))
       .range([xAxisXYPos[0], xAxisXYPos[1]])
       .padding(0.1);
 
-    // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
-    originalYScale = d3.scaleBand()
+      // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
+      originalYScale = d3.scaleBand()
+        .domain(episodeData.map(d => d.Season))
+        .range([yAxisHeight, 0])
+        .padding(0.1);
+    }
+    else {
+      originalXScale = d3.scaleBand()
       .domain(episodeData.map(d => d.Season))
-      .range([yAxisHeight, 0])
+      .range([xAxisXYPos[0], xAxisXYPos[1]])
       .padding(0.1);
+
+      // SEASONS INCREASES FROM 0 TO MAX SEASONS, BOTTOM TO TOP
+      originalYScale = d3.scaleBand()
+        .domain(episodeData.map(d => d.Episode))
+        .range([yAxisHeight, 0])
+        .padding(0.1);
+
+    }
 
     frequencyXScale = d3.scaleBand()
         .domain(pairs)

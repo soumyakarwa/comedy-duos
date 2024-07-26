@@ -367,12 +367,10 @@
       left: 70vw;
     }
 
-
     #jake {
       top: 30vh; 
       left: 4vw;
     }
-
 
     #amy {
       top: 70vh; 
@@ -388,8 +386,6 @@
       top: 80vh; 
       left: 39vw; 
     }
-
-
   }  
 
 </style>
