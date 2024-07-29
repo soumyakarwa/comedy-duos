@@ -63,7 +63,6 @@
     }); 
 
     function handleMouseEnter(char) {
-        console.log(char); 
         char.var.style.cursor = "pointer";
         document.getElementById('charMobileText').innerHTML = char.text;
     }

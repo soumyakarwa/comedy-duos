@@ -451,15 +451,15 @@
                 if (entry.isIntersecting) {
                     if (!connectingLine) {
                         connectingLine = true;
-                        addOrUpdateThumbPin(svg, leftPin); 
-                        addOrUpdateThumbPin(svg, rightPin); 
+                        // addOrUpdateThumbPin(svg, leftPin); 
+                        // addOrUpdateThumbPin(svg, rightPin); 
 
                         let contentOriginPin;
                         let chartOriginPin; 
                         // console.log(contentDiv.getBoundingClientRect(), ); 
                         if (window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize) {
                             test.pos = [svgWidth * 0.5, contentTop + contentDiv.offsetHeight]; 
-                            addOrUpdateThumbPin(svg, test); 
+                            // addOrUpdateThumbPin(svg, test); 
                             contentOriginPin = test.pos;
                             chartOriginPin = [svgWidth * 0.5, 0]; 
                         } else {
@@ -514,8 +514,8 @@
             episodeSvg.setAttribute("viewBox", `0 0 ${rectWidth} ${rectWidth}`);
 
             if(connectingLine){
-                addOrUpdateThumbPin(svg, leftPin)
-                addOrUpdateThumbPin(svg, rightPin)
+                // addOrUpdateThumbPin(svg, leftPin)
+                // addOrUpdateThumbPin(svg, rightPin)
 
                 let contentOriginPin;
                 let chartOriginPin; 
@@ -523,17 +523,13 @@
                 test.pos = [svgWidth * 0.5, contentTop + contentDiv.offsetHeight]; 
                 
                 if (window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize) {
-                    addOrUpdateThumbPin(svg, test); 
-                    test.ellipse.attr("opacity", 1); 
+                    // addOrUpdateThumbPin(svg, test); 
+                    // test.ellipse.attr("opacity", 1); 
                     contentOriginPin = test.pos;
                     chartOriginPin = [svgWidth * 0.5, 0]; 
                 } else {
                     contentOriginPin = [svgWidth * 0.625, 0];
                     chartOriginPin = [svgWidth * 0.375, 0]; 
-
-                    if(test.ellipse){
-                        removeThumbPin(svg, test); 
-                    }
                 }
 
                 addOrUpdateLine(svg, topLeft, chartOriginPin, leftPin.pos); 
@@ -642,12 +638,13 @@
 
 <section bind:this={episodeSection} class="episode-section" id="episode-breakdown-section">
     <div class="content divBorder" bind:this={contentDiv}>
-        <!-- <img id="episode-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/> -->
+        <img id="episode-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
+        <img id="episode-bottom-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
         {@html Constants.episodeBreakdownText[currentStep]}
     </div>
 
     <div class="chart divBorder" bind:this={chartDiv}>
-        <!-- <img id="chart-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/> -->
+        <img id="chart-pin" src="/assets/pins/pin.svg" alt="thumb pin" class="thumb-pin"/>
         <div id="col1"> 
             <div bind:this={gifContainer} class="container">
                 <div bind:this={oolongSlayerGif} id="oolongSlayerGif" class="overlay">
@@ -758,6 +755,7 @@
         width: fit-content;
         height: fit-content;
         margin-top: calc(var(--margin)*2); 
+        position: relative; 
         /* position: absolute;  
         top: 3vh;
         left: 53vw;  */
@@ -783,6 +781,7 @@
     .content {
         width: 25vw; 
         height: 28vh; 
+        position: relative; 
         /* height: var(--text-box-height);  */
         margin-top: calc(var(--margin)*2); 
         padding: var(--margin); 
@@ -802,6 +801,11 @@
 
     #episode-pin {
         top: -0.5rem;
+        left: 50%; 
+    }
+
+    #episode-bottom-pin {
+        top: 99%;
         left: 50%; 
     }
 

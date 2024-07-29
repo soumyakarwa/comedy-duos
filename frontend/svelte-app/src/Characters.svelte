@@ -37,8 +37,10 @@
         if (element) {element.style.opacity = 1;}
       }, Constants.maxLineDelay/3);
       setTimeout(() => {
-        addOrUpdateLine(svg, character.characterLine, character.originPin.pos, 
+        if(character.var){
+          addOrUpdateLine(svg, character.characterLine, character.originPin.pos, 
         [character.var.offsetLeft + character.var.offsetWidth/2, character.var.offsetTop]); 
+        }
       }, Constants.maxLineDelay/3);
   }
 
