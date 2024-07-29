@@ -240,13 +240,13 @@
     <div id="charText">{@html Constants.characterSectionText[currentTextIndex]}</div>
   </div>
   {#if characters}
-    {#each characters as c}
-      <div bind:this={c.var} id={c.id} class="character-containers divBorder">
-        <img src="/assets/pins/pin.svg" alt="thumb pin" class="character-pin"/>
-        <img src="assets/gifs/{c.id}.gif" alt="{c.name} intro gif"/>
-        <div>{c.name}</div>
-      </div>
-    {/each}
+      {#each characters as c}
+        <div bind:this={c.var} id={c.id} class="character-containers divBorder">
+          <img src="/assets/pins/pin.svg" alt="thumb pin" class="character-pin"/>
+          <img src="assets/gifs/{c.id}.gif" alt="{c.name} intro gif"/>
+          <div>{c.name}</div>
+        </div>
+      {/each}
   {/if}
   <svg bind:this={charactersSvg}></svg>
 </section>
@@ -347,12 +347,40 @@
     height: 100%; 
   }
 
+  .containers {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: calc(var(--margin) / 2);
+    background-color: var(--white);
+    font-size: var(--label-font-size);
+    width: fit-content;
+    padding: calc(var(--margin) / 2);
+    position: absolute;
+  }
+
+/* 
   @media (max-width: 480px) {
-    .character-containers{
+    
+    .characters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .containers {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       max-width: 25vw; 
     }
 
-    #terry {
+    /* .character-containers{
+      max-width: 25vw; 
+    } */
+
+    /* #terry {
       top: 51vh; 
       left: 15vw;
     }
@@ -385,7 +413,7 @@
     #gina {
       top: 80vh; 
       left: 39vw; 
-    }
-  }  
+    } */
+  /* }   */ 
 
-</style>
+</style>  

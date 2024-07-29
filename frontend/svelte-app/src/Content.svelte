@@ -1,6 +1,7 @@
 <script>
     import LandingPage from "./LandingPage.svelte";
 	import Characters from "./Characters.svelte";
+    import CharactersMobile from "./CharactersMobile.svelte";
 	import Standalone from "./Standalone.svelte";
 	import EpisodeBreakdown from "./EpisodeBreakdown.svelte";
 	import HeatMap from "./HeatMap.svelte";
@@ -69,17 +70,17 @@
 
 	function handleKeydown(event) {
         if (event.key === 'ArrowRight' || (event.type === 'touchend' && touchEndY < touchStartY)) { 
-        if (subIndexes[currentIndex] < pageSections[currentIndex].subSteps) {
-            subIndexes[currentIndex]++;
-        } else if (currentIndex < pageSections.length - 1) {
-            currentIndex++;
-        }
-    } else if (event.key === 'ArrowLeft' || (event.type === 'touchend' && touchEndY > touchStartY)) {
-        if (subIndexes[currentIndex] > 0) {
-            subIndexes[currentIndex]--;
-        } else if (currentIndex > 0) {
-            currentIndex--;
-        }
+            if (subIndexes[currentIndex] < pageSections[currentIndex].subSteps) {
+                subIndexes[currentIndex]++;
+            } else if (currentIndex < pageSections.length - 1) {
+                currentIndex++;
+            }
+        } else if (event.key === 'ArrowLeft' || (event.type === 'touchend' && touchEndY > touchStartY)) {
+            if (subIndexes[currentIndex] > 0) {
+                subIndexes[currentIndex]--;
+            } else if (currentIndex > 0) {
+                currentIndex--;
+            }
         }
     }
 
@@ -134,7 +135,12 @@
 <div bind:this={container} class="container">
     <div class="section" ><LandingPage/></div>
     <div class="section"><Standalone text={Constants.standaloneIntroduction} connectionBoolean={standaloneIntroduction} /></div>
-    <div class="section"><Characters currentTextIndex={subIndexes[2]}/></div>
+    {#if window.innerWidth > Constants.mobileSize}
+        <div class="section"><Characters currentTextIndex={subIndexes[2]}/></div>
+    {:else}
+        <div class="section"><CharactersMobile currentTextIndex={subIndexes[2]}/></div>
+    {/if}
+    
     <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={firstStandaloneBoolean}/></div>
     <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[4]}/></div>
     <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[5]}/></div>
