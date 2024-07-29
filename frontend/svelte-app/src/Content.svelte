@@ -33,9 +33,10 @@
     export let firstStandaloneBoolean = {
         svg: null,
         index: 2,
-        top: true,
+        top: false,
         bottom: true,
-        lineTop: {tablet: [[0.5, 0]], desktop: [[0.5, 0]]},
+        // lineTop: {tablet: [[0.5, 0]], desktop: [[0.5, 0]]},
+        lineTop: null,
         lineBottom: {tablet: [[0.5, 1]], desktop: [[0.375, 1], [0.625, 1]]},
     };
     export let secondStandaloneBoolean = 

@@ -456,8 +456,9 @@
 
                         let contentOriginPin;
                         let chartOriginPin; 
-                        if (window.innerWidth < Constants.tabletSize) {
-                            test.pos = [svgWidth * 0.5, contentTop + contentDiv.getBoundingClientRect().height]; 
+                        // console.log(contentDiv.getBoundingClientRect(), ); 
+                        if (window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize) {
+                            test.pos = [svgWidth * 0.5, contentTop + contentDiv.offsetHeight]; 
                             addOrUpdateThumbPin(svg, test); 
                             contentOriginPin = test.pos;
                             chartOriginPin = [svgWidth * 0.5, 0]; 
@@ -518,9 +519,12 @@
 
                 let contentOriginPin;
                 let chartOriginPin; 
-                if (window.innerWidth < Constants.tabletSize) {
-                    test.pos = [svgWidth * 0.5, contentTop + contentDiv.getBoundingClientRect().height]; 
+                
+                test.pos = [svgWidth * 0.5, contentTop + contentDiv.offsetHeight]; 
+                
+                if (window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize) {
                     addOrUpdateThumbPin(svg, test); 
+                    test.ellipse.attr("opacity", 1); 
                     contentOriginPin = test.pos;
                     chartOriginPin = [svgWidth * 0.5, 0]; 
                 } else {

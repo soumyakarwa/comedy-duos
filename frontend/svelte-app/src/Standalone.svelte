@@ -73,7 +73,8 @@
                         if (entry.isIntersecting) {
                             if (!connectingLine) {
                                 connectingLine = true;
-                                if(window.innerWidth < Constants.tabletSize){
+                                console.log(window.innerWidth); 
+                                if (window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize) {
                                     if (connectionBoolean.top) {
                                     connectionBoolean.lineTop.tablet.forEach((l, i) => {
                                         addOrUpdateLine(svg, topLines.tablet[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
@@ -124,7 +125,7 @@
 
             // If lines are already drawn, redraw the lines
             if (connectingLine) {
-                if(window.innerWidth < Constants.tabletSize){
+                if (window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize) {
                     console.log("tablet"); 
                     if (connectionBoolean.top) {
                         connectionBoolean.lineTop.tablet.forEach((l, i) => {
