@@ -49,12 +49,14 @@
         observer.observe(textBoxMobile);
 
         window.addEventListener('resize', () => { 
-            svgWidth = characterSection.getBoundingClientRect().width;
-            svgHeight = characterSection.getBoundingClientRect().height;
-            pinTop.pos = [textBoxMobile.offsetLeft + textBoxMobile.offsetWidth/2, textBoxMobile.offsetTop]; 
-            if (connectingLine) {
-                addOrUpdateLine(svg, topLine, [svgWidth*0.5, 0], pinTop.pos); 
-                connectingLine = true;
+            if(charactersMobileSection){
+                svgWidth = charactersMobileSection.getBoundingClientRect().width;
+                svgHeight = charactersMobileSection.getBoundingClientRect().height;
+                pinTop.pos = [textBoxMobile.offsetLeft + textBoxMobile.offsetWidth/2, textBoxMobile.offsetTop]; 
+                if (connectingLine) {
+                    addOrUpdateLine(svg, topLine, [svgWidth*0.5, 0], pinTop.pos); 
+                    connectingLine = true;
+                }
             }
         }); 
 
@@ -72,7 +74,9 @@
     }
 
     $: if(currentTextIndex == 1){
-        characterGrid.style.opacity = 1; 
+        if(characterGrid){
+            characterGrid.style.opacity = 1; 
+        }
     }
 </script>
 

@@ -162,45 +162,47 @@
 
     // making it responsive
     window.addEventListener('resize', () => { 
-      svgWidth = characterSection.getBoundingClientRect().width;
-      svgHeight = characterSection.getBoundingClientRect().height;
+      if(characterSection){
+        svgWidth = characterSection.getBoundingClientRect().width;
+        svgHeight = characterSection.getBoundingClientRect().height;
 
-      textBoxWidth = textBox.getBoundingClientRect().width;
+        textBoxWidth = textBox.getBoundingClientRect().width;
 
-      textBox.style.left = `${(svgWidth - textBoxWidth)/2}px`;  
-      textBox.style.top = `${svgHeight * 0.03}px`;  
-    
-      textBoxTop = textBox.offsetTop; 
-      textBoxLeft = textBox.offsetLeft;   
-      textBoxHeight = textBox.getBoundingClientRect().height;
+        textBox.style.left = `${(svgWidth - textBoxWidth)/2}px`;  
+        textBox.style.top = `${svgHeight * 0.03}px`;  
       
-      textBoxBottom =  textBoxTop + textBoxHeight; 
-      textBoxRight = textBoxLeft + textBoxWidth;
+        textBoxTop = textBox.offsetTop; 
+        textBoxLeft = textBox.offsetLeft;   
+        textBoxHeight = textBox.getBoundingClientRect().height;
+        
+        textBoxBottom =  textBoxTop + textBoxHeight; 
+        textBoxRight = textBoxLeft + textBoxWidth;
 
-      pinTop.pos = [svgWidth*0.5,  textBoxTop]; 
-      pinRight.pos = [textBoxRight,  textBoxTop + textBoxHeight/2]; 
-      pinLeft.pos = [textBoxLeft,  textBoxTop+ textBoxHeight/2];
-      pinBottom.pos = [svgWidth*0.5, textBoxBottom]; 
-      
-      setCharacterOriginPin(svgWidth, pinBottom, pinLeft, pinRight); 
-      addOrUpdateThumbPin(svg, pinTop); 
-      addOrUpdateThumbPin(svg, pinLeft); 
-      addOrUpdateThumbPin(svg, pinRight); 
-      addOrUpdateThumbPin(svg, pinBottom);
+        pinTop.pos = [svgWidth*0.5,  textBoxTop]; 
+        pinRight.pos = [textBoxRight,  textBoxTop + textBoxHeight/2]; 
+        pinLeft.pos = [textBoxLeft,  textBoxTop+ textBoxHeight/2];
+        pinBottom.pos = [svgWidth*0.5, textBoxBottom]; 
+        
+        setCharacterOriginPin(svgWidth, pinBottom, pinLeft, pinRight); 
+        addOrUpdateThumbPin(svg, pinTop); 
+        addOrUpdateThumbPin(svg, pinLeft); 
+        addOrUpdateThumbPin(svg, pinRight); 
+        addOrUpdateThumbPin(svg, pinBottom);
 
-      if(connectingLine){
-        addOrUpdateLine(svg, topLine, [svgWidth*0.5, 0], pinTop.pos); 
-      }
-
-      // characters = setCharacterPins(svgWidth, svgHeight, textBoxBottom, textBoxLeft, textBoxRight);
-
-      characters.forEach((character) => {
-        if(character.var.style.opacity == 1){
-          addOrUpdateLine(svg, character.characterLine, character.originPin.pos, 
-          [character.var.offsetLeft + character.var.offsetWidth/2, character.var.offsetTop]); 
+        if(connectingLine){
+          addOrUpdateLine(svg, topLine, [svgWidth*0.5, 0], pinTop.pos); 
         }
-      })
 
+        // characters = setCharacterPins(svgWidth, svgHeight, textBoxBottom, textBoxLeft, textBoxRight);
+
+        characters.forEach((character) => {
+          if(character.var.style.opacity == 1){
+            addOrUpdateLine(svg, character.characterLine, character.originPin.pos, 
+            [character.var.offsetLeft + character.var.offsetWidth/2, character.var.offsetTop]); 
+          }
+        })
+      }
+      
     });
     
   });
@@ -226,9 +228,7 @@
             document.getElementById('charText').innerHTML = Constants.characterSectionText[currentTextIndex];
           });
 
-        } else {
-          console.error(`Element with ID ${char.id} not found.`);
-        }
+        } 
       })
     }
   } 

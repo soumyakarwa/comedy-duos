@@ -50,6 +50,7 @@
     let subIndexes = Array(pageSections.length).fill(0);
     let touchStartY = 0;
     let touchEndY = 0;
+    let windowWidth = window.innerWidth;
 
 
     function handleResize() {
@@ -66,6 +67,7 @@
                 ellipse.setAttribute('ry', 6);
             });
         }
+        windowWidth = window.innerWidth;
     }
 
 	function handleKeydown(event) {
@@ -135,7 +137,7 @@
 <div bind:this={container} class="container">
     <div class="section" ><LandingPage/></div>
     <div class="section"><Standalone text={Constants.standaloneIntroduction} connectionBoolean={standaloneIntroduction} /></div>
-    {#if window.innerWidth > Constants.mobileSize}
+    {#if windowWidth > Constants.mobileSize}
         <div class="section"><Characters currentTextIndex={subIndexes[2]}/></div>
     {:else}
         <div class="section"><CharactersMobile currentTextIndex={subIndexes[2]}/></div>
