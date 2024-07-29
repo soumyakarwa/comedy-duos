@@ -20,10 +20,24 @@
 
 	export let episodeData;
 	export let specificDataPoint;
-    export let standaloneIntroduction = 
-    {svg: null, index: 1,top: true, bottom: true, lineTop: [[0.455, 0]], lineBottom: [[0.5, 1]]}; 
-    export let firstStandaloneBoolean = 
-    {svg: null, index: 2, top: false, bottom: true, lineTop: [[0.5, 0]], lineBottom: [[0.375, 1], [0.625, 1]]}; 
+    export let standaloneIntroduction = {
+        svg: null, 
+        index: 1,
+        top: true, 
+        bottom: true, 
+        lineTop: {tablet: [[0.455, 0]], desktop: [[0.455, 0]]}, 
+        lineBottom: {tablet: [[0.5, 1]], desktop: [[0.5, 1]]}
+    }; 
+    // export let firstStandaloneBoolean = 
+    // {svg: null, index: 2, top: false, bottom: true, lineTop: [[0.5, 0]], lineBottom: [[0.375, 1], [0.625, 1]]}; 
+    export let firstStandaloneBoolean = {
+        svg: null,
+        index: 2,
+        top: true,
+        bottom: true,
+        lineTop: {tablet: [[0.5, 0]], desktop: [[0.5, 0]]},
+        lineBottom: {tablet: [[0.5, 1]], desktop: [[0.375, 1], [0.625, 1]]},
+    };
     export let secondStandaloneBoolean = 
     {svg: null, index: 3,top: false, bottom: false, lineTop: null, lineBottom: null}; 
     export let standaloneNotes = 
@@ -34,7 +48,7 @@
     let subIndexes = Array(pageSections.length).fill(0);
 
 
-    function handleEllipseResize() {
+    function handleResize() {
         const ellipses = document.querySelectorAll('ellipse');
         if(window.innerWidth < 480){
             ellipses.forEach(ellipse => {
@@ -78,11 +92,11 @@
 		}
 
         window.addEventListener('keydown', handleKeydown);
-        window.addEventListener('resize', handleEllipseResize);
+        window.addEventListener('resize', handleResize);
 
 		return () => {
 			window.removeEventListener('keydown', handleKeydown);
-            window.removeEventListener('resize', handleEllipseResize);
+            window.removeEventListener('resize', handleResize);
 		};
 
 	});

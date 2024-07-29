@@ -58,6 +58,13 @@ export function addOrUpdateLine(svg, lineData, startPos, endPos) {
   lineData.endingPos = endPos;
 }
 
+export function removeLine(lineData) {
+  if (lineData.line) {
+    lineData.line.remove();
+    lineData.line = null;
+  }
+}
+
 export function addOrUpdateThumbPin(
   svg,
   thumbPin,
@@ -72,6 +79,13 @@ export function addOrUpdateThumbPin(
       .duration(Constants.transitionTime)
       .attr("cx", thumbPin.pos[0])
       .attr("cy", thumbPin.pos[1]);
+  }
+}
+
+export function removeThumbPin(svg, thumbPin) {
+  if (thumbPin.ellipse) {
+    thumbPin.ellipse.remove();
+    thumbPin.ellipse = null;
   }
 }
 

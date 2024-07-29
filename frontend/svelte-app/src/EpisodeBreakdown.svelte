@@ -3,7 +3,7 @@
     import * as d3 from 'd3';
     import { writable } from 'svelte/store';
     import * as Constants from "./Constants.js"; 
-    import {addOrUpdateLine, addOrUpdateThumbPin} from "./Util.js"; 
+    import {addOrUpdateLine, addOrUpdateThumbPin, removeThumbPin} from "./Util.js"; 
 
     // SVG ELEMENTS
     let episodeSvg, chartDiv, contentDiv, overlaySvg; 
@@ -39,6 +39,7 @@
 
     let leftPin = {ellipse: null, pos: null}; 
     let rightPin = {ellipse: null, pos: null}; 
+    let test = {ellipse: null, pos: null}; 
 
     let topLeft = {line: null, startingPos: null, endingPos: null};
     let topRight = {line: null, startingPos: null, endingPos: null};
@@ -450,10 +451,23 @@
                 if (entry.isIntersecting) {
                     if (!connectingLine) {
                         connectingLine = true;
-                        addOrUpdateThumbPin(svg, leftPin)
-                        addOrUpdateThumbPin(svg, rightPin)
-                        addOrUpdateLine(svg, topLeft,[svgWidth * 0.375, 0], leftPin.pos); 
-                        addOrUpdateLine(svg, topRight,[svgWidth * 0.625, 0], rightPin.pos); 
+                        addOrUpdateThumbPin(svg, leftPin); 
+                        addOrUpdateThumbPin(svg, rightPin); 
+
+                        let contentOriginPin;
+                        let chartOriginPin; 
+                        if (window.innerWidth < Constants.tabletSize) {
+                            test.pos = [svgWidth * 0.5, contentTop + contentDiv.getBoundingClientRect().height]; 
+                            addOrUpdateThumbPin(svg, test); 
+                            contentOriginPin = test.pos;
+                            chartOriginPin = [svgWidth * 0.5, 0]; 
+                        } else {
+                            contentOriginPin = [svgWidth * 0.625, 0];
+                            chartOriginPin = [svgWidth * 0.375, 0]; 
+}
+
+                        addOrUpdateLine(svg, topLeft, chartOriginPin, leftPin.pos); 
+                        addOrUpdateLine(svg, topRight, contentOriginPin, rightPin.pos); 
                     }
                 }
             });
@@ -501,8 +515,25 @@
             if(connectingLine){
                 addOrUpdateThumbPin(svg, leftPin)
                 addOrUpdateThumbPin(svg, rightPin)
-                addOrUpdateLine(svg, topLeft,[svgWidth * 0.375, 0], leftPin.pos); 
-                addOrUpdateLine(svg, topRight,[svgWidth * 0.625, 0], rightPin.pos); 
+
+                let contentOriginPin;
+                let chartOriginPin; 
+                if (window.innerWidth < Constants.tabletSize) {
+                    test.pos = [svgWidth * 0.5, contentTop + contentDiv.getBoundingClientRect().height]; 
+                    addOrUpdateThumbPin(svg, test); 
+                    contentOriginPin = test.pos;
+                    chartOriginPin = [svgWidth * 0.5, 0]; 
+                } else {
+                    contentOriginPin = [svgWidth * 0.625, 0];
+                    chartOriginPin = [svgWidth * 0.375, 0]; 
+
+                    if(test.ellipse){
+                        removeThumbPin(svg, test); 
+                    }
+                }
+
+                addOrUpdateLine(svg, topLeft, chartOriginPin, leftPin.pos); 
+                addOrUpdateLine(svg, topRight, contentOriginPin, rightPin.pos); 
             }
 
             episodeRectText.forEach((entry, i) => {

@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
-    import {createThumbPin, setSvgDimensions, createLine, resizeSVGs, addOrUpdateLine} from "./Util.js"; 
+    import {createThumbPin, setSvgDimensions, createLine, resizeSVGs, addOrUpdateLine, removeLine} from "./Util.js"; 
     import * as Constants from "./Constants.js"
 
     export let text;
@@ -14,8 +14,8 @@
     let descriptionDivRect;
     let svg; 
 
-    let topLines = [];
-    let bottomLines = [];
+    let topLines = {tablet: [], desktop: []};
+    let bottomLines = {tablet: [], desktop: []};
 
     let bottomPin = null; 
     let topPin = null; 
@@ -28,12 +28,20 @@
 
     onMount(() => {
 
-        connectionBoolean.lineTop?.forEach((l) => {
-            topLines.push({line: null, startingPos: null, endingPos: null}); 
+        connectionBoolean.lineTop?.tablet.forEach((l) => {
+            topLines.tablet.push({line: null, startingPos: null, endingPos: null}); 
         });
 
-        connectionBoolean.lineBottom?.forEach((l) => {
-            bottomLines.push({line: null, startingPos: null, endingPos: null});
+        connectionBoolean.lineBottom?.tablet.forEach((l) => {
+            bottomLines.tablet.push({line: null, startingPos: null, endingPos: null});
+        });
+
+        connectionBoolean.lineTop?.desktop.forEach((l) => {
+            topLines.desktop.push({line: null, startingPos: null, endingPos: null}); 
+        });
+
+        connectionBoolean.lineBottom?.desktop.forEach((l) => {
+            bottomLines.desktop.push({line: null, startingPos: null, endingPos: null});
         });
 
         descriptionDiv = document.getElementById(`standalone-description-${connectionBoolean.index}`); 
@@ -65,18 +73,34 @@
                         if (entry.isIntersecting) {
                             if (!connectingLine) {
                                 connectingLine = true;
-                                if (connectionBoolean.top) {
-                                    connectionBoolean.lineTop.forEach((l, i) => {
-                                        addOrUpdateLine(svg, topLines[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
+                                if(window.innerWidth < Constants.tabletSize){
+                                    if (connectionBoolean.top) {
+                                    connectionBoolean.lineTop.tablet.forEach((l, i) => {
+                                        addOrUpdateLine(svg, topLines.tablet[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
                                     });        
-                                }       
-                                if (connectionBoolean.bottom) { 
-                                    setTimeout(() => {
-                                        connectionBoolean.lineBottom.forEach((l, i) => {
-                                            addOrUpdateLine(svg, bottomLines[i], bottomPin, [svgWidth * l[0], svgHeight * l[1]]);                               
-                                        });   
-                                    }, Constants.maxLineDelay*3);  
-                                } 
+                                    }       
+                                    if (connectionBoolean.bottom) { 
+                                        setTimeout(() => {
+                                            connectionBoolean.lineBottom.tablet.forEach((l, i) => {
+                                                addOrUpdateLine(svg, bottomLines.tablet[i], bottomPin, [svgWidth * l[0], svgHeight * l[1]]);                               
+                                            });   
+                                        }, Constants.maxLineDelay*3);  
+                                    } 
+                                }
+                                else {
+                                    if (connectionBoolean.top) {
+                                    connectionBoolean.lineTop.desktop.forEach((l, i) => {
+                                        addOrUpdateLine(svg, topLines.desktop[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
+                                    });        
+                                    }       
+                                    if (connectionBoolean.bottom) { 
+                                        setTimeout(() => {
+                                            connectionBoolean.lineBottom.desktop.forEach((l, i) => {
+                                                addOrUpdateLine(svg, bottomLines.desktop[i], bottomPin, [svgWidth * l[0], svgHeight * l[1]]);                               
+                                            });   
+                                        }, Constants.maxLineDelay*3);  
+                                    } 
+                                }
                             }
                         }
                     });
@@ -100,16 +124,65 @@
 
             // If lines are already drawn, redraw the lines
             if (connectingLine) {
-                if (connectionBoolean.top) {
-                    connectionBoolean.lineTop?.forEach((l, i) => {
-                        addOrUpdateLine(svg, topLines[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
-                    });        
-                }       
-                if (connectionBoolean.bottom) { 
-                    connectionBoolean.lineBottom?.forEach((l, i) => {
-                        addOrUpdateLine(svg, bottomLines[i], bottomPin, [svgWidth * l[0], svgHeight * l[1]]);                               
-                    });   
-                } 
+                if(window.innerWidth < Constants.tabletSize){
+                    console.log("tablet"); 
+                    if (connectionBoolean.top) {
+                        connectionBoolean.lineTop.tablet.forEach((l, i) => {
+                            console.log("adding/updating toplines.tablet"); 
+                            addOrUpdateLine(svg, topLines.tablet[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
+                        });     
+                        
+                        connectionBoolean.lineTop.desktop.forEach((l, i) => {
+                            if (topLines.desktop[i].line) {
+                                console.log("removing toplines.desktop"); 
+                                removeLine(topLines.desktop[i]); 
+                            }
+                        });
+                    }       
+                    if (connectionBoolean.bottom) { 
+                        connectionBoolean.lineBottom.tablet.forEach((l, i) => {
+                            console.log("adding/updating bottom.tablet"); 
+                            addOrUpdateLine(svg, bottomLines.tablet[i], bottomPin, [svgWidth * l[0], svgHeight * l[1]]);                               
+                        });  
+                        
+                        connectionBoolean.lineBottom.desktop.forEach((l, i) => {
+                            if (bottomLines.desktop[i].line) {
+                                console.log("removing bottomLines.desktop"); 
+                                removeLine(bottomLines.desktop[i]); 
+                            }
+                        });
+                    } 
+                }
+                else {
+                    console.log("desktop");
+                    if (connectionBoolean.top) {
+                        connectionBoolean.lineTop.desktop.forEach((l, i) => {
+                            console.log("adding/updating topLines.desktop"); 
+                            addOrUpdateLine(svg, topLines.desktop[i], [svgWidth * l[0], svgHeight * l[1]], topPin)
+                        });  
+                        
+                        console.log(connectionBoolean.lineTop.tablet); 
+                        connectionBoolean.lineTop.tablet.forEach((l, i) => {
+                            if (topLines.tablet[i].line) {
+                                console.log("removing topLines.tablet"); 
+                                removeLine(topLines.tablet[i]); 
+                            }
+                        });
+                    }       
+                    if (connectionBoolean.bottom) { 
+                        connectionBoolean.lineBottom.desktop.forEach((l, i) => {
+                            console.log("adding/updating bottomLines.desktop"); 
+                            addOrUpdateLine(svg, bottomLines.desktop[i], bottomPin, [svgWidth * l[0], svgHeight * l[1]]);                               
+                        });     
+
+                        connectionBoolean.lineBottom.tablet.forEach((l, i) => {
+                            if (bottomLines.tablet[i].line) {
+                                console.log("adding/updating bottomLines.tablet"); 
+                                removeLine(bottomLines.tablet[i]); 
+                            }
+                        }); 
+                    } 
+                }
             }
         });
 
