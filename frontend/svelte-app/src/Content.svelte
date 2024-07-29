@@ -47,6 +47,8 @@
     let container;
     let currentIndex = 0;
     let subIndexes = Array(pageSections.length).fill(0);
+    let touchStartY = 0;
+    let touchEndY = 0;
 
 
     function handleResize() {
@@ -66,13 +68,13 @@
     }
 
 	function handleKeydown(event) {
-        if (event.key === 'ArrowRight') {
+        if (event.key === 'ArrowRight' || (event.type === 'touchend' && touchEndY < touchStartY)) { 
         if (subIndexes[currentIndex] < pageSections[currentIndex].subSteps) {
             subIndexes[currentIndex]++;
         } else if (currentIndex < pageSections.length - 1) {
             currentIndex++;
         }
-        } else if (event.key === 'ArrowLeft') {
+    } else if (event.key === 'ArrowLeft' || (event.type === 'touchend' && touchEndY > touchStartY)) {
         if (subIndexes[currentIndex] > 0) {
             subIndexes[currentIndex]--;
         } else if (currentIndex > 0) {
@@ -80,6 +82,16 @@
         }
         }
     }
+
+    function handleTouchStart(event) {
+        touchStartY = event.changedTouches[0].screenY;
+    }
+
+    function handleTouchEnd(event) {
+        touchEndY = event.changedTouches[0].screenY;
+        handleKeydown(event);
+    }
+
 
 
 	onMount(async () => {
@@ -94,10 +106,13 @@
 
         window.addEventListener('keydown', handleKeydown);
         window.addEventListener('resize', handleResize);
-
+        window.addEventListener('touchstart', handleTouchStart);
+        window.addEventListener('touchend', handleTouchEnd);
 		return () => {
 			window.removeEventListener('keydown', handleKeydown);
             window.removeEventListener('resize', handleResize);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchend', handleTouchEnd);
 		};
 
 	});
@@ -106,9 +121,9 @@
 		e.preventDefault();
 	}, { passive: false });
 
-	document.addEventListener('touchmove', (e) => {
-		e.preventDefault();
-	}, { passive: false });
+	// document.addEventListener('touchmove', (e) => {
+	// 	e.preventDefault();
+	// }, { passive: false });
 
     $: if (container) {
         container.style.transform = `translateY(-${(currentIndex) * 100}vh)`;
