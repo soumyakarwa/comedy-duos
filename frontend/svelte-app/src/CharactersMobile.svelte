@@ -138,10 +138,11 @@
 
     .textBoxMobile {
         width: 80vw; 
-        height: 30vh; 
+        height: 25vh; 
         background-color: var(--white);
         padding: var(--margin);
         margin-top: calc(var(--margin)*2); 
+        font-size: var(--body-font-size); 
         position: relative; 
     }
 
@@ -180,7 +181,7 @@
 
 
     .gif {
-        width: 30vw;
+        width: 25vw;
         height: auto;
         display: block;
     }
