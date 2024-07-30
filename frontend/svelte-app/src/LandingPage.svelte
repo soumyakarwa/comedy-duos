@@ -134,10 +134,10 @@
     }
 
     if(!arrowImgData.img){
-        arrowImgData.img = svg.append("image")
-        .attr("xlink:href", "/assets/landing-page/arrowsWithBorder.svg")
-        .attr("opacity", 0); 
-      }
+      arrowImgData.img = svg.append("image")
+      .attr("xlink:href", "/assets/landing-page/arrowsWithBorder.svg")
+      .attr("opacity", 0); 
+    }
 
   }
 
@@ -161,7 +161,7 @@
     .attr("height", detectiveImgData.height); 
 
     // IMMEDIATE UPDATE FOR THUMB PINS AND LINES IF THE PAGE IS BEING RESIZED
-    if (initialSetup) {
+    if (initialSetup && window.innerWidth > Constants.mobileSize) {
     setTimeout(() => {
       arrowImgData.img
         .attr("x", arrowImgData.x)
@@ -212,7 +212,7 @@
         .attr("x", arrowImgData.x)
         .attr("y", arrowImgData.y)
         .attr("height", arrowImgData.height); 
-      addOrUpdateThumbPin(svg, arrowImgData.topPins);
+      if(window.innerWidth > Constants.mobileSize) {addOrUpdateThumbPin(svg, arrowImgData.topPins)};
       addOrUpdateThumbPin(svg, caseImageData.topPins);
       addOrUpdateThumbPin(svg, caseImageData.bottomPins);
       addOrUpdateThumbPin(svg, titleImgData.topPins[0]);
