@@ -480,7 +480,14 @@
   function showAllSquares() {
 
     const transitionTime = Constants.transitionTime;
-    const hoverIncrease = 4;
+    let hoverIncrease; 
+    if(window.innerWidth > Constants.mobileSize){
+      hoverIncrease = 4;
+    }
+    else {
+      hoverIncrease = 6; 
+    }
+    
 
     // REMOVING ALL PREVIOUSLY ADDED 
     g.selectAll('.specific-square')
