@@ -229,6 +229,7 @@
                 .attr('width', imageRadius * 2)
                 .attr('height', imageRadius * 2);
 
+           
             const text = specificEpisodeGroup
                 .append('text')
                 .attr('x', imageX)
@@ -237,16 +238,18 @@
                 .attr('text-anchor', 'middle')
                 .text(name)
                 .style('fill', 'black')
-                .style('font-size', Constants.labelFontSize)
+                .style('font-size', Constants.remToPixels(Constants.labelFontSize))
                 .style('opacity', 0);
-
-            text
-                .transition()
-                .delay(Constants.transitionTime)
-                .duration(Constants.transitionTime)
-                .style('opacity', 1);
-
-        texts.push(text);
+            if(window.innerWidth > Constants.mobileSize){
+                text
+                    .transition()
+                    .delay(Constants.transitionTime)
+                    .duration(Constants.transitionTime)
+                    .style('opacity', 1);
+            }
+                
+            
+        texts.push(text);    
         images.push(image);
         });
         let names = characterNames; 
@@ -396,7 +399,7 @@
                 .attr('y', imageY - imageRadius)
                 .attr('width', imageRadius * 2)
                 .attr('height', imageRadius * 2);
-
+            
             element.texts[rowIndex]
                 .transition()
                 .attr('x', imageX)
@@ -626,7 +629,7 @@
 
         if(gifContainer){
             if(window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize){
-                rectWidth = 0.75 * gifContainer.getBoundingClientRect().width; 
+                rectWidth = 0.5 * gifContainer.getBoundingClientRect().width; 
             }
             else {
                 rectWidth = gifContainer.getBoundingClientRect().width
