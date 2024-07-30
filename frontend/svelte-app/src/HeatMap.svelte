@@ -65,7 +65,7 @@
       bottom: pageMarginInPixels, 
       left: pageMarginInPixels * 2 
     } : { 
-      top: pageMarginInPixels * 12  , 
+      top: pageMarginInPixels * 9  , 
       right: pageMarginInPixels, 
       bottom: pageMarginInPixels, 
       left: pageMarginInPixels 
@@ -219,7 +219,7 @@
       img.var.style.zIndex = 5;
       setTimeout(() => {
         img.var.style.opacity = 1; 
-      }, index * Constants.transitionTime/2); 
+      }, index * Constants.transitionTime/1.5); 
     });
   }
 
@@ -1356,8 +1356,100 @@
         left: 2.5%; 
       }
 
-      .instruction {
-        left: 57vw; 
+      #instruction {
+        left: 67.5%;
+        top: 10%;
+        width: 25%; 
+      }
+
+      #img1 {
+        top: 50%; 
+        left: 50%; 
+        transform: translate(-50%, -50%);  
+      }
+      
+      #img1  img:nth-of-type(2){
+        width: 80vw; 
+      }
+
+      #img2 {
+        top: 40%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+      }
+
+      #img2  img:nth-of-type(2){
+        width: 80vw; 
+      }
+
+      #img3 {
+        top: 60%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+      }
+
+      #img3  img:nth-of-type(2){
+        width: 80vw; 
+      }
+
+      #img4 {
+        top: 60%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+      }
+
+      #img4  img:nth-of-type(2){
+        width: 80vw; 
+      }
+
+      #img5 {
+        top: 50%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+      }
+
+      #img5  img:nth-of-type(2){
+        width: 80vw; 
+      }
+
+      #img6 {
+        top: 40%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+      }
+
+      #img6  img:nth-of-type(2){
+        width: 80vw; 
+      }
+
+      #img7 {
+        top: 70%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+      }
+
+      #img7  img:nth-of-type(2){
+        width: 80vw; 
+      }
+
+      #img8 {
+        top: 60%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+      }
+
+      #img8  img:nth-of-type(2){
+        width: 80vw; 
+      }
+
+      #img9 {
+        top: 50%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+      }
+
+      #img9  img:nth-of-type(2){
+        width: 80vw; 
       }
 
     }
