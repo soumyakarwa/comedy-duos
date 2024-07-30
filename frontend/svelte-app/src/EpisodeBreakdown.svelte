@@ -849,12 +849,8 @@
 
         .content{
             width: 80vw; 
-            height: 17vh; 
-            /* height: 15vh;  */
-        }
-
-        .chart {
-            /* margin-top: 0;  */
+            /* height: 17vh;  */
+            height: 15vh; 
         }
 
         #oolongSlayerGif img{
