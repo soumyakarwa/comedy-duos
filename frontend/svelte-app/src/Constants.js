@@ -178,7 +178,7 @@ export const standaloneIntroduction = [
 
 export const characterSectionText = [
   `Brooklyn Nine-Nine features a cast of beloved characters with unique dynamics. Whether it's Jake and Amy navigating their complicated romantic feelings, Captain Holt and Jake finding harmony in their contrasting personalities, or Charles and Rosa having an eccentric but solid friendship, these character relationships are fascinating and set the stage for an analysis to determine the most popular and loved character duo!`,
-  `Hover on each character to find out more or arrow-right get straight into the analysis!`,
+  `Hover 👆🏻 on each character to find out more or arrow-right ➡️ get straight into the analysis!`,
   `Captain Raymond Holt is a dedicated and calm leader who, despite his unemotional facade, deeply cares for his team. As the first openly Black gay police officer in the NYPD, he has faced many challenges. However, managing the carefree, talented, yet irresponsible Detective Jake Peralta might be his toughest battle.`,
   `Detective Jacob "Jake" Peralta is a talented yet immature detective known for his reckless behavior and unwavering confidence. Though he often shirks responsibility and enjoys pranks, his natural detective skills and charm make him an invaluable, if unpredictable, team member.`,
   `Detective Amy Santiago is fiercely competitive, highly organized, and detail-oriented. Ambitious and obsessed with rules, she strives for perfection in everything, from her organized binders to her goal of becoming the youngest NYPD captain. Her dedication and efficiency make her indispensable to the team, though her intense career focus leads to humorous and endearing quirks.`,

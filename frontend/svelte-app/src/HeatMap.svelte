@@ -1181,7 +1181,7 @@
       </div>
       <div id="instruction">
         <img id="instruction-pin" src="/assets/pins/orange-pin.svg" alt="thumb pin" class="thumb-pin"/>
-        Click on an episode to know more, or arrow-right to move ahead!
+        Click 👆🏻 on an episode to know more, or arrow-right ➡️ to move ahead!
       </div>
       {#each lastStepImages as image, i}
         <div bind:this={image.var} class="character-containers divBorder finaleImages" id={image.id}>
