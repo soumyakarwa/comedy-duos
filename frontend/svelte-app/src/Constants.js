@@ -189,21 +189,21 @@ export const characterSectionText = [
 ];
 
 export const standaloneText1 = [
-  `To identify Brooklyn Nine-Nine's most iconic duo, I conducted a language analysis of each episode’s episode description to find out which characters have been grouped together. Some of the more obvious ones are Jake and Captain Holt or Jake and Amy, but there have been top-rated episodes with Charles and Amy paired together or even Terry and Rosa! The question is, how many episodes are these character duos paired together in, and how popular was the episode?`,
+  `To identify Brooklyn Nine-Nine's most iconic duo, I analyzed each episode’s episode descriptions to pinpoint which characters have been grouped together. Some of the more obvious ones are Jake and Captain Holt or Jake and Amy, but there have been top-rated episodes with Charles and Amy paired together or even Terry and Rosa! The question is, how many episodes are these character duos paired together in, and how popular was the episode?`,
   `<span class="italic">Methodology</span>`,
-  `I used a dataset of IMDb ratings and votes for all 153 episodes, which also included information like title, airdate, season number, episode number, official description, etc. I scraped two more episode descriptions datasets from Wikipedia and WikiFandom to improve the accuracy of the analysis. Using the Natural Language Toolkit and OpenAI API, I broke every description down into different plot points and, consequently, different character groups.`,
-  `Then, I counted the number of episodes and calculated the average IMDb episode rating for all identified character duos. That was a lot of words, but let me break down my analysis with an example–Season 3, Episode 4, "The Oolong Slayer."`,
+  `I used a dataset of IMDb ratings and votes for all 153 episodes, which also included information like title, airdate, season number, episode number, official description, etc. I scraped two more episode description datasets from Wikipedia and WikiFandom to improve the accuracy of the analysis. Using the Natural Language Toolkit and OpenAI API, I broke every description down into different plot points and, consequently, different character groups.`,
+  `Then, I calculated the average IMDb rating for all identified character duos. That was a lot of words, but let me break down my analysis with an example–Season 3, Episode 4, "The Oolong Slayer."`,
 ];
 
 export const episodeBreakdownText = [
   `Consider this square <span class="square"></span> to represent character groups from Season 3, Episode 4, "The Oolong Slayer."`,
   `I used three different episode descriptions (Official, Wiki Fandom and Wikipedia respectively) to strengthen the language analysis by allowing for comparison in case of an error.`,
-  `Using the Natural Language Toolkit, I broke down each description into sentences to identify different plot points. By comparing the three descriptions, we know that Jake & Captain Holt are secretly working a case together.`,
-  `Then, using the OpenAI API, I further broke down complicated sentences into independent clauses, like in Description 3.`,
+  `Using the Natural Language Toolkit, I broke down each description into sentences to identify different plot points. By comparing the three descriptions, we know that <span class="highlighted" style="background-color: var(--light-blue)">Jake & Captain Holt</span> are secretly working a case together.`,
+  `Then, using the OpenAI API, I further broke down complicated sentences into independent clauses. For instance, in <span class="italic">Description 3</span> we know that <span class="highlighted" style="background-color: var(--light-purple)">Amy and Rosa</span> have a different plot point than <span class="highlighted" style="background-color: var(--light-yellow)">Charles and Terry</span> even though they are all grouped together in one sentence.`,
   `Next, I checked the identified plot points (highlighted) against the list of characters to identify all distinct character groups.`,
-  `Then, I compared the three descriptions to ensure a character group existed independently in each. For instance, all three descriptions contain a distinct plot point describing Jake and Captain Holt’s secret case!`,
-  `Here's where it gets interesting. I compared all the descriptions to correspond and break up larger character groups. Comparing the plot points and sentence structure of Desciption 1 and 3 against 2 helped confirm another pair: Rosa, Amy while they were planning The Vulture’s party (ew)!`,
-  `Last but not least, we have Charles and Terry! Using this method, I identified the groupings in "The Oolong Slayer" and subsequently for all 153 episodes.`,
+  `Then, I compared the three descriptions to ensure a character group existed independently in each. For instance, all three descriptions contain a distinct plot point describing <span class="highlighted" style="background-color: rgb(82, 180, 255, 0.3); color: var(--blue)">Jake and Captain Holt’s</span> secret case!`,
+  `Here's where it gets interesting. I compared all the descriptions to correspond and break up larger character groups. Comparing the plot points and sentence structure of <span class="italic">Desciption 1</span> and <span class="italic">3</span> against <span class="italic">2</span> helped confirm another pair: <span class="highlighted" style="background-color: rgb(142, 208, 0, 0.3); color: var(--green)">Rosa, Amy</span> while they were planning The Vulture’s party (ew)!`,
+  `Last but not least, we have <span class="highlighted" style="background-color: rgb(163, 102, 255, 0.3); color: var(--purple)">Charles and Terry</span>! Using this method, I identified the groupings in "The Oolong Slayer" and subsequently for all 153 episodes.`,
 ];
 
 export const heatMapSectionText = [
@@ -225,7 +225,7 @@ export const standaloneConclusion = [
 ];
 
 export const standaloneNotes = [
-  `Data Sources: The original Kaggle dataset can be found here. Wiki fandom and Wikipedia Descriptions are the two additional episode description sources. I manually checked all descriptions and pair results.`,
+  `Data Sources: The original Kaggle dataset can be found <a href="https://www.kaggle.com/datasets/bcruise/brooklyn-99-episode-data" target="_blank" rel="noopener noreferrer" class="italic link">here</a>. I used <a href="https://brooklyn99.fandom.com/wiki/List_of_Episodes#Season_1" target="_blank" rel="noopener noreferrer" class="italic link">WikiFandom</a> and <a href="https://en.wikipedia.org/wiki/Brooklyn_Nine-Nine_season_1" target="_blank" rel="noopener noreferrer" class="italic link">Wikipedia Descriptions</a> for Description 2 and 3 respectively. I manually checked all descriptions and pair results.`,
   `Data Cleaning & Analysis: BeautifulSoup for web scraping. Natural Language Toolkit, OpenAI API for language analysis.`,
   `Data Visualization: Svelte.js & D3.js.`,
   `You can find the code for this project on <a href="https://github.com/soumyakarwa/comedy-duos" target="_blank" rel="noopener noreferrer" class="italic link">github</a>.`,

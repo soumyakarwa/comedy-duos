@@ -81,7 +81,6 @@
                         if (entry.isIntersecting) {
                             if (!connectingLine) {
                                 connectingLine = true;
-                                console.log(window.innerWidth); 
                                 if (window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize) {
                                     if (connectionBoolean.top) {
                                     connectionBoolean.lineTop.tablet.forEach((l, i) => {
@@ -232,7 +231,7 @@
         top: 50%; 
         left: 50%; 
         transform: translateX(-50%) translateY(-50%); 
-        z-index: 0; 
+        z-index: 2; 
         display: block;
     }
 
