@@ -599,9 +599,12 @@
           const scaledRectWidth = calcSquareSize(originalXScale, originalYScale) * hoverIncrease;
           const scaledRowHeight = rowHeight * hoverIncrease;
 
+          // TOP LEFT CORNER OF ENLARGED RECTANGLE
           const newXPos = (d) => {
-            return calculateHeatMapX(d) - (calcSquareSize(originalXScale, originalYScale) * (hoverIncrease - 1)) / 2;
+              const calculatedValue = calculateHeatMapX(d) - (calcSquareSize(originalXScale, originalYScale) * (hoverIncrease - 1)) / 2;
+              return calculatedValue < xAxisXYPos[0] ? calculateHeatMapX(d) : calculatedValue;
           };
+
           const newYPos = (d, i) => {
             return calculateHeatMapY(d) + (i * scaledRowHeight) - (rowHeight * (hoverIncrease - 1)) / 2;
           };
@@ -614,7 +617,10 @@
             .duration(transitionTime / 2)
             .attr('width', scaledRectWidth)
             .attr('height', (d, i) => scaledRowHeight)
-            .attr('x', d => newXPos(d))
+            .attr('x', d => {
+              console.log(newXPos(d))
+              return newXPos(d);
+            })
             .attr('y', (d, i) => newYPos(d, i))
             .on('end', function(d, i) {
               addCharacters();
@@ -633,10 +639,11 @@
 
               const characterSpacing = imageRadius / 2;
               const totalCharactersWidth = characterNames.length * (imageRadius * 2 + characterSpacing) - characterSpacing;
-              const startX = calculateHeatMapX(d) + (calcSquareSize(originalXScale, originalYScale) - totalCharactersWidth) / 2;
+              const startX = newXPos(d) + ((hoverIncrease * calcSquareSize(originalXScale, originalYScale)) - totalCharactersWidth)/2
 
               characterNames.forEach((name, index) => {
                 const imageX = startX + index * (imageRadius * 2 + characterSpacing) + imageRadius;
+                console.log(name, imageX); 
                 const imageY = calculateHeatMapY(d) + (charData.index * rowHeight * hoverIncrease) + rowHeight / 2.5;
 
                 hoverGroup.append('image')
