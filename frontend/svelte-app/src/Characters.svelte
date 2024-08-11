@@ -268,6 +268,9 @@
     /* top: var(--text-box-y); 
     left: var(--text-box-x);  */
     z-index: 0; 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
   }
 
   #charText {

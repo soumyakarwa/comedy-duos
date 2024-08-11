@@ -293,12 +293,13 @@
     function changeHighlightColor(elements, index, isHighlight) {
         elements.forEach(element => {
             if(isHighlight){
-                element.style.setProperty('--highlight-color', Constants.hexToRGBA(Constants.heatMapColors[index], 0.3));
-                element.style.setProperty('color', Constants.heatMapColors[index]);
+                // element.style.setProperty('--highlight-color', Constants.hexToRGBA(Constants.heatMapColors[index], 0.3));
+                element.style.setProperty('--highlight-color',Constants.hexToRGBA(Constants.heatMapColors[index], 0.7));
+                // element.style.setProperty('color', "#005393");
             }
             else {
                 element.style.setProperty('--highlight-color', Constants.colors[index]);
-                element.style.setProperty('color', Constants.blackColor);
+                // element.style.setProperty('color', Constants.blackColor);
             }
             
             // element.classList.add('highlight-animation');
@@ -667,7 +668,7 @@
             </div>
             
             <div id="officialDescription" class="episodeDescriptions" class:active={$showDescriptions}>
-                <span class="italic">Description 1</span>
+                <span class="italic">Official Description</span>
                 <br>
                 {#if currentStep < 4}
                 {@html episodeDescriptions[0]}
@@ -676,7 +677,7 @@
                 {/if}
             </div>
             <div id="wikifandomDescription" class="episodeDescriptions" class:active={$showDescriptions}> 
-                <span class="italic">Description 2</span>
+                <span class="italic">Wikifandom Description</span>
                 <br>
                 {#if currentStep < 4}
                 {@html episodeDescriptions[1]}
@@ -685,7 +686,7 @@
                 {/if}
             </div>
             <div id="wikipediaDescription" class="episodeDescriptions" class:active={$showDescriptions}>  
-                <span class="italic">Description 3</span>
+                <span class="italic">Wikipedia Description</span>
                 <br>
                 {#if currentStep < 3}
                     {@html episodeDescriptions[2]}

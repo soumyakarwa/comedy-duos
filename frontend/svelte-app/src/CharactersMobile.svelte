@@ -144,6 +144,9 @@
         margin-top: calc(var(--margin)*2); 
         font-size: var(--body-font-size); 
         position: relative; 
+        display: flex; 
+        justify-content: center;
+        align-items: center;
     }
 
     .character-grid {

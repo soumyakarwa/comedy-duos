@@ -144,6 +144,8 @@ export const heatMapColors = [
   lightOrangeColor,
 ];
 
+// export const accentColor = ["#005393", ];
+
 // MISC
 // export const transitionTime = (function () {
 //   const time = convertToMilliseconds(getCSSVariable("--transition-time"));
@@ -199,10 +201,10 @@ export const episodeBreakdownText = [
   `Consider this square <span class="square"></span> to represent character groups from Season 3, Episode 4, "The Oolong Slayer."`,
   `I used three different episode descriptions (Official, Wiki Fandom and Wikipedia respectively) to strengthen the language analysis by allowing for comparison in case of an error.`,
   `Using the Natural Language Toolkit, I broke down each description into sentences to identify different plot points. By comparing the three descriptions, we know that <span class="highlighted" style="background-color: var(--light-blue)">Jake & Captain Holt</span> are secretly working a case together.`,
-  `Then, using the OpenAI API, I further broke down complicated sentences into independent clauses. For instance, in <span class="italic">Description 3</span> we know that <span class="highlighted" style="background-color: var(--light-purple)">Amy and Rosa</span> have a different plot point than <span class="highlighted" style="background-color: var(--light-yellow)">Charles and Terry</span> even though they are all grouped together in one sentence.`,
+  `Then, using the OpenAI API, I further broke down complicated sentences into independent clauses. For instance, in <span class="italic">Wikipedia Description</span> we know that <span class="highlighted" style="background-color: var(--light-purple)">Amy and Rosa</span> have a different plot point than <span class="highlighted" style="background-color: var(--light-yellow)">Charles and Terry</span> even though they are all grouped together in one sentence.`,
   `Next, I checked the identified plot points (highlighted) against the list of characters to identify all distinct character groups.`,
   `Then, I compared the three descriptions to ensure a character group existed independently in each. For instance, all three descriptions contain a distinct plot point describing <span class="highlighted" style="background-color: rgb(82, 180, 255, 0.3); color: var(--blue)">Jake and Captain Holt’s</span> secret case!`,
-  `Here's where it gets interesting. I compared all the descriptions to correspond and break up larger character groups. Comparing the plot points and sentence structure of <span class="italic">Desciption 1</span> and <span class="italic">3</span> against <span class="italic">2</span> helped confirm another pair: <span class="highlighted" style="background-color: rgb(142, 208, 0, 0.3); color: var(--green)">Rosa, Amy</span> while they were planning The Vulture’s party (ew)!`,
+  `Here's where it gets interesting. I compared all the descriptions to correspond and break up larger character groups. Comparing the plot points and sentence structure of the<span class="italic">Official Description</span> and the <span class="italic">Wikipedia Description</span> against the<span class="italic">Wikifandom Description</span> helped confirm another pair: <span class="highlighted" style="background-color: rgb(142, 208, 0, 0.3); color: var(--green)">Rosa, Amy</span> while they were planning The Vulture’s party (ew)!`,
   `Last but not least, we have <span class="highlighted" style="background-color: rgb(163, 102, 255, 0.3); color: var(--purple)">Charles and Terry</span>! Using this method, I identified the groupings in "The Oolong Slayer" and subsequently for all 153 episodes.`,
 ];
 
