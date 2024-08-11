@@ -599,15 +599,26 @@
           const scaledRectWidth = calcSquareSize(originalXScale, originalYScale) * hoverIncrease;
           const scaledRowHeight = rowHeight * hoverIncrease;
 
-          // TOP LEFT CORNER OF ENLARGED RECTANGLE
+          // x coordinate of the top left corner of the rectangle
           const newXPos = (d) => {
               const calculatedValue = calculateHeatMapX(d) - (calcSquareSize(originalXScale, originalYScale) * (hoverIncrease - 1)) / 2;
-              return calculatedValue < xAxisXYPos[0] ? calculateHeatMapX(d) : calculatedValue;
+              let xPos = calculatedValue; 
+              if(calculatedValue < xAxisXYPos[0]){
+                xPos =  calculateHeatMapX(d)
+              }
+              else if(calculatedValue + calcSquareSize(originalXScale, originalYScale) * hoverIncrease > chartWidth){
+                xPos = chartWidth - (calcSquareSize(originalXScale, originalYScale) * hoverIncrease); 
+              }
+              return xPos;
           };
 
+          // y coordinate of the each individual row rect of the episode rectangle
           const newYPos = (d, i) => {
-            return calculateHeatMapY(d) + (i * scaledRowHeight) - (rowHeight * (hoverIncrease - 1)) / 2;
+            const calculatedValue = d + (i * scaledRowHeight) - (rowHeight * (hoverIncrease - 1)) / 2;
+            return calculatedValue;
           };
+
+          let yPos; 
 
           hoverGroup
             .raise()
@@ -617,16 +628,22 @@
             .duration(transitionTime / 2)
             .attr('width', scaledRectWidth)
             .attr('height', (d, i) => scaledRowHeight)
-            .attr('x', d => {
-              console.log(newXPos(d))
-              return newXPos(d);
+            .attr('x', d => newXPos(d))
+            .attr('y', (d, i) => {
+              yPos = calculateHeatMapY(d); 
+              if(calculateHeatMapY(d) + calcSquareSize(originalXScale, originalYScale)*hoverIncrease > chartHeight){
+                yPos = chartHeight - calcSquareSize(originalYScale, originalYScale)*hoverIncrease; 
+              }
+              if(calculateHeatMapY(d) < 0){
+                yPos = 0; 
+              }
+              return newYPos(yPos, i)
             })
-            .attr('y', (d, i) => newYPos(d, i))
             .on('end', function(d, i) {
-              addCharacters();
+              addCharacters(yPos);
             });
 
-          function addCharacters() {
+          function addCharacters(y) {
             hoverGroup.selectAll('rect').each(function(charData, index) {
               const characterNames = charData.char;
 
@@ -643,8 +660,7 @@
 
               characterNames.forEach((name, index) => {
                 const imageX = startX + index * (imageRadius * 2 + characterSpacing) + imageRadius;
-                console.log(name, imageX); 
-                const imageY = calculateHeatMapY(d) + (charData.index * rowHeight * hoverIncrease) + rowHeight / 2.5;
+                const imageY = y + (charData.index * rowHeight * hoverIncrease) + rowHeight / 2.5;
 
                 hoverGroup.append('image')
                   .attr('x', imageX - imageRadius)
