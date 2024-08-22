@@ -704,6 +704,32 @@
       .style('opacity', 0)
       .remove();
 
+    setTimeout(() => {
+      xaxis
+      .call(d3.axisTop(originalXScale))
+      .attr('transform', `translate(${xAxisTranslatePos[0]},${xAxisTranslatePos[1]})`)
+      .call(g => g.select(".domain").remove()) 
+      .call(g => g.selectAll(".tick line").remove()); 
+
+      yaxis
+        .call(d3.axisLeft(originalYScale))
+        .call(g => g.select(".domain").remove()) 
+        .call(g => g.selectAll(".tick line").remove());
+
+      xaxisLabel
+        .transition()
+        .duration(Constants.transitionTime)
+        .text(xAxisLabelText)
+
+      // Update y-axis label
+      yaxisLabel
+          .transition()
+          .duration(Constants.transitionTime)
+          .text(yAxisLabelText); 
+
+      }, Constants.transitionTime); 
+    
+
     const currentDomain = xaxis.selectAll('.tick').data();
   
     g.selectAll('.row-group')
@@ -821,7 +847,7 @@
           .attr("opacity", 1); // Assign a class for further styling if needed
     }    
 
-        // Update x-axis label
+    // Update x-axis label
      xaxisLabel
         .transition()
         .duration(Constants.transitionTime)
@@ -913,6 +939,11 @@
       .call(d3.axisLeft(frequencyYScale))
       .call(g => g.selectAll(".tick line").remove());
 
+    yaxisLabel
+        .transition()
+        .duration(Constants.transitionTime)
+        .text("Number of Appearances"); 
+
     g.selectAll('.row-group')
       .selectAll('rect')
       .transition()
@@ -934,6 +965,7 @@
       .duration(Constants.transitionTime)
       .attr('x', d => frequencyXScale(pairToString(d.pair)) + frequencyXScale.bandwidth() / 2)
       .attr('y', d => frequencyYScale(d.frequency) - 5) 
+      .text(d => d.frequency)
       .style('opacity', function(d) {
         return pairToString(d.pair) === winningPair ? 1 : 0.1;
     });
