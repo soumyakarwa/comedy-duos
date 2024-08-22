@@ -263,7 +263,7 @@
     let translationCoordinates = [margin*2, 0]; 
     let startingEndingCoordinates = [margin*2, height-5]; 
     let axisLength = startingEndingCoordinates[1] - startingEndingCoordinates[0]; 
-    let axisLabelCoordinates = [0, height - axisLength - 2*Constants.remToPixels(Constants.labelFontSize)];
+    let axisLabelCoordinates = [0, height - axisLength - Constants.remToPixels(Constants.labelFontSize)];
 
     return [translationCoordinates, startingEndingCoordinates, axisLength, axisLabelCoordinates];     
   }
@@ -328,42 +328,6 @@
     return margin; 
   }
   
-  /**
-   * Reverts axes to original heat map axes
-   */
-  function heatMapAxes(){
-    xaxis
-        .transition()
-        .duration(Constants.transitionTime)
-        .attr('transform', `translate(${xAxisTranslatePos[0]},${xAxisTranslatePos[1]})`)
-        .call(d3.axisTop(originalXScale))
-        .call(g => g.selectAll(".tick line").remove())
-        .call(g => g.select(".domain").remove()); 
-        
-        
-    // Update y-axis with transition
-    yaxis
-        .transition()
-        .duration(Constants.transitionTime)
-        .call(d3.axisLeft(originalYScale))
-        .call(g => g.select(".domain").remove()) 
-        .call(g => g.selectAll(".tick line").remove()); 
-
-    // Update x-axis label
-    xaxisLabel
-        .transition()
-        .duration(Constants.transitionTime)
-        .attr("x", xAxisLabelXYPos[0])
-        .attr("y", xAxisLabelXYPos[1])
-        .text(xAxisLabelText)
-
-    // Update y-axis label
-    yaxisLabel
-        .transition()
-        .duration(Constants.transitionTime)
-        .text(yAxisLabelText); 
-  }
-
   /**
    * helper function to stringify pair
    * @param pair
@@ -740,15 +704,7 @@
       .style('opacity', 0)
       .remove();
 
-    heatMapAxes();
-
     const currentDomain = xaxis.selectAll('.tick').data();
-
-    // // Compare current domain with new domain
-    // if (JSON.stringify(currentDomain) === JSON.stringify(frequencyXScale.domain())) {
-    //     // Revert axes if the current domain matches the new xScale domain
-    //     heatMapAxes();
-    // } 
   
     g.selectAll('.row-group')
       .each(function(d, i) {
