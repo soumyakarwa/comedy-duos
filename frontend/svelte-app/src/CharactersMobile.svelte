@@ -65,11 +65,15 @@
     function handleMouseEnter(char) {
         char.var.style.cursor = "pointer";
         document.getElementById('charMobileText').innerHTML = char.text;
+        const gifImage = char.var.querySelector('.gif');
+        gifImage.src = gifImage.dataset.gif;
     }
 
     function handleMouseLeave(char) {
         char.var.style.cursor = "default";
         document.getElementById('charMobileText').innerHTML = Constants.characterSectionText[currentTextIndex];
+        const gifImage = char.var.querySelector('.gif');
+        gifImage.src = `assets/gifs/static-images/${char.id}.png`;
     }
 
     $: if(currentTextIndex == 1){
@@ -92,7 +96,9 @@
                         on:mouseenter={() => handleMouseEnter(character)}
                         on:mouseleave={() => handleMouseLeave(character)}>
                             <img src="/assets/pins/pin.svg" alt="thumb pin" class="pin"/>
-                            <img src={`assets/gifs/${character.id}.gif`} alt="{character.id} introductory gif" class="gif"/>
+                            <img src="assets/gifs/static-images/{character.id}.png" 
+                                data-gif="assets/gifs/{character.id}.gif" 
+                                alt="{character.id} introductory gif" class="gif"/>
                     </div>
                 {/each}
             <!-- {/if} -->

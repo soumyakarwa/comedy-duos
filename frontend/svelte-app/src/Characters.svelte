@@ -222,12 +222,16 @@
           char.var.addEventListener('mouseenter', () => { 
             char.var.style.cursor = "pointer"; 
             document.getElementById('charText').innerHTML = char.text;
+            const gifImage = char.var.querySelector('.gif');
+            gifImage.src = gifImage.dataset.gif;
           });
           
           // Add mouse leave event listener to revert text
           char.var.addEventListener('mouseleave', () => {
             char.var.style.cursor = "default"; 
             document.getElementById('charText').innerHTML = Constants.characterSectionText[currentTextIndex];
+            const gifImage = char.var.querySelector('.gif');
+            gifImage.src = `assets/gifs/static-images/${char.id}.png`;
           });
 
         } 
@@ -245,7 +249,9 @@
       {#each characters as c}
         <div bind:this={c.var} id={c.id} class="character-containers divBorder">
           <img src="/assets/pins/pin.svg" alt="thumb pin" class="character-pin"/>
-          <img src="assets/gifs/{c.id}.gif" alt="{c.name} intro gif"/>
+          <img src="assets/gifs/static-images/{c.id}.png" 
+                data-gif="assets/gifs/{c.id}.gif" 
+                alt="{c.id} introductory gif" class="gif"/>
           <div>{c.name}</div>
         </div>
       {/each}
