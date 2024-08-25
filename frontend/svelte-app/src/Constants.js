@@ -230,7 +230,7 @@ export const standaloneNotes = [
   `Data Sources: The original Kaggle dataset can be found <a href="https://www.kaggle.com/datasets/bcruise/brooklyn-99-episode-data" target="_blank" rel="noopener noreferrer" class="italic link">here</a>. I used <a href="https://brooklyn99.fandom.com/wiki/List_of_Episodes#Season_1" target="_blank" rel="noopener noreferrer" class="italic link">WikiFandom</a> and <a href="https://en.wikipedia.org/wiki/Brooklyn_Nine-Nine_season_1" target="_blank" rel="noopener noreferrer" class="italic link">Wikipedia Descriptions</a> for Description 2 and 3 respectively. I manually checked all descriptions and pair results.`,
   `Data Cleaning & Analysis: BeautifulSoup for web scraping. Natural Language Toolkit, OpenAI API for language analysis.`,
   `Data Visualization: Svelte.js & D3.js.`,
-  `You can find the code for this project on <a href="https://github.com/soumyakarwa/comedy-duos" target="_blank" rel="noopener noreferrer" class="italic link">github</a>.`,
+  `For the project code and more detailed sources, please check out the <a href="https://github.com/soumyakarwa/comedy-duos" target="_blank" rel="noopener noreferrer" class="italic link">GitHub</a>.`,
   `If this peaked your interest, you can find some of my other work on my <a href="https://soumyakarwa.xyz" target="_blank" rel="noopener noreferrer" class="italic link">portfolio</a> or <a href="https://instagram.com/sk.arwaa" target="_blank" rel="noopener noreferrer" class="italic link">instagram</a>.`,
-  `Thanks for reading!!`,
+  `Thanks for reading!`,
 ];
