@@ -452,6 +452,7 @@
       hoverIncrease = 6; 
     }
     
+    let currentlyEnlargedGroup = null;
 
     // REMOVING ALL PREVIOUSLY ADDED 
     g.selectAll('.specific-square')
@@ -559,6 +560,11 @@
       group.on('click', function(event, data) {
         const hoverGroup = d3.select(this);
         const characterGroups = data['Streamlined Characters']; 
+
+        if (currentlyEnlargedGroup && currentlyEnlargedGroup.node() !== hoverGroup.node()) {
+          resetGroup(currentlyEnlargedGroup);
+        }
+
         if (!isClicked) {
           const scaledRectWidth = calcSquareSize(originalXScale, originalYScale) * hoverIncrease;
           const scaledRowHeight = rowHeight * hoverIncrease;
@@ -640,20 +646,26 @@
               });
             });
           }
-        } else {
-          // Second click - Apply the mouseout functionality
-          hoverGroup
-            // .style('cursor', 'default')
-            .selectAll('rect')
-            .transition()
-            .duration(transitionTime / 2)
-            .attr('width', calcSquareSize(originalXScale, originalYScale))
-            .attr('height', rowHeight)
-            .attr('x', calculateHeatMapX(d))
-            .attr('y', (d, i) => calculateHeatMapY(d) + (i * rowHeight));
 
-          hoverGroup.selectAll('.character-image').remove();
-          hoverGroup.selectAll('.character-text').remove();
+          currentlyEnlargedGroup = hoverGroup;
+
+        } else {
+          // // Second click - Apply the mouseout functionality
+          // hoverGroup
+          //   // .style('cursor', 'default')
+          //   .selectAll('rect')
+          //   .transition()
+          //   .duration(transitionTime / 2)
+          //   .attr('width', calcSquareSize(originalXScale, originalYScale))
+          //   .attr('height', rowHeight)
+          //   .attr('x', calculateHeatMapX(d))
+          //   .attr('y', (d, i) => calculateHeatMapY(d) + (i * rowHeight));
+
+          // hoverGroup.selectAll('.character-image').remove();
+          // hoverGroup.selectAll('.character-text').remove();
+          
+          resetGroup(hoverGroup); 
+          currentlyEnlargedGroup = null;
         }
 
         // Toggle the state
@@ -661,7 +673,27 @@
 
       });
     }); 
+
+
+    function resetGroup(group) {
+      const data = group.datum();
+      const rowHeight = calcSquareSize(originalXScale, originalYScale) / data["Streamlined Characters"].length;
+
+      group
+        .selectAll('rect')
+        .transition()
+        .duration(transitionTime / 2)
+        .attr('width', calcSquareSize(originalXScale, originalYScale))
+        .attr('height', rowHeight)
+        .attr('x', calculateHeatMapX(data))
+        .attr('y', (d, i) => calculateHeatMapY(d) + (i * rowHeight));
+
+      group.selectAll('.character-image').remove();
+      group.selectAll('.character-text').remove();
+    }
+
   }
+
 
   /**
    * Helper function when index == 3
