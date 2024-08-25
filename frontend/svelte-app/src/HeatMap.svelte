@@ -5,7 +5,7 @@
 
   const characterRatingDict = {};
   let sortedCharacterRatingArray; 
-  let heatMapSection; 
+  let heatMapSection, episodeInformationDiv; 
   var img1, img2, img3, img4, img5, img6, img7, img8, img9; 
 
   export let episodeData;
@@ -390,8 +390,8 @@
       .duration(Constants.transitionTime)
       .style('opacity', 0)
       .attr('width', 0)
-      .remove(); 
-    
+      .remove();  
+
     g.selectAll('.square rect')
       .transition()
       .duration(Constants.transitionTime)
@@ -408,6 +408,8 @@
       .call(d3.axisLeft(originalYScale))
       .call(g => g.select(".domain").remove()) 
       .call(g => g.selectAll(".tick line").remove());
+
+    episodeInformationDiv.innerHTML = ``; 
 
     // ADDING ONLY THE SQUARE CORRESPONDING TO SEASON 3, EPISODE 6
     const specificRect = g.append('rect')
@@ -559,7 +561,13 @@
 
       group.on('click', function(event, data) {
         const hoverGroup = d3.select(this);
+        console.log(data); 
         const characterGroups = data['Streamlined Characters']; 
+
+        episodeInformationDiv.innerHTML = `
+        Season ${data.Season}, Episode ${data.Episode} <br>
+        "${data.Title}" <br>
+        ⭐ ${data.Rating}/10`;
 
         if (currentlyEnlargedGroup && currentlyEnlargedGroup.node() !== hoverGroup.node()) {
           resetGroup(currentlyEnlargedGroup);
@@ -728,6 +736,8 @@
       .duration(Constants.transitionTime)
       .style('opacity', 0)
       .remove();
+
+    episodeInformationDiv.innerHTML = ``
 
     xaxis
       .selectAll('image')
@@ -1108,12 +1118,15 @@
       if (index == 1) {
         showSpecificSquare();
         document.getElementById("instruction").style.opacity = 0;
+        document.getElementById("episode-div").style.opacity = 0;
       } else if (index == 2) {
         showAllSquares();
         document.getElementById("instruction").style.opacity = 1; 
+        document.getElementById("episode-div").style.opacity = 1;
       } else if (index == 3) {
         updateSquaresForTopPairs();
         document.getElementById("instruction").style.opacity = 0; 
+        document.getElementById("episode-div").style.opacity = 0;
       } else if (index == 4) {
         createStackedBarChart();
       } else if (index == 5){
@@ -1132,7 +1145,6 @@
   onMount(() => {
 
     window.addEventListener('resize', () => {
-      console.log("resized"); 
       margin = (window.innerWidth > Constants.tabletSize) ? { 
         top: pageMarginInPixels * 9, 
         right: pageMarginInPixels, 
@@ -1225,6 +1237,10 @@
       <div id="instruction">
         <img id="instruction-pin" src="/assets/pins/orange-pin.svg" alt="thumb pin" class="thumb-pin"/>
         Click 👆🏻 on an episode to know more, or arrow-right ➡️ to move ahead!
+      </div>
+      <div id="episode-div">
+        <img id="instruction-pin" src="/assets/pins/orange-pin.svg" alt="thumb pin" class="thumb-pin"/>
+        <div bind:this={episodeInformationDiv} id="episode-information"></div>
       </div>
       {#each lastStepImages as image, i}
         <div bind:this={image.var} class="character-containers divBorder finaleImages" id={image.id}>
@@ -1388,6 +1404,21 @@
       font-size: var(--body-font-size); 
     }
 
+    #episode-div {
+      z-index: 2; 
+      position: absolute; 
+      background-color: var(--yellow); 
+      width: 15vw; 
+      padding: var(--margin); 
+      vertical-align: middle;
+      text-align: center;
+      top: 20vh; 
+      left: 80vw; 
+      opacity: 0;
+      transition: opacity var(--transition-time);
+      font-size: var(--body-font-size); 
+    }
+
     #heatmap-content-pin{
       top: -0.5rem; 
       left: 50%; 
@@ -1409,6 +1440,12 @@
       #instruction {
         left: 67.5%;
         top: 10%;
+        width: 25%; 
+      }
+
+      #episode-div {
+        top: 25%; 
+        left: 67.5%;
         width: 25%; 
       }
 
