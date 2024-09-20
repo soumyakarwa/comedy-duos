@@ -277,6 +277,11 @@
       svgHeight = document.getElementById('landing').getBoundingClientRect().height;
       setup(svg, svgWidth, svgHeight);
     });
+
+    return () => {
+      window.removeEventListener('resize', resizeHandler);
+    };
+
   });
 
 </script>
