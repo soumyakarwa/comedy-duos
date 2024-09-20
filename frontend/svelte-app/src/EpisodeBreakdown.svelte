@@ -501,7 +501,7 @@
                     rectWidth = 0.5 * gifContainer.getBoundingClientRect().width; 
                 }
                 else {
-                    rectWidth = gifContainer.getBoundingClientRect().width
+                    rectWidth = 0.8 * gifContainer.getBoundingClientRect().width
                 }
             }
             
@@ -633,7 +633,7 @@
                 rectWidth = 0.5 * gifContainer.getBoundingClientRect().width; 
             }
             else {
-                rectWidth = gifContainer.getBoundingClientRect().width
+                rectWidth = 0.8*gifContainer.getBoundingClientRect().width
             }
         }
         rectYPosIncrement = rectWidth/3; 
