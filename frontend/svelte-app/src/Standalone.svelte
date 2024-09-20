@@ -23,15 +23,17 @@
     function setThumbPinPositions(svgWidth, descriptionDiv) {
         let scaleValues = []; 
 
-        // if(window.innerWidth > Constants.mobileSize){
-        scaleValues = [0.5, 0.5]; 
-        // }
-        // else {
-        //     scaleValues = [0.55, 0.45]; 
-        // }
+        if(window.innerWidth > Constants.mobileSize){
+            scaleValues = [0.5, 0.5]; 
+        }
+        else {
+            scaleValues = [0.55, 0.45]; 
+        }
 
         topPin = [svgWidth * 0.5, descriptionDiv.offsetTop - descriptionDiv.getBoundingClientRect().height * scaleValues[0]];
         bottomPin = [svgWidth * 0.5, descriptionDiv.offsetTop + descriptionDiv.getBoundingClientRect().height * scaleValues[1]];
+
+        console.log(topPin, bottomPin); 
     }
 
 
