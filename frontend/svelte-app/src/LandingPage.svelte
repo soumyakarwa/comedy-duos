@@ -145,20 +145,17 @@
         try {
             if (!caseImageData.img) {
                 caseImageData.img = svg.append("image")
-                    .attr("xlink:href", "/assets/landing-page/caseTextWithBorder.svg")
-                    .attr("opacity", 0);
+                    .attr("xlink:href", "/assets/landing-page/caseTextWithBorder.svg");
             }
 
             if (!titleImgData.img) {
                 titleImgData.img = svg.append("image")
-                    .attr("xlink:href", "/assets/landing-page/titleWithBorder.svg")
-                    .attr("opacity", 0);
+                    .attr("xlink:href", "/assets/landing-page/titleWithBorder.svg");
             }
 
             if (!detectiveImgData.img) {
                 detectiveImgData.img = svg.append("image")
-                    .attr("xlink:href", "/assets/landing-page/detectiveWithBorder.svg")
-                    .attr("opacity", 0);
+                    .attr("xlink:href", "/assets/landing-page/detectiveWithBorder.svg");
             }
 
             if (!arrowImgData.img) {
@@ -171,7 +168,7 @@
             resolve();
         } catch (error) {
             // If something goes wrong, reject the Promise with the error.
-            reject(error);
+            console.log(error);
         }
     });
 }
@@ -184,69 +181,66 @@
     
     caseImageData.img.attr("x", caseImageData.x) 
         .attr("y", caseImageData.y)
-        .attr("height", caseImageData.height)
-        .attr("opacity", 1);
+        .attr("height", caseImageData.height);
 
     titleImgData.img
        .attr("x", titleImgData.x) 
        .attr("y",titleImgData.y)
       //  .attr("width", titleImgWidth);   
-       .attr("height", titleImgData.height)
-       .attr("opacity", 1);
+       .attr("height", titleImgData.height);
 
     detectiveImgData.img
     .attr("x", detectiveImgData.x) 
     .attr("y", detectiveImgData.y)
-    .attr("height", detectiveImgData.height)
-    .attr("opacity", 1); 
+    .attr("height", detectiveImgData.height); 
 
     // IMMEDIATE UPDATE FOR THUMB PINS AND LINES IF THE PAGE IS BEING RESIZED
     if (initialSetup && window.innerWidth > Constants.mobileSize) {
-    setTimeout(() => {
-      arrowImgData.img
-        .attr("x", arrowImgData.x)
-        .attr("y", arrowImgData.y)
-        .attr("height", arrowImgData.height)
-        .attr("opacity", 0)
-        .transition()
-        .duration(Constants.transitionTime)
-        .attr("opacity", 1);
-        addOrUpdateThumbPin(svg, arrowImgData.topPins);
-    }, Constants.maxLineDelay * 5);
-
-    addOrUpdateThumbPin(svg, caseImageData.topPins);
-
-    setTimeout(() => {
-      addOrUpdateThumbPin(svg, caseImageData.bottomPins);
-      addOrUpdateThumbPin(svg, titleImgData.topPins[0]);
       setTimeout(() => {
-        addOrUpdateLine(svg, lines.topLeft, caseImageData.bottomPins.pos, titleImgData.topPins[0].pos);
-      }, Constants.maxLineDelay / 2);
-    }, Constants.maxLineDelay);
+        arrowImgData.img
+          .attr("x", arrowImgData.x)
+          .attr("y", arrowImgData.y)
+          .attr("height", arrowImgData.height)
+          .attr("opacity", 0)
+          .transition()
+          .duration(Constants.transitionTime)
+          .attr("opacity", 1);
+          addOrUpdateThumbPin(svg, arrowImgData.topPins);
+      }, Constants.maxLineDelay * 5);
 
-    setTimeout(() => {
-      addOrUpdateThumbPin(svg, titleImgData.topPins[1]);
+      addOrUpdateThumbPin(svg, caseImageData.topPins);
+
       setTimeout(() => {
-        addOrUpdateLine(svg, lines.topRight, titleImgData.topPins[1].pos, [svgWidth, 0])
-      }, Constants.maxLineDelay / 2);
-    }, Constants.maxLineDelay * 2);
+        addOrUpdateThumbPin(svg, caseImageData.bottomPins);
+        addOrUpdateThumbPin(svg, titleImgData.topPins[0]);
+        setTimeout(() => {
+          addOrUpdateLine(svg, lines.topLeft, caseImageData.bottomPins.pos, titleImgData.topPins[0].pos);
+        }, Constants.maxLineDelay / 2);
+      }, Constants.maxLineDelay);
 
-    setTimeout(() => {
-      addOrUpdateThumbPin(svg, titleImgData.bottomPins[0]);
       setTimeout(() => {
-        addOrUpdateLine(svg, lines.bottomLeft,  titleImgData.bottomPins[0].pos, [svgWidth * 0.455, svgHeight]);
-      }, Constants.maxLineDelay / 2);
-    }, Constants.maxLineDelay * 4);
+        addOrUpdateThumbPin(svg, titleImgData.topPins[1]);
+        setTimeout(() => {
+          addOrUpdateLine(svg, lines.topRight, titleImgData.topPins[1].pos, [svgWidth, 0])
+        }, Constants.maxLineDelay / 2);
+      }, Constants.maxLineDelay * 2);
 
-    setTimeout(() => {
-      addOrUpdateThumbPin(svg, titleImgData.bottomPins[1]);
-      addOrUpdateThumbPin(svg, detectiveImgData.topPins);
       setTimeout(() => {
-        addOrUpdateLine(svg, lines.bottomRight, titleImgData.bottomPins[1].pos, detectiveImgData.topPins.pos);
-      }, Constants.maxLineDelay / 2);
-    }, Constants.maxLineDelay * 3);
+        addOrUpdateThumbPin(svg, titleImgData.bottomPins[0]);
+        setTimeout(() => {
+          addOrUpdateLine(svg, lines.bottomLeft,  titleImgData.bottomPins[0].pos, [svgWidth * 0.455, svgHeight]);
+        }, Constants.maxLineDelay / 2);
+      }, Constants.maxLineDelay * 4);
 
-      initialSetup = false; 
+      setTimeout(() => {
+        addOrUpdateThumbPin(svg, titleImgData.bottomPins[1]);
+        addOrUpdateThumbPin(svg, detectiveImgData.topPins);
+        setTimeout(() => {
+          addOrUpdateLine(svg, lines.bottomRight, titleImgData.bottomPins[1].pos, detectiveImgData.topPins.pos);
+        }, Constants.maxLineDelay / 2);
+      }, Constants.maxLineDelay * 3);
+
+        initialSetup = false; 
     } else {
       arrowImgData.img
         .attr("x", arrowImgData.x)

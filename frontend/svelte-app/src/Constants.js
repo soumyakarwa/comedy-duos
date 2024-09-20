@@ -107,21 +107,40 @@ export function convertViewportUnits(value) {
   return convertedValue;
 }
 
+// --yellow: #ffd900;
+// --orange: #ef9900;
+// --purple: #a366ff;
+// --blue: #52b4ff;
+// --green: #8ed000;
+// --black: #0f0a0a;
+// --grey: #e1e1e1;
+
+// --light-yellow: #feec8c;
+// --light-orange: #ffd285;
+// --light-purple: #ceadff;
+// --light-blue: #addcff;
+// --light-green: #d6eaae;
+
+// /* --white: rgb(246, 244, 245); */
+// --white: rgb(255, 255, 255);
+// /* --white: #e1e1e1; */
+// --faded-white: rgba(246, 244, 245, 0.9);
+
 // COLORS
-export const blackColor = getCSSVariable("--black");
-export const whiteColor = getCSSVariable("--white");
+export const blackColor = "#0f0a0a";
+export const whiteColor = "#ffffff";
 
-export const blueColor = getCSSVariable("--blue");
-export const yellowColor = getCSSVariable("--yellow");
-export const purpleColor = getCSSVariable("--purple");
-export const greenColor = getCSSVariable("--green");
-export const orangeColor = getCSSVariable("--orange");
+export const blueColor = "#52b4ff";
+export const yellowColor = "#ffd900";
+export const purpleColor = "#a366ff";
+export const greenColor = "#8ed000";
+export const orangeColor = "#ef9900";
 
-export const lightBlueColor = getCSSVariable("--light-blue");
-export const lightYellowColor = getCSSVariable("--light-yellow");
-export const lightPurpleColor = getCSSVariable("--light-purple");
-export const lightGreenColor = getCSSVariable("--light-green");
-export const lightOrangeColor = getCSSVariable("--light-orange");
+export const lightBlueColor = "#addcff";
+export const lightYellowColor = "#feec8c";
+export const lightPurpleColor = "#ceadff";
+export const lightGreenColor = "#d6eaae";
+export const lightOrangeColor = "#ffd285";
 
 export const colors = [
   lightBlueColor,
