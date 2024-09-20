@@ -71,11 +71,12 @@
                 
                 if (descriptionDiv) {
                     descriptionDivRect = descriptionDiv.getBoundingClientRect();
+                    setThumbPinPositions(svgWidth, descriptionDiv); 
                 } else {
                     console.log(`Element with ID standalone-description-${connectionBoolean.index} not found.`);
                 }
 
-                setThumbPinPositions(svgWidth, descriptionDiv); 
+                
 
                 // Observer for standalone text
                 const observer = new IntersectionObserver(entries => {
