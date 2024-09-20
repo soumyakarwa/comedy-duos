@@ -117,33 +117,67 @@
     
   }
 
-  function addImages(svg){
-    if(!caseImageData.img){
-      caseImageData.img = svg.append("image")
-        .attr("xlink:href", "/assets/landing-page/caseTextWithBorder.svg") 
-    }
+  // function addImages(svg){
+  //   if(!caseImageData.img){
+  //     caseImageData.img = svg.append("image")
+  //       .attr("xlink:href", "/assets/landing-page/caseTextWithBorder.svg") 
+  //   }
 
-    if(!titleImgData.img){
-      titleImgData.img = svg.append("image")
-       .attr("xlink:href", "/assets/landing-page/titleWithBorder.svg") ; 
-    }
+  //   if(!titleImgData.img){
+  //     titleImgData.img = svg.append("image")
+  //      .attr("xlink:href", "/assets/landing-page/titleWithBorder.svg") ; 
+  //   }
 
-    if(!detectiveImgData.img){
-      detectiveImgData.img = svg.append("image")
-      .attr("xlink:href", "/assets/landing-page/detectiveWithBorder.svg") 
-    }
+  //   if(!detectiveImgData.img){
+  //     detectiveImgData.img = svg.append("image")
+  //     .attr("xlink:href", "/assets/landing-page/detectiveWithBorder.svg") 
+  //   }
 
-    if(!arrowImgData.img){
-      arrowImgData.img = svg.append("image")
-      .attr("xlink:href", "/assets/landing-page/arrowsWithBorder.svg")
-      .attr("opacity", 0); 
-    }
+  //   if(!arrowImgData.img){
+  //     arrowImgData.img = svg.append("image")
+  //     .attr("xlink:href", "/assets/landing-page/arrowsWithBorder.svg")
+  //     .attr("opacity", 0); 
+  //   }
 
-  }
+  // }
+  function addImages(svg) {
+    return new Promise((resolve, reject) => {
+        try {
+            if (!caseImageData.img) {
+                caseImageData.img = svg.append("image")
+                    .attr("xlink:href", "/assets/landing-page/caseTextWithBorder.svg");
+            }
+
+            if (!titleImgData.img) {
+                titleImgData.img = svg.append("image")
+                    .attr("xlink:href", "/assets/landing-page/titleWithBorder.svg");
+            }
+
+            if (!detectiveImgData.img) {
+                detectiveImgData.img = svg.append("image")
+                    .attr("xlink:href", "/assets/landing-page/detectiveWithBorder.svg");
+            }
+
+            if (!arrowImgData.img) {
+                arrowImgData.img = svg.append("image")
+                    .attr("xlink:href", "/assets/landing-page/arrowsWithBorder.svg")
+                    .attr("opacity", 0);
+            }
+
+            // If all the images are appended successfully, resolve the Promise.
+            resolve();
+        } catch (error) {
+            // If something goes wrong, reject the Promise with the error.
+            reject(error);
+        }
+    });
+}
+
 
   function setup(svg, svgWidth, svgHeight) {
     setPosition(svg, svgWidth, svgHeight);
-    addImages(svg); 
+    addImages(svg)
+    .then(() => {
     
     caseImageData.img.attr("x", caseImageData.x) 
         .attr("y", caseImageData.y)
@@ -226,6 +260,7 @@
       addOrUpdateLine(svg, lines.bottomLeft,  titleImgData.bottomPins[0].pos, [svgWidth * 0.455, svgHeight]);
       addOrUpdateLine(svg, lines.bottomRight, titleImgData.bottomPins[1].pos, detectiveImgData.topPins.pos);
     }
+    }); 
   }
 
   
