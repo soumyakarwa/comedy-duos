@@ -145,17 +145,20 @@
         try {
             if (!caseImageData.img) {
                 caseImageData.img = svg.append("image")
-                    .attr("xlink:href", "/assets/landing-page/caseTextWithBorder.svg");
+                    .attr("xlink:href", "/assets/landing-page/caseTextWithBorder.svg")
+                    .attr("opacity", 0);
             }
 
             if (!titleImgData.img) {
                 titleImgData.img = svg.append("image")
-                    .attr("xlink:href", "/assets/landing-page/titleWithBorder.svg");
+                    .attr("xlink:href", "/assets/landing-page/titleWithBorder.svg")
+                    .attr("opacity", 0);
             }
 
             if (!detectiveImgData.img) {
                 detectiveImgData.img = svg.append("image")
-                    .attr("xlink:href", "/assets/landing-page/detectiveWithBorder.svg");
+                    .attr("xlink:href", "/assets/landing-page/detectiveWithBorder.svg")
+                    .attr("opacity", 0);
             }
 
             if (!arrowImgData.img) {
@@ -181,18 +184,21 @@
     
     caseImageData.img.attr("x", caseImageData.x) 
         .attr("y", caseImageData.y)
-        .attr("height", caseImageData.height);
+        .attr("height", caseImageData.height)
+        .attr("opacity", 1);
 
     titleImgData.img
        .attr("x", titleImgData.x) 
        .attr("y",titleImgData.y)
       //  .attr("width", titleImgWidth);   
-       .attr("height", titleImgData.height);
+       .attr("height", titleImgData.height)
+       .attr("opacity", 1);
 
     detectiveImgData.img
     .attr("x", detectiveImgData.x) 
     .attr("y", detectiveImgData.y)
-    .attr("height", detectiveImgData.height); 
+    .attr("height", detectiveImgData.height)
+    .attr("opacity", 1); 
 
     // IMMEDIATE UPDATE FOR THUMB PINS AND LINES IF THE PAGE IS BEING RESIZED
     if (initialSetup && window.innerWidth > Constants.mobileSize) {
