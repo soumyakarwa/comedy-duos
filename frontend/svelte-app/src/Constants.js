@@ -211,12 +211,13 @@ export const characterSectionText = [
 
 export const standaloneText1 = [
   `To identify Brooklyn Nine-Nine's most iconic duo, I analyzed each episode’s episode descriptions to pinpoint which characters have been grouped together. Some of the more obvious ones are Jake and Captain Holt or Jake and Amy, but there have been top-rated episodes with Charles and Amy paired together or even Terry and Rosa! The question is, how many episodes are these character duos paired together in, and how popular was the episode?`,
-  `<span class="italic">Methodology</span>`,
-  `I used a dataset of IMDb ratings and votes for all 153 episodes, which also included information like title, airdate, season number, episode number, official description, etc. I scraped two more episode description datasets from Wikipedia and WikiFandom to improve the accuracy of the analysis. Using the Natural Language Toolkit and OpenAI API, I broke every description down into different plot points and, consequently, different character groups.`,
-  `Then, I calculated the average IMDb rating for all identified character duos. That was a lot of words, but let me break down my analysis with an example–Season 3, Episode 4, "The Oolong Slayer."`,
+  // `<span class="italic">Methodology</span>`,
+  // `I used a dataset of IMDb ratings and votes for all 153 episodes, which also included information like title, airdate, season number, episode number, official description, etc. I scraped two more episode description datasets from Wikipedia and WikiFandom to improve the accuracy of the analysis. Using the Natural Language Toolkit and OpenAI API, I broke every description down into different plot points and, consequently, different character groups.`,
+  // `Then, I calculated the average IMDb rating for all identified character duos. That was a lot of words, but let me break down my analysis with an example–Season 3, Episode 4, "The Oolong Slayer."`,
 ];
 
 export const episodeBreakdownText = [
+  `To identify Brooklyn Nine-Nine's most iconic duo, I analyzed each episode’s episode descriptions to pinpoint which characters have been grouped together. Some of the more obvious ones are Jake and Captain Holt or Jake and Amy, but there have been top-rated episodes with Charles and Amy paired together or even Terry and Rosa! The question is, how many episodes are these character duos paired together in, and how popular was the episode?`,
   `Consider this square <span class="square"></span> to represent character groups from Season 3, Episode 4, "The Oolong Slayer."`,
   `I used three different episode descriptions (Official, Wiki Fandom and Wikipedia respectively) to strengthen the language analysis by allowing for comparison in case of an error.`,
   `Using the Natural Language Toolkit, I broke down each description into sentences to identify different plot points. By comparing the three descriptions, we know that <span class="highlighted" style="background-color: var(--light-blue)">Jake & Captain Holt</span> are secretly working a case together.`,

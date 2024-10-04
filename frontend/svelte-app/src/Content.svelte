@@ -12,7 +12,7 @@
         { component: LandingPage, subSteps: 0},
         { component: Standalone, subSteps: 0},
         { component: Characters, subSteps: 1},
-        { component: Standalone, subSteps: 0},
+        // { component: Standalone, subSteps: 0},
         { component: EpisodeBreakdown, subSteps: Constants.episodeBreakdownText.length-1},
         { component: HeatMap, subSteps: Constants.heatMapSectionText.length-1},
         { component: Standalone, subSteps: 0},
@@ -31,15 +31,15 @@
     }; 
     // export let firstStandaloneBoolean = 
     // {svg: null, index: 2, top: false, bottom: true, lineTop: [[0.5, 0]], lineBottom: [[0.375, 1], [0.625, 1]]}; 
-    export let firstStandaloneBoolean = {
-        svg: null,
-        index: 2,
-        top: false,
-        bottom: true,
-        // lineTop: {tablet: [[0.5, 0]], desktop: [[0.5, 0]]},
-        lineTop: null,
-        lineBottom: {tablet: [[0.5, 1]], desktop: [[0.375, 1], [0.625, 1]]},
-    };
+    // export let firstStandaloneBoolean = {
+    //     svg: null,
+    //     index: 2,
+    //     top: false,
+    //     bottom: true,
+    //     // lineTop: {tablet: [[0.5, 0]], desktop: [[0.5, 0]]},
+    //     lineTop: null,
+    //     lineBottom: {tablet: [[0.5, 1]], desktop: [[0.5, 1]]},
+    // };
     export let secondStandaloneBoolean = 
     {svg: null, index: 3,top: false, bottom: false, lineTop: null, lineBottom: null}; 
     export let standaloneNotes = 
@@ -143,9 +143,9 @@
         <div class="section"><CharactersMobile currentTextIndex={subIndexes[2]}/></div>
     {/if}
     
-    <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={firstStandaloneBoolean}/></div>
-    <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[4]}/></div>
-    <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[5]}/></div>
+    <!-- <div class="section"><Standalone text={Constants.standaloneText1} connectionBoolean={firstStandaloneBoolean}/></div> -->
+    <div class="section"><EpisodeBreakdown {episodeData} {specificDataPoint} currentStep={subIndexes[3]}/></div>
+    <div class="section"><HeatMap {episodeData} {specificDataPoint} index={subIndexes[4]}/></div>
     <div class="section"><Standalone text={Constants.standaloneConclusion} connectionBoolean={secondStandaloneBoolean}/></div>
     <div class="section"><Standalone text={Constants.standaloneNotes} connectionBoolean={standaloneNotes}/></div>
 </div>

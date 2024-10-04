@@ -408,6 +408,34 @@
         }); 
     }
 
+    function setPinPosition(){
+        let contentOriginPin;
+        let chartOriginPin; 
+        if (window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize) {
+            test.pos = [svgWidth * 0.5, contentTop + contentDiv.offsetHeight]; 
+            // addOrUpdateThumbPin(svg, test); 
+            contentOriginPin = test.pos;
+            chartOriginPin = [svgWidth * 0.5, 0]; 
+        } else {
+            contentOriginPin = [svgWidth * 0.5, 0];
+            chartOriginPin = [svgWidth * 0.5, 0]; 
+        }
+        return [contentOriginPin, chartOriginPin]
+    }
+
+    function resizeHelper(){
+        svgWidth = episodeSection.getBoundingClientRect().width;
+        svgHeight = episodeSection.getBoundingClientRect().height;
+
+        contentTop = contentDiv.offsetTop; 
+        chartTop = chartDiv.offsetTop; 
+        contentDivWidth = contentDiv.offsetWidth;
+        chartDivWidth = chartDiv.offsetWidth;
+
+        leftPin.pos = [contentDiv.offsetLeft+contentDivWidth/2, contentTop]; 
+        rightPin.pos = [chartDiv.offsetLeft+chartDivWidth/2, chartTop]; 
+    }
+
     $: if (specificDataPoint){
         episodeDescriptions[0] = setSentenceHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Analysis`]); 
         episodeDescriptions[1] = setSentenceHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Analysis`]); 
@@ -438,41 +466,17 @@
 
     onMount(async () => {
         const svg = d3.select(overlaySvg);
-        // [svgWidth, svgHeight] = setSvgDimensions("episode-breakdown-section", svg);
-        svgWidth = episodeSection.getBoundingClientRect().width;
-        svgHeight = episodeSection.getBoundingClientRect().height;
-
-        contentTop = contentDiv.offsetTop; 
-        chartTop = chartDiv.offsetTop; 
-        contentDivWidth = contentDiv.offsetWidth;
-        chartDivWidth = chartDiv.offsetWidth;
-
-        leftPin.pos = [contentDiv.offsetLeft+contentDivWidth/2, contentTop]; 
-        rightPin.pos = [chartDiv.offsetLeft+chartDivWidth/2, chartTop]; 
+        resizeHelper(); 
 
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     if (!connectingLine) {
                         connectingLine = true;
-                        // addOrUpdateThumbPin(svg, leftPin); 
-                        // addOrUpdateThumbPin(svg, rightPin); 
-
-                        let contentOriginPin;
-                        let chartOriginPin; 
-                        // console.log(contentDiv.getBoundingClientRect(), ); 
-                        if (window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize) {
-                            test.pos = [svgWidth * 0.5, contentTop + contentDiv.offsetHeight]; 
-                            // addOrUpdateThumbPin(svg, test); 
-                            contentOriginPin = test.pos;
-                            chartOriginPin = [svgWidth * 0.5, 0]; 
-                        } else {
-                            contentOriginPin = [svgWidth * 0.625, 0];
-                            chartOriginPin = [svgWidth * 0.375, 0]; 
-}
-
-                        addOrUpdateLine(svg, topLeft, chartOriginPin, leftPin.pos); 
-                        addOrUpdateLine(svg, topRight, contentOriginPin, rightPin.pos); 
+                        let pins = setPinPosition(); 
+                        addOrUpdateLine(svg, topRight, pins[0], rightPin.pos); 
+                        addOrUpdateLine(svg, topLeft, pins[1], leftPin.pos); 
+                        
                     }
                 }
             });
@@ -483,17 +487,7 @@
         observer.observe(episodeSection);
 
         window.addEventListener('resize', () => {
-            svgWidth = episodeSection.getBoundingClientRect().width;
-            svgHeight = episodeSection.getBoundingClientRect().height;
-
-            contentTop = contentDiv.offsetTop; 
-            chartTop = chartDiv.offsetTop; 
-            contentDivWidth = contentDiv.offsetWidth;
-            chartDivWidth = chartDiv.offsetWidth;
-
-            leftPin.pos = [contentDiv.offsetLeft+contentDivWidth/2, contentTop]; 
-            rightPin.pos = [chartDiv.offsetLeft+chartDivWidth/2, chartTop]; 
-
+            resizeHelper(); 
             let initialRectYPosIncrement = rectYPosIncrement;
 
             if(gifContainer){
@@ -518,29 +512,15 @@
             episodeSvg.setAttribute("viewBox", `0 0 ${rectWidth} ${rectWidth}`);
 
             if(connectingLine){
-                // addOrUpdateThumbPin(svg, leftPin)
-                // addOrUpdateThumbPin(svg, rightPin)
-
-                let contentOriginPin;
-                let chartOriginPin; 
-                
                 test.pos = [svgWidth * 0.5, contentTop + contentDiv.offsetHeight]; 
                 
-                if (window.innerWidth < Constants.tabletSize || window.innerWidth === Constants.tabletSize) {
-                    // addOrUpdateThumbPin(svg, test); 
-                    // test.ellipse.attr("opacity", 1); 
-                    contentOriginPin = test.pos;
-                    chartOriginPin = [svgWidth * 0.5, 0]; 
-                } else {
-                    contentOriginPin = [svgWidth * 0.625, 0];
-                    chartOriginPin = [svgWidth * 0.375, 0]; 
-                }
-
-                addOrUpdateLine(svg, topLeft, chartOriginPin, leftPin.pos); 
-                addOrUpdateLine(svg, topRight, contentOriginPin, rightPin.pos); 
+                let pins = setPinPosition(); 
+                addOrUpdateLine(svg, topRight, pins[0], rightPin.pos); 
+                addOrUpdateLine(svg, topLeft, pins[1], leftPin.pos); 
+             
             }
 
-            episodeRectText.forEach((entry, i) => {
+            episodeRectText.forEach((entry, i) => { 
                 if(entry.rect){
                     resizeRect(entry, i); 
                 }
@@ -554,15 +534,15 @@
         if (currentStep > previousStep) {
             if (currentStep == 0) {
                 showDescriptions.set(false);
-            } else if (currentStep == 1) {
+            } else if (currentStep == 2) {
                 showDescriptions.set(true);
                 oolongSlayerGif.style.opacity = 0; 
                 heatMap.style.opacity = 1; 
-            } else if (currentStep == 2) {
+            } else if (currentStep == 3) {
                 highlightDescription1();
                 highlightDescription2(); 
                 highlightDescription3(); 
-            } else if (currentStep == 3) {
+            } else if (currentStep == 4) {
                 if (specificDataPoint) {
                     newDescription3 = setSentenceHighlight(specificDataPoint[`Wikipedia Episode Descriptions`], specificDataPoint[`Wikipedia Clauses Analysis`]);
                     setTimeout(() => {
@@ -571,7 +551,7 @@
                 } else {
                     console.log('Step 3: Data not loaded yet');
                 }
-            } else if (currentStep == 4) {
+            } else if (currentStep == 5) {
                 if (specificDataPoint) {
                     characterHighlights[0] = setCharacterHighlight(specificDataPoint[`Episode Description`], specificDataPoint[`Episode Description Filtered`]); 
                     characterHighlights[1] = setCharacterHighlight(specificDataPoint[`Wiki Fandom Descriptions`], specificDataPoint[`Wiki Fandom Description Filtered`]); 
@@ -584,44 +564,44 @@
                 } else {
                     console.log('Step 3: Data not loaded yet');
                 }
-            } else if (currentStep == 5){
+            } else if (currentStep == 6){
                 episodeRectText[0] = characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][0], rectYPos, 0);
                 rectYPos+=rectYPosIncrement; 
-            } else if (currentStep == 6){
+            } else if (currentStep == 7){
                 episodeRectText[1] = characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][1], rectYPos, 1);
                 rectYPos+=rectYPosIncrement; 
-            } else if (currentStep == 7){
+            } else if (currentStep == 8){
                 episodeRectText[2]= characterPairingUnhighlight(specificDataPoint[`Streamlined Characters`][2], rectYPos, 2);
                 rectYPos+=rectYPosIncrement; 
             }
         // scrolling up
         } else if (currentStep < previousStep) {
-            if (currentStep == 0) {
+            if (currentStep == 1) {
                 showDescriptions.set(false);
                 reset(); 
                 oolongSlayerGif.style.opacity = 1; 
                 heatMap.style.opacity = 0; 
-            } else if (currentStep == 1) {
+            } else if (currentStep == 2) {
                 unhighlightDescription1();
                 unhighlightDescription2();
                 unhighlightDescription3();
-            } else if (currentStep == 2) {
+            } else if (currentStep == 3) {
                 setTimeout(() => {
                     highlightDescription3();
                 }, 0);
-            } else if (currentStep == 3) {
+            } else if (currentStep == 4) {
                 setTimeout(() => {
                     highlightDescription1();
                     highlightDescription2();
                     highlightDescription3();
                 }, 0);
-            } else if (currentStep == 4) {
+            } else if (currentStep == 5) {
                 characterPairingHighlight(specificDataPoint[`Streamlined Characters`][0], episodeRectText[0], 0)
                 rectYPos -= rectYPosIncrement;
-            } else if (currentStep == 5) {
+            } else if (currentStep == 6) {
                 characterPairingHighlight(specificDataPoint[`Streamlined Characters`][1], episodeRectText[1], 1)
                 rectYPos -= rectYPosIncrement;
-            } else if (currentStep == 6) {
+            } else if (currentStep == 7) {
                 characterPairingHighlight(specificDataPoint[`Streamlined Characters`][2], episodeRectText[2], 2)
                 rectYPos -= rectYPosIncrement;
             }
@@ -670,7 +650,7 @@
             <div id="officialDescription" class="episodeDescriptions" class:active={$showDescriptions}>
                 <span class="italic">Official Description</span>
                 <br>
-                {#if currentStep < 4}
+                {#if currentStep < 5}
                 {@html episodeDescriptions[0]}
                 {:else}
                     {@html characterHighlights[0]}
@@ -679,7 +659,7 @@
             <div id="wikifandomDescription" class="episodeDescriptions" class:active={$showDescriptions}> 
                 <span class="italic">Wikifandom Description</span>
                 <br>
-                {#if currentStep < 4}
+                {#if currentStep < 5}
                 {@html episodeDescriptions[1]}
                 {:else}
                     {@html characterHighlights[1]}
@@ -688,11 +668,11 @@
             <div id="wikipediaDescription" class="episodeDescriptions" class:active={$showDescriptions}>  
                 <span class="italic">Wikipedia Description</span>
                 <br>
-                {#if currentStep < 3}
+                {#if currentStep < 4}
                     {@html episodeDescriptions[2]}
-                {:else if currentStep == 3}
+                {:else if currentStep == 4}
                     {@html newDescription3}
-                {:else if currentStep > 3}
+                {:else if currentStep > 4}
                     {@html characterHighlights[2]}
                 {/if}
             </div>
