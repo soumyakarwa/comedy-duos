@@ -217,7 +217,7 @@ export const standaloneText1 = [
 ];
 
 export const episodeBreakdownText = [
-  `To identify Brooklyn Nine-Nine's most iconic duo, I analyzed each episode’s episode descriptions to pinpoint which characters have been grouped together. Some of the more obvious ones are Jake and Captain Holt or Jake and Amy, but there have been top-rated episodes with Charles and Amy paired together or even Terry and Rosa! The question is, how many episodes are these character duos paired together in, and how popular was the episode?`,
+  `To identify Brooklyn Nine-Nine's most iconic duo, I analyzed each episode’s official and unofficial descriptions to pinpoint which characters have been grouped together. Some of the more obvious ones are Jake and Captain Holt or Jake and Amy, but there have been top-rated episodes with Charles and Amy paired together or even Terry and Rosa! The question is, how many episodes are these characters paired together in, and how popular was the episode?`,
   `Consider this square <span class="square"></span> to represent character groups from Season 3, Episode 4, "The Oolong Slayer."`,
   `I used three different episode descriptions (Official, Wiki Fandom and Wikipedia respectively) to strengthen the language analysis by allowing for comparison in case of an error.`,
   `Using the Natural Language Toolkit, I broke down each description into sentences to identify different plot points. By comparing the three descriptions, we know that <span class="highlighted" style="background-color: var(--light-blue)">Jake & Captain Holt</span> are secretly working a case together.`,
